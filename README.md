@@ -10,8 +10,10 @@ Need SQL Server Client SDK Installed. You can found it on SQL Server installatio
 
 Add SDK Server SDK libraries referenced on the project, Verify added references propertities to be: 
 
-"Copy Local = false" 
-"Embed Interop Types= false"
+Copy Local = false 
+
+Embed Interop Types= false
+
 
 Restore Nuget packages Dynamics CRM 365 version 9.007
 
@@ -21,21 +23,35 @@ ex:
 gacutil.exe -iF "YOURPATH\CRMSSIS.CRMConnectionManager.dll"
 
 CRMSSIS.CRMConnectionManager.dll
+
 CRMSSIS.CRMSourceAdapter.dll
+
 Microsoft.Xrm.Sdk.dll
+
 Microsoft.Crm.Sdk.Proxy.dll
+
 Microsoft.Xrm.Tooling.Connector.dll
+
 Microsoft.Xrm.Tooling.Connector.dll
+
 Microsoft.Xrm.Sdk.Deployment.dll
+
 Microsoft.IdentityModel.Clients.ActiveDirectory.dll
+
 Microsoft.IdentityModel.Clients.ActiveDirectory.WindowsForms.dll
+
 
 Use SQL Server Directory version
 
 140 for SQL Server 2017 --> Still not working. NEED HELP!
+
 130 for SQL Server 2016 --> Still not working. NEED HELP!
+
 120 for SQL Server 2014
+
 110 for SQL Server 2012
+
+
 
 Fast deploy example:
 

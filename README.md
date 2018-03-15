@@ -41,7 +41,7 @@ Microsoft.IdentityModel.Clients.ActiveDirectory.dll
 Microsoft.IdentityModel.Clients.ActiveDirectory.WindowsForms.dll
 
 
-#Use SQL Server Directory version
+Use SQL Server Directory version
 
 140 for SQL Server 2017 --> Still not working. NEED HELP!
 

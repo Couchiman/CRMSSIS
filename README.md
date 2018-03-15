@@ -41,11 +41,16 @@ Fast deploy example:
 
 gacutil.exe -u CRMSSIS.CRMConnectionManager
 gacutil.exe -iF "C:\CRMSSIS\CRMConnectionManager\bin\Debug\CRMSSIS.CRMConnectionManager.dll"
+
 copy "C:\CRMSSIS\CRMConnectionManager\bin\Debug\*.dll" "C:\Program Files (x86)\Microsoft SQL Server\140\DTS\Connections" /y
+
 copy "C:\CRMSSIS\CRMConnectionManager\bin\Debug\*.dll" "C:\Program Files\Microsoft SQL Server\140\DTS\Connections" /y
 
 
 gacutil.exe -u CRMSSIS.CRMSourceAdapter
+
 gacutil.exe -iF "C:\CRMSSIS\CRMSourceAdapter\bin\Debug\CRMSSIS.CRMSourceAdapter.dll"
+
 copy "C:\CRMSSIS\CRMSourceAdapter\bin\Debug\*.dll" "C:\Program Files (x86)\Microsoft SQL Server\140\DTS\PipelineComponents" /y
+
 copy "C:\CRMSSIS\CRMSourceAdapter\bin\Debug\*.dll" "C:\Program Files\Microsoft SQL Server\140\DTS\PipelineComponents" /y

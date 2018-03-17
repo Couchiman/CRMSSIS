@@ -27,9 +27,21 @@ namespace CRMSSIS.CRMConnectionManager
 
         private string _connectionString;
 
-        public override int Version { get { return 2; } }
-         
+        //public override int Version { get { return 2; } }
 
+        public override string ConnectionString
+        {
+            get
+            {
+                UpdateConnectionString();
+                return _connectionString;
+            }
+            set
+            {
+                base.ConnectionString = value;
+                _connectionString = value;
+            }
+        }
 
         public CRMConnectionManager()
         {
@@ -93,12 +105,9 @@ namespace CRMSSIS.CRMConnectionManager
 
             try
             {
-                             
-
-                UpdateConnectionString();
-                return _connectionString;
-
-
+           
+                return ConnectionString;
+                
             }
 
             catch (Exception ex)

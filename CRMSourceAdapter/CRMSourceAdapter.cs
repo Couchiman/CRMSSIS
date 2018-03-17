@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.SqlServer.Dts.Pipeline;
-using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
-using Microsoft.SqlServer.Dts.Runtime;
+ 
 using Microsoft.SqlServer.Dts.Runtime.Wrapper;
 using System.Data;
 using Microsoft.Xrm.Sdk.Query;
@@ -10,6 +9,10 @@ using Microsoft.Xrm.Sdk;
 using System.Security;
 using System.Net;
 using Microsoft.Xrm.Tooling.Connector;
+using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
+
+ 
+
 
 namespace CRMSSIS.CRMSourceAdapter
 
@@ -18,7 +21,7 @@ namespace CRMSSIS.CRMSourceAdapter
         ComponentType = ComponentType.SourceAdapter,
         Description = "Connection source for CRM Dynamics",
         IconResource = "CRMSSIS.CRMSourceAdapter.Icon2.ico",
-        CurrentVersion = 2,
+        //CurrentVersion = 2,
         UITypeName = "CRMSSIS.CRMSourceAdapter.CRMSourceAdapterUI, CRMSSIS.CRMSourceAdapter, Version=1.0.0.0, Culture=neutral, PublicKeyToken=342aeb18c30e3bab")]
     public class CRMSourceAdapter : PipelineComponent
     {
@@ -46,7 +49,7 @@ namespace CRMSSIS.CRMSourceAdapter
 
         public override void PerformUpgrade(int pipelineVersion)
         {
-            
+
             ComponentMetaData.CustomPropertyCollection["UserComponentTypeName"].Value = this.GetType().AssemblyQualifiedName;
 
         }
@@ -101,7 +104,7 @@ namespace CRMSSIS.CRMSourceAdapter
                 if (ComponentMetaData.RuntimeConnectionCollection[0].ConnectionManager != null)
                 {
 
-                    IDTSConnectionManager100 connectionManager = ComponentMetaData.RuntimeConnectionCollection[0].ConnectionManager;
+                    var connectionManager = ComponentMetaData.RuntimeConnectionCollection[0].ConnectionManager;
                     
       
                    //     ConnectionManager connectionManager = DtsConvert.GetWrapper(
@@ -190,7 +193,8 @@ namespace CRMSSIS.CRMSourceAdapter
 
            
             base.PreExecute();
-            IDTSOutput100 output = ComponentMetaData.OutputCollection[0];
+            
+            IDTSOutput100 output =  ComponentMetaData.OutputCollection[0];
             mapOutputColsToBufferCols = new int[output.OutputColumnCollection.Count];
 
             for (int i = 0; i < ComponentMetaData.OutputCollection[0].OutputColumnCollection.Count; i++)
@@ -229,7 +233,7 @@ namespace CRMSSIS.CRMSourceAdapter
                 return DTSValidationStatus.VS_NEEDSNEWMETADATA;
             }
 
-
+           
 
             return base.Validate();
         }
@@ -271,7 +275,7 @@ namespace CRMSSIS.CRMSourceAdapter
                                 IDTSOutputColumn100 outputCol = output.OutputColumnCollection.New();
 
 
-                                bool isLong = false;
+                                bool isLong = false; 
                                 DataType dType = DataRecordTypeToBufferType((Type)row["DataType"]);
                                 dType = ConvertBufferDataTypeToFitManaged(dType, ref isLong);
                                 int length = ((int)row["ColumnSize"]) == -1 ? 1000 : (int)row["ColumnSize"];
@@ -345,20 +349,22 @@ namespace CRMSSIS.CRMSourceAdapter
             base.RemoveAllInputsOutputsAndCustomProperties();
             ComponentMetaData.RuntimeConnectionCollection.RemoveAll();
 
+            ComponentMetaData.Name = "Dynamics CRM Source Adapter";
+            ComponentMetaData.ContactInfo = "couchiman@gmail.com";
+            ComponentMetaData.Description = "Allows to connect to Dynamics CRM Source";
+
             IDTSOutput100 output = ComponentMetaData.OutputCollection.New();
             output.Name = "Output";
 
             IDTSCustomProperty100 FetchXML = ComponentMetaData.CustomPropertyCollection.New();
-            FetchXML.Description = "FetchXML Query";
+            FetchXML.Description = "FetchXML query to get information from Dynamics";
             FetchXML.Name = "FetchXML";
             FetchXML.Value = String.Empty;
 
             IDTSRuntimeConnection100 connection = ComponentMetaData.RuntimeConnectionCollection.New();
             connection.Name = "CRMSSIS";
-            //connection.ConnectionManagerID = "CRMSSIS";
-            
-
-
+            connection.ConnectionManagerID = "CRMSSIS";
+             
         }
 
         public DataTable GetData(String FetchXML, Boolean top)

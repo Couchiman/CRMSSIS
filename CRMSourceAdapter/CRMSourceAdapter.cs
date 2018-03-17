@@ -419,6 +419,11 @@ namespace CRMSSIS.CRMSourceAdapter
                             for (int i = 0; i <= entity.Attributes.Count - 1; i++)
                             {
                                 string colName = entity.Attributes.Keys.ElementAt(i);
+
+                            if(entity.Attributes.Values.ElementAt(i).GetType() == typeof (Microsoft.Xrm.Sdk.EntityReference))
+                            {
+                                dRow[colName] = ((Microsoft.Xrm.Sdk.EntityReference)entity.Attributes.Values.ElementAt(i)).Id;
+                            }
                                 dRow[colName] = entity.Attributes.Values.ElementAt(i);
                             }
                             dTable.Rows.Add(dRow);

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.SqlServer.Dts.Pipeline;
- 
+
 using Microsoft.SqlServer.Dts.Runtime.Wrapper;
 using System.Data;
 using Microsoft.Xrm.Sdk.Query;
@@ -10,9 +10,9 @@ using System.Security;
 using System.Net;
 using Microsoft.Xrm.Tooling.Connector;
 using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
-
- 
-
+using Microsoft.Xrm.Sdk.Metadata;
+using Microsoft.Xrm.Sdk.Messages;
+using Microsoft.Crm.Sdk.Messages;
 
 namespace CRMSSIS.CRMSourceAdapter
 
@@ -155,21 +155,9 @@ namespace CRMSSIS.CRMSourceAdapter
             PipelineBuffer buffer = buffers[0];
 
             DataTable dt = new DataTable();
-            //dt=GetData(ComponentMetaData.CustomPropertyCollection["FetchXML"].Value.ToString(), false);
-
-            //if (ComponentMetaData.CustomPropertyCollection["FetchXML"].Value.ToString() != string.Empty) {
+                        
             dt = GetData(ComponentMetaData.CustomPropertyCollection["FetchXML"].Value.ToString(), false);
-            //} else
-            //{  
-            //DataColumn colId = new DataColumn("accountid", typeof(String));
-            //dt.Columns.Add(colId);
-
-
-            //DataColumn colDate = new DataColumn("primarycontactid", typeof(String));
-            //dt.Columns.Add(colDate);
-            // }
-
-
+            
             foreach (DataRow row in dt.Rows)
             {
                 buffer.AddRow();
@@ -226,18 +214,18 @@ namespace CRMSSIS.CRMSourceAdapter
                 return DTSValidationStatus.VS_ISBROKEN;
             }
 
-          
+
 
             if ((ComponentMetaData.OutputCollection[0].OutputColumnCollection.Count == 0))
             {
                 return DTSValidationStatus.VS_NEEDSNEWMETADATA;
             }
 
-           
-
+          
             return base.Validate();
         }
 
+       
         public override void ReinitializeMetaData()
         {
             AddOutputColumns(ComponentMetaData.CustomPropertyCollection["FetchXML"].Value.ToString());
@@ -285,6 +273,7 @@ namespace CRMSSIS.CRMSourceAdapter
 
                                 switch (dType)
                                 {
+                                    
                                     case DataType.DT_STR:
                                     case DataType.DT_TEXT:
                                         precision = 0;
@@ -293,6 +282,9 @@ namespace CRMSSIS.CRMSourceAdapter
                                     case DataType.DT_NUMERIC:
                                         length = 0;
                                         codePage = 0;
+                                        if (precision == 0) precision = 10;
+                                        if (scale == 0) scale = 2;
+
                                         if (precision > 38)
                                             precision = 38;
                                         if (scale > precision)
@@ -300,7 +292,9 @@ namespace CRMSSIS.CRMSourceAdapter
                                         break;
                                     case DataType.DT_DECIMAL:
                                         length = 0;
-                                        precision = 0;
+                                         
+                                        if (scale == 0) scale = 2;
+
                                         codePage = 0;
                                         if (scale > 28)
                                             scale = 28;
@@ -349,6 +343,7 @@ namespace CRMSSIS.CRMSourceAdapter
             base.RemoveAllInputsOutputsAndCustomProperties();
             ComponentMetaData.RuntimeConnectionCollection.RemoveAll();
 
+            
             ComponentMetaData.Name = "Dynamics CRM Source Adapter";
             ComponentMetaData.ContactInfo = "couchiman@gmail.com";
             ComponentMetaData.Description = "Allows to connect to Dynamics CRM Source";
@@ -385,51 +380,164 @@ namespace CRMSSIS.CRMSourceAdapter
                 EntityCollection result = new EntityCollection();
                 bool AddCol = true;
                 int page = 1;
+                EntityMetadata entMetadata = new EntityMetadata();
+                AttributeMetadata mdta;
 
-                     do
+                do
+                {
+
+                    if (top)
                     {
+                        result = service.RetrieveMultiple(new FetchExpression("<fetch version=\"1.0\" count=\"200\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">" + FetchXML + "</fetch>"));
 
-                        if (top)
-                        {
-                            result = service.RetrieveMultiple(new FetchExpression("<fetch version=\"1.0\" count=\"200\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">" + FetchXML + "</fetch>"));
-                            result.MoreRecords = false;
-                        }
-                        else
-                            result = service.RetrieveMultiple(new FetchExpression(string.Format("<fetch version=\"1.0\" page=\"{1}\" paging-cookie=\"{0}\" count=\"5000\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">" + FetchXML + "</fetch>", SecurityElement.Escape(result.PagingCookie), page++)));
+                        result.MoreRecords = false;
 
-                        if (AddCol)
+                        RetrieveEntityRequest mdRequest = new RetrieveEntityRequest()
                         {
-                            foreach (Entity entity in result.Entities)
+                            EntityFilters = EntityFilters.Attributes,
+                            LogicalName = result.EntityName,
+                            RetrieveAsIfPublished = false
+                        };
+
+                        RetrieveEntityResponse entityResponse = (RetrieveEntityResponse)service.Execute(mdRequest);
+
+                        entMetadata = entityResponse.EntityMetadata;
+
+                        
+
+                    }
+                    else
+                        result = service.RetrieveMultiple(new FetchExpression(string.Format("<fetch version=\"1.0\" page=\"{1}\" paging-cookie=\"{0}\" count=\"5000\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">" + FetchXML + "</fetch>", SecurityElement.Escape(result.PagingCookie), page++)));
+
+                    if (AddCol)
+                    {
+                        foreach (Entity entity in result.Entities)
+                        {
+                            for (int iElement = 0; iElement <= entity.Attributes.Count - 1; iElement++)
                             {
-                                for (int iElement = 0; iElement <= entity.Attributes.Count - 1; iElement++)
+
+                                string columnName = entity.Attributes.Keys.ElementAt(iElement);
+
+                                if (!dTable.Columns.Contains(columnName))
                                 {
+                                    mdta = entMetadata.Attributes.FirstOrDefault(m => m.LogicalName == columnName);
 
-                                    string columnName = entity.Attributes.Keys.ElementAt(iElement);
-                                    if (!dTable.Columns.Contains(columnName))
-                                        dTable.Columns.Add(columnName);
+                                    switch (mdta.AttributeType.Value)
+                                    {
+                                        //    break;
+                                        case AttributeTypeCode.BigInt:
+                                            dTable.Columns.Add(columnName, typeof(Int64));
+                                            
+                                            break;
+                                        case AttributeTypeCode.Boolean:
+                                            dTable.Columns.Add(columnName, typeof(bool));
+                                            break;
+                                        case AttributeTypeCode.DateTime:
+                                            dTable.Columns.Add(columnName, typeof(DateTime));
 
+                                            break;
+                                        case AttributeTypeCode.Decimal:
+                                            dTable.Columns.Add(columnName, typeof(decimal));
+                                            
+                                            break;
+                                        case AttributeTypeCode.Double:
+                                        case AttributeTypeCode.Money:
+                                           
+                                            dTable.Columns.Add(columnName, typeof(float));
+                                            break;
+                                        case AttributeTypeCode.Integer:
+                                        case AttributeTypeCode.Picklist:
+                                            dTable.Columns.Add(columnName, typeof(Int32));
+                                            break;
+                                        case AttributeTypeCode.Uniqueidentifier:
+                                        case AttributeTypeCode.Customer:
+                                        case AttributeTypeCode.Lookup:
+                                        case AttributeTypeCode.PartyList:
+                                        case AttributeTypeCode.Owner:
+                                            dTable.Columns.Add(columnName, typeof(Guid));
+                                            break;
+                                         default:                                            
+                                            dTable.Columns.Add(columnName,typeof(string));
+                                            break;
+                                    }
+                                   
                                 }
                             }
                         }
-                        else AddCol = false;
-
-                        foreach (Entity entity in result.Entities)
-                        {
-                            DataRow dRow = dTable.NewRow();
-                            for (int i = 0; i <= entity.Attributes.Count - 1; i++)
-                            {
-                                string colName = entity.Attributes.Keys.ElementAt(i);
-
-                            if(entity.Attributes.Values.ElementAt(i).GetType() == typeof (Microsoft.Xrm.Sdk.EntityReference))
-                            {
-                                dRow[colName] = ((Microsoft.Xrm.Sdk.EntityReference)entity.Attributes.Values.ElementAt(i)).Id;
-                            }
-                                dRow[colName] = entity.Attributes.Values.ElementAt(i);
-                            }
-                            dTable.Rows.Add(dRow);
-                        }
                     }
-                    while (result.MoreRecords);
+                    else AddCol = false;
+
+
+
+
+                    foreach (Entity entity in result.Entities)
+                    {
+
+
+                        DataRow dRow = dTable.NewRow();
+                        for (int i = 0; i <= entity.Attributes.Count - 1; i++)
+                        {
+                            string colName = entity.Attributes.Keys.ElementAt(i);
+
+
+
+                            mdta = entMetadata.Attributes.FirstOrDefault(m => m.LogicalName == colName);
+
+                            switch (mdta.AttributeType.Value)
+                            {
+
+
+                                //case AttributeTypeCode.Boolean:
+                                //    dRow[colName] = entity.Attributes.Values.ElementAt(i).ToString() == "1" || entity.Attributes.Values.ElementAt(i).ToString().Trim().ToLower() == "true";
+                                //    break;
+                                case AttributeTypeCode.Picklist:
+                                    dRow[colName] = ((Microsoft.Xrm.Sdk.OptionSetValue)entity.Attributes.Values.ElementAt(i)).Value;
+                                    break;
+
+                                case AttributeTypeCode.Customer:
+                                case AttributeTypeCode.Lookup:
+                                case AttributeTypeCode.PartyList:
+                                case AttributeTypeCode.Owner:
+
+                                    
+                                    dRow[colName] = (Guid)((Microsoft.Xrm.Sdk.EntityReference)entity.Attributes.Values.ElementAt(i)).Id;
+                                    break;
+                                case AttributeTypeCode.BigInt:
+                                    dRow[colName] = (Int64?)entity.Attributes.Values.ElementAt(i);
+                                    break;
+                                case AttributeTypeCode.Decimal:
+                                 
+                                    dRow[colName] = (decimal?)entity.Attributes.Values.ElementAt(i);
+                                    break;
+                                case AttributeTypeCode.Double:
+                                    dRow[colName] = (double?)entity.Attributes.Values.ElementAt(i);
+                                    break;
+                                case AttributeTypeCode.Integer:
+                                    dRow[colName] = (int?)entity.Attributes.Values.ElementAt(i);
+                                    break;
+                                case AttributeTypeCode.Money:
+                                    dRow[colName] = (float?)entity.Attributes.Values.ElementAt(i);
+                                    break;
+                                case AttributeTypeCode.DateTime:
+                                    dRow[colName] = (DateTime?)entity.Attributes.Values.ElementAt(i);
+                                    break;
+                                case AttributeTypeCode.Uniqueidentifier:
+                                    dRow[colName] = (Guid?)entity.Attributes.Values.ElementAt(i);
+                                    break;
+                                case AttributeTypeCode.Boolean:
+                                    dRow[colName] = (bool?)entity.Attributes.Values.ElementAt(i);
+                                    break;
+                                default:
+                                    dRow[colName] = (string)entity.Attributes.Values.ElementAt(i);
+                                    
+                                    break;
+                            }
+                        }
+                        dTable.Rows.Add(dRow);
+                       
+                    }
+                }
+                while (result.MoreRecords);
                 
                 return dTable;
 

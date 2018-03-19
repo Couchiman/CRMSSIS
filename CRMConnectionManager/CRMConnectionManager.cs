@@ -2,7 +2,8 @@
 using Microsoft.SqlServer.Dts.Runtime;
 using System.Xml;
 using System.ComponentModel;
-
+using System.Collections.Generic;
+using System.Text;
 
 namespace CRMSSIS.CRMConnectionManager
 {
@@ -16,6 +17,11 @@ namespace CRMSSIS.CRMConnectionManager
     {
 
 
+        public bool UsesSSL { get; set; }
+        public string Port { get; set; }
+
+        public string CallerId { get; set; }
+         public int TimeOut { get; set; }
         public string OrganizationUri { get; set; }
         public string HomeRealmUri { get; set; }
         public string UserName { get; set; }
@@ -51,37 +57,71 @@ namespace CRMSSIS.CRMConnectionManager
             Password = "";
             Domain = "";
             AuthType = AuthenticationProviderTypeDescriptive.Office365;
+            CallerId = "";
+            UsesSSL = true;
+            Port = "443";
+            TimeOut =0;
+
         }
 
         private void UpdateConnectionString()
         {
 
-            string temporaryString = "";
 
+            UriBuilder uriBuilder = new UriBuilder();
+            if (UsesSSL)
+            uriBuilder.Scheme = "https://";
+            else
+                uriBuilder.Scheme = "http://";
+            uriBuilder.Host = OrganizationUri;
+            if (!string.IsNullOrEmpty(Port))
+            {
+                int sPort;
+                int.TryParse(Port, out sPort);
+                uriBuilder.Port = sPort;
+
+            }
+
+
+            string temporaryString;
+            
 
             switch (AuthType)
             {
                 case AuthenticationProviderTypeDescriptive.ActiveDirectory:
-                    temporaryString = "AuthType=AD;Url=" + OrganizationUri.ToString() +";Domain=" + Domain.ToString() + ";Username=" + UserName.ToString() +"; Password=" + Password.ToString() +";";
+                    
+
+                    temporaryString = "AuthType=AD;Url=" + uriBuilder.Uri.ToString()+ ";Domain=" + Domain.ToString() + ";Username=" + UserName.ToString() +"; Password=" + Password.ToString() +";";
                     break;
 
 
                 case AuthenticationProviderTypeDescriptive.IFD:
-                    temporaryString = "AuthType=IFD;Url =" + OrganizationUri.ToString() + ";HomeRealmUri =" + HomeRealmUri.ToString() + ";Domain=" + Domain.ToString() + "; Username=" + UserName.ToString() +";Password=" + Password.ToString() +";";
+                    temporaryString = "AuthType=IFD;Url =" + uriBuilder.Uri.ToString() + ";HomeRealmUri =" + HomeRealmUri.ToString() + ";Domain=" + Domain.ToString() + "; Username=" + UserName.ToString() +";Password=" + Password.ToString() +";";
                     break;
 
 
                 case AuthenticationProviderTypeDescriptive.Office365:
                     // return AuthenticationProviderType.OnlineFederation;
-                    temporaryString = "AuthType=Office365;Url =" + OrganizationUri.ToString() +";Username=" + UserName.ToString() + ";Password=" + Password.ToString() +";";
+                    temporaryString = "AuthType=Office365;Url =" + uriBuilder.Uri.ToString() + ";Username=" + UserName.ToString() + ";Password=" + Password.ToString() +";";
                     break;
 
                 default:
                     throw new ArgumentException(String.Format("{0} is not a valid authentication type", AuthType.ToString()));
             }
-            
-            _connectionString = temporaryString.Trim();
 
+            if (TimeOut > 0)
+            {
+                TimeSpan t = new TimeSpan(0, 0, TimeOut, 0, 0);
+                temporaryString = temporaryString + string.Format("Timeout={0};", t.ToString(@"hh\:mm\:ss"));
+            }
+            
+
+            if (!string.IsNullOrEmpty(CallerId))
+            {
+                temporaryString = temporaryString + string.Format("ClientId={0};", CallerId);
+            }
+
+            _connectionString = temporaryString.Trim();
         }
 
         public override Microsoft.SqlServer.Dts.Runtime.DTSExecResult Validate(Microsoft.SqlServer.Dts.Runtime.IDTSInfoEvents infoEvents)
@@ -105,8 +145,8 @@ namespace CRMSSIS.CRMConnectionManager
 
             try
             {
-           
-                return ConnectionString;
+                  
+                return _connectionString;
                 
             }
 
@@ -116,20 +156,6 @@ namespace CRMSSIS.CRMConnectionManager
             }
 
         }
-
-
-
-
-        //public override void ReleaseConnection(object connection)
-        //{
-
-        //    IOrganizationService crmConnection;
-        //    crmConnection = (IOrganizationService)connection;
-            
-        //    crmConnection = null;
-
-
-        //}
 
 
         public override void ReleaseConnection(object connection)
@@ -156,6 +182,37 @@ namespace CRMSSIS.CRMConnectionManager
             rootElement.AppendChild(node);
 
 
+            if (!String.IsNullOrEmpty(CallerId))
+            {
+                XmlNode node3 = doc.CreateNode(XmlNodeType.Element, "CallerId", String.Empty);
+                XmlElement XElementCallerId = node3 as XmlElement;
+                XElementCallerId.InnerText = CallerId;
+                rootElement.AppendChild(node3);
+            }
+
+
+            if (TimeOut >0)
+            {
+                XmlNode node3 = doc.CreateNode(XmlNodeType.Element, "TimeOut", String.Empty);
+                XmlElement XElementTimeOut = node3 as XmlElement;
+                XElementTimeOut.InnerText = TimeOut.ToString();
+                rootElement.AppendChild(node3);
+            }
+
+            if (!string.IsNullOrEmpty(Port))
+            {
+                XmlNode nodeport = doc.CreateNode(XmlNodeType.Element, "Port", String.Empty);
+                XmlElement XElementPort = nodeport as XmlElement;
+                XElementPort.InnerText = Port.ToString();
+                rootElement.AppendChild(nodeport);
+            }
+
+            
+                XmlNode nodessl = doc.CreateNode(XmlNodeType.Element, "UsesSSL", String.Empty);
+                XmlElement XElementSSL = nodessl as XmlElement;
+                XElementSSL.InnerText = UsesSSL.ToString();
+                rootElement.AppendChild(nodessl);
+            
 
             if (!String.IsNullOrEmpty(Domain))
             {
@@ -237,6 +294,23 @@ namespace CRMSSIS.CRMConnectionManager
                 if (childNode.Name == "Password")
                     Password = childNode.InnerText; // The SSIS runtime will already have decrypted it for us and you don't need to do it again
 
+                if (childNode.Name == "UsesSSL")
+                    UsesSSL = Boolean.Parse(childNode.InnerText.ToString());
+
+                if (childNode.Name == "TimeOut")
+                {
+                    
+                    int sTime;
+
+                    int.TryParse(childNode.InnerText, out sTime);
+                    TimeOut = sTime;
+                }
+                if (childNode.Name == "CallerId")
+                    CallerId = childNode.InnerText.ToString();
+                if (childNode.Name == "Port")
+                {
+                    Port = childNode.InnerText.ToString();
+                }
             }
 
             UpdateConnectionString();

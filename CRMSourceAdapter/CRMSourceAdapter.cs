@@ -13,6 +13,7 @@ using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
 using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Crm.Sdk.Messages;
+using System.Collections.Generic;
 
 namespace CRMSSIS.CRMSourceAdapter
 
@@ -105,12 +106,12 @@ namespace CRMSSIS.CRMSourceAdapter
                 {
 
                     var connectionManager = ComponentMetaData.RuntimeConnectionCollection[0].ConnectionManager;
-                    
-      
-                   //     ConnectionManager connectionManager = DtsConvert.GetWrapper(
-                   //ComponentMetaData.RuntimeConnectionCollection[0].ConnectionManager);
-                      
-                    string _connectionString = (string)connectionManager.AcquireConnection(null);
+
+
+                    //     ConnectionManager connectionManager = DtsConvert.GetWrapper(
+                    //ComponentMetaData.RuntimeConnectionCollection[0].ConnectionManager);
+
+                    string _connectionstring = (string)connectionManager.AcquireConnection(null);
 
                     if (connectionManager == null)
                         throw new Exception("Could not get connection manager");
@@ -120,10 +121,13 @@ namespace CRMSSIS.CRMSourceAdapter
                     try
                     {
                         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                        CrmServiceClient conn = new CrmServiceClient(_connectionString);
+                         
+                        CrmServiceClient conn = new CrmServiceClient(_connectionstring);
+                       
                         // Cast the proxy client to the IOrganizationService interface.
                         this.service = (IOrganizationService)conn.OrganizationWebProxyClient != null ? (IOrganizationService)conn.OrganizationWebProxyClient : (IOrganizationService)conn.OrganizationServiceProxy;
 
+                        
 
                         if (!conn.IsReady)
                             throw new Exception("Cannot connect to Dynamics Instance");
@@ -266,24 +270,35 @@ namespace CRMSSIS.CRMSourceAdapter
                                 bool isLong = false; 
                                 DataType dType = DataRecordTypeToBufferType((Type)row["DataType"]);
                                 dType = ConvertBufferDataTypeToFitManaged(dType, ref isLong);
-                                int length = ((int)row["ColumnSize"]) == -1 ? 1000 : (int)row["ColumnSize"];
+                                int length = ((int)row["ColumnSize"]) == -1 ? 4000 : (int)row["ColumnSize"];
                                 int precision = row["NumericPrecision"] is System.DBNull ? 0 : (short)row["NumericPrecision"];
                                 int scale = row["NumericScale"] is System.DBNull ? 0 : (short)row["NumericScale"];
                                 int codePage = schemaDT.Locale.TextInfo.ANSICodePage;
 
                                 switch (dType)
                                 {
-                                    
+                                   
                                     case DataType.DT_STR:
                                     case DataType.DT_TEXT:
                                         precision = 0;
                                         scale = 0;
                                         break;
+                                    case DataType.DT_CY:
+                                        length = 0;
+                                        codePage = 0;
+                                        if (precision == 0) precision = 23;
+                                        if (scale == 0) scale = 4;
+
+                                        if (precision > 38)
+                                            precision = 38;
+                                        if (scale > precision)
+                                            scale = precision;
+                                        break;
                                     case DataType.DT_NUMERIC:
                                         length = 0;
                                         codePage = 0;
-                                        if (precision == 0) precision = 10;
-                                        if (scale == 0) scale = 2;
+                                        if (precision == 0) precision = 23;
+                                        if (scale == 0) scale = 10;
 
                                         if (precision > 38)
                                             precision = 38;
@@ -292,8 +307,8 @@ namespace CRMSSIS.CRMSourceAdapter
                                         break;
                                     case DataType.DT_DECIMAL:
                                         length = 0;
-                                         
-                                        if (scale == 0) scale = 2;
+                                        if (precision == 0) precision = 23;
+                                        if (scale == 0) scale = 10;
 
                                         codePage = 0;
                                         if (scale > 28)
@@ -391,23 +406,23 @@ namespace CRMSSIS.CRMSourceAdapter
                         result = service.RetrieveMultiple(new FetchExpression("<fetch version=\"1.0\" count=\"200\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">" + FetchXML + "</fetch>"));
 
                         result.MoreRecords = false;
-
-                        RetrieveEntityRequest mdRequest = new RetrieveEntityRequest()
-                        {
-                            EntityFilters = EntityFilters.Attributes,
-                            LogicalName = result.EntityName,
-                            RetrieveAsIfPublished = false
-                        };
-
-                        RetrieveEntityResponse entityResponse = (RetrieveEntityResponse)service.Execute(mdRequest);
-
-                        entMetadata = entityResponse.EntityMetadata;
-
-                        
-
                     }
                     else
                         result = service.RetrieveMultiple(new FetchExpression(string.Format("<fetch version=\"1.0\" page=\"{1}\" paging-cookie=\"{0}\" count=\"5000\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">" + FetchXML + "</fetch>", SecurityElement.Escape(result.PagingCookie), page++)));
+
+
+
+                    RetrieveEntityRequest mdRequest = new RetrieveEntityRequest()
+                    {
+                        EntityFilters = EntityFilters.Attributes,
+                        LogicalName = result.EntityName,
+                        RetrieveAsIfPublished = false
+                    };
+
+                    RetrieveEntityResponse entityResponse = (RetrieveEntityResponse)service.Execute(mdRequest);
+
+                    entMetadata = entityResponse.EntityMetadata;
+
 
                     if (AddCol)
                     {
@@ -421,6 +436,8 @@ namespace CRMSSIS.CRMSourceAdapter
                                 if (!dTable.Columns.Contains(columnName))
                                 {
                                     mdta = entMetadata.Attributes.FirstOrDefault(m => m.LogicalName == columnName);
+                                   
+
 
                                     switch (mdta.AttributeType.Value)
                                     {
@@ -456,7 +473,8 @@ namespace CRMSSIS.CRMSourceAdapter
                                         case AttributeTypeCode.Owner:
                                             dTable.Columns.Add(columnName, typeof(Guid));
                                             break;
-                                         default:                                            
+                                         default:        
+                                                                     
                                             dTable.Columns.Add(columnName,typeof(string));
                                             break;
                                     }

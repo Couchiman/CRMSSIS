@@ -31,6 +31,7 @@ namespace CRMSSIS.CRMConnectionManager
             _serviceProvider = serviceProvider;
             LoadAuthCombo(cboAuthType);
             ConfigureControlsFromConnectionManager();
+           
             
 
         }
@@ -42,8 +43,15 @@ namespace CRMSSIS.CRMConnectionManager
  
 
             {
-               
-                
+
+                txtCallerId.Text = _connectionManager.Properties["CallerId"].GetValue(_connectionManager).ToString();
+                txtPort.Text = _connectionManager.Properties["Port"].GetValue(_connectionManager).ToString();
+
+                bool cbhttpValue = (bool)_connectionManager.Properties["UsesSSL"].GetValue(_connectionManager);
+                                
+                chkSSL.Checked = cbhttpValue;
+
+                txtTimeout.Text = _connectionManager.Properties["TimeOut"].GetValue(_connectionManager).ToString();
 
                 txtOrganizationUri.Text = _connectionManager.Properties["OrganizationUri"].GetValue(_connectionManager).ToString();
                 txtHomeRealUri.Text = _connectionManager.Properties["HomeRealmUri"].GetValue(_connectionManager).ToString();
@@ -53,6 +61,7 @@ namespace CRMSSIS.CRMConnectionManager
                 int cboValue = (int)(AuthenticationProviderTypeDescriptive)_connectionManager.Properties["AuthType"].GetValue(_connectionManager);
                 
                 cboAuthType.SelectedIndex = cboValue;
+                
                  
             }
 
@@ -70,7 +79,19 @@ namespace CRMSSIS.CRMConnectionManager
                 _connectionManager.Properties["UserName"].SetValue(_connectionManager, txtUserName.Text);
                 _connectionManager.Properties["Password"].SetValue(_connectionManager, txtPassword.Text);
                 _connectionManager.Properties["AuthType"].SetValue(_connectionManager, cboAuthType.SelectedValue);
-                
+
+                _connectionManager.Properties["CallerId"].SetValue(_connectionManager, txtCallerId.Text);
+                _connectionManager.Properties["Port"].SetValue(_connectionManager, txtPort.Text);
+                _connectionManager.Properties["UsesSSL"].SetValue(_connectionManager, chkSSL.Checked);
+                if (!string.IsNullOrEmpty(txtTimeout.Text))
+                {
+                    int sTimeout;
+                    int.TryParse(txtTimeout.Text, out sTimeout);
+                _connectionManager.Properties["TimeOut"].SetValue(_connectionManager, sTimeout);
+                }
+                else
+                    _connectionManager.Properties["TimeOut"].SetValue(_connectionManager, 0);
+
 
             }
 

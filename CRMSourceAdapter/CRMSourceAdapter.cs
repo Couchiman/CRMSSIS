@@ -31,7 +31,7 @@ namespace CRMSSIS.CRMSourceAdapter
         //Error: Cannot find the connection manager with ID "{B116844B-768A-4A52-B3DE-EDD303605854}" in the connection manager 
         //    collection due to error code 0xC0010009. That connection manager is needed by "CRM Dynamics Source.Connections[CRMSSIS]"
         //    in the connection manager collection of "CRM Dynamics Source". Verify that a connection manager in the connection manager collection,
-        //    Connections, has been created with that ID.
+        //    Connections, has been created with that ID.--> FIX Run as 64 Bit in False on the SIIS Project
 
 
         private IOrganizationService service { get; set; }
@@ -108,10 +108,7 @@ namespace CRMSSIS.CRMSourceAdapter
                     var connectionManager = ComponentMetaData.RuntimeConnectionCollection[0].ConnectionManager;
 
 
-                    //     ConnectionManager connectionManager = DtsConvert.GetWrapper(
-                    //ComponentMetaData.RuntimeConnectionCollection[0].ConnectionManager);
-
-                    string _connectionstring = (string)connectionManager.AcquireConnection(null);
+                   string _connectionstring = (string)connectionManager.AcquireConnection(null);
 
                     if (connectionManager == null)
                         throw new Exception("Could not get connection manager");
@@ -305,7 +302,7 @@ namespace CRMSSIS.CRMSourceAdapter
                                         if (scale > precision)
                                             scale = precision;
                                         break;
-                                    case DataType.DT_I4:
+                                    
                                     case DataType.DT_DECIMAL:
                                         length = 0;
                                         if (precision == 0) precision = 23;

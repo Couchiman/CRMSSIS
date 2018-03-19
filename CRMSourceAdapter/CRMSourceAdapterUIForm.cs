@@ -63,11 +63,13 @@ namespace CRMSSIS.CRMSourceAdapter
                
             }
 
+
             
 
             if (!string.IsNullOrWhiteSpace(txtFetchXML.Text))
             {
                 designTimeInstance.SetComponentProperty("FetchXML", txtFetchXML.Text.Trim());
+                          
             }
                            
             
@@ -104,18 +106,20 @@ namespace CRMSSIS.CRMSourceAdapter
 
                 if (conn != null)
                 {
-                   // if (conn.CreationName =="CRMSSIS")
+                      if (conn.GetType().ToString() == "CRMSSIS.CRMConnectionManager.CRMConnectionManager")
+                      { 
                     var item = new ConnectionManagerItem()
-                    {
-                        Name = connections[i].Name,
+                        {
+                            Name = connections[i].Name,
                       
-                        ID = connections[i].ID
-                    };
-                    cbConnectionList.Items.Add(item);
-
+                            ID = connections[i].ID
+                        };
+                        cbConnectionList.Items.Add(item);
+                   
                     if (connections[i].ID.Equals(connectionManagerId))
                     {
                         cbConnectionList.SelectedIndex = i;
+                    }
                     }
                 }
             }
@@ -144,6 +148,11 @@ namespace CRMSSIS.CRMSourceAdapter
         private void cbConnectionList_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void txtFetchXML_TextChanged(object sender, EventArgs e)
+        {
+            this.metaData.OutputCollection[0].OutputColumnCollection.RemoveAll(); //Force update Outputs Columns    
         }
     }
 }

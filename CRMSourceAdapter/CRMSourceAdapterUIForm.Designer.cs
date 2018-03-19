@@ -153,6 +153,7 @@
             this.txtFetchXML.Size = new System.Drawing.Size(391, 261);
             this.txtFetchXML.TabIndex = 13;
             this.txtFetchXML.Text = "<entity name=\"account\"><attribute name=\"primarycontactid\" /></entity>";
+            this.txtFetchXML.TextChanged += new System.EventHandler(this.txtFetchXML_TextChanged);
             // 
             // CRMSourceAdapterUIForm
             // 

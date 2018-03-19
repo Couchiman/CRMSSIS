@@ -305,6 +305,7 @@ namespace CRMSSIS.CRMSourceAdapter
                                         if (scale > precision)
                                             scale = precision;
                                         break;
+                                    case DataType.DT_I4:
                                     case DataType.DT_DECIMAL:
                                         length = 0;
                                         if (precision == 0) precision = 23;

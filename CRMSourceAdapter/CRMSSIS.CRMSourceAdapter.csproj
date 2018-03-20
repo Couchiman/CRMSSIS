@@ -136,7 +136,6 @@
     <Compile Include="CRMSourceAdapterUIForm.Designer.cs">
       <DependentUpon>CRMSourceAdapterUIForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="PipelineProcessException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

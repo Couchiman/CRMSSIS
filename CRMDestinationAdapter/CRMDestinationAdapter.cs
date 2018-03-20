@@ -133,7 +133,7 @@ namespace CRMSSIS.DestinationAdapter
                 {
                     if (buffer.IsNull(col) == false)
                     {
-                        //TODO From here
+                        //TODO From here 
                         //Build Entity - Upsert Operation
                         //Add Operation Type for Status Operation/Association, etc...
                        // service.Execute(entity);

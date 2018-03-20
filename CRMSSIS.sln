@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRMSSIS.CRMSourceAdapter", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRMSSISTest", "CRMSSISTest\CRMSSISTest.csproj", "{801FA228-BCE3-4AE6-931C-187E8EE88137}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRMSSIS.DestinationAdapter", "CRMDestinationAdapter\CRMSSIS.DestinationAdapter.csproj", "{8CAD1B3E-4ECE-4642-9ED8-7A0954E420FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +36,12 @@ Global
 		{801FA228-BCE3-4AE6-931C-187E8EE88137}.Development|Any CPU.Build.0 = Debug|Any CPU
 		{801FA228-BCE3-4AE6-931C-187E8EE88137}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{801FA228-BCE3-4AE6-931C-187E8EE88137}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CAD1B3E-4ECE-4642-9ED8-7A0954E420FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CAD1B3E-4ECE-4642-9ED8-7A0954E420FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CAD1B3E-4ECE-4642-9ED8-7A0954E420FB}.Development|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CAD1B3E-4ECE-4642-9ED8-7A0954E420FB}.Development|Any CPU.Build.0 = Debug|Any CPU
+		{8CAD1B3E-4ECE-4642-9ED8-7A0954E420FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CAD1B3E-4ECE-4642-9ED8-7A0954E420FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

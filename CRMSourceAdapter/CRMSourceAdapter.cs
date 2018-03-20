@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.SqlServer.Dts.Pipeline;
-
 using Microsoft.SqlServer.Dts.Runtime.Wrapper;
 using System.Data;
 using Microsoft.Xrm.Sdk.Query;
@@ -9,11 +8,11 @@ using Microsoft.Xrm.Sdk;
 using System.Security;
 using System.Net;
 using Microsoft.Xrm.Tooling.Connector;
-using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
 using Microsoft.Xrm.Sdk.Metadata;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Crm.Sdk.Messages;
 using System.Collections.Generic;
+using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
 
 namespace CRMSSIS.CRMSourceAdapter
 
@@ -37,16 +36,7 @@ namespace CRMSSIS.CRMSourceAdapter
         private IOrganizationService service { get; set; }
        
 
-
-        // Define the set of possible values for the new custom property.  
-
-        private enum InvalidValueHandling
-        {
-            Ignore,
-            FireInformation,
-            FireWarning,
-            FireError
-        };
+ 
 
         public override void PerformUpgrade(int pipelineVersion)
         {
@@ -54,48 +44,7 @@ namespace CRMSSIS.CRMSourceAdapter
             ComponentMetaData.CustomPropertyCollection["UserComponentTypeName"].Value = this.GetType().AssemblyQualifiedName;
 
         }
-        //public override void PerformUpgrade(int pipelineVersion)
-        //{
-
-        //    // Obtain the current component version from the attribute.  
-        //    DtsPipelineComponentAttribute componentAttribute =
-        //      (DtsPipelineComponentAttribute)Attribute.GetCustomAttribute(this.GetType(), typeof(DtsPipelineComponentAttribute), false);
-        //    int currentVersion = componentAttribute.CurrentVersion;
-
-        //    // If the component version saved in the package is less than  
-        //    //  the current version, Version 2, perform the upgrade.  
-        //    if (ComponentMetaData.Version < currentVersion)
-
-        //    // Get the current value of the old custom property, RaiseErrorOnInvalidValue,   
-        //    // and then remove the property from the custom property collection.  
-        //    {
-        //        bool oldValue = false;
-
-        //        IDTSCustomProperty100 oldProperty =
-        //          ComponentMetaData.CustomPropertyCollection["RaiseErrorOnInvalidValue"];
-        //        oldValue = (bool)oldProperty.Value;
-        //        ComponentMetaData.CustomPropertyCollection.RemoveObjectByIndex("RaiseErrorOnInvalidValue");
-
-
-        //        // Set the value of the new custom property, InvalidValueHandling,  
-        //        //  by using the appropriate enumeration value.  
-        //        IDTSCustomProperty100 newProperty =
-        //           ComponentMetaData.CustomPropertyCollection["InvalidValueHandling"];
-        //        if (oldValue == true)
-        //        {
-        //            newProperty.Value = InvalidValueHandling.FireError;
-        //        }
-        //        else
-        //        {
-        //            newProperty.Value = InvalidValueHandling.Ignore;
-        //        }
-
-        //    }
-
-        //    // Update the saved component version metadata to the current version.  
-        //    ComponentMetaData.Version = currentVersion;
-
-        //}
+        
 
         public override void AcquireConnections(object transaction)
         {

@@ -39,7 +39,7 @@ namespace CRMSSIS.DestinationAdapter
             DialogResult dr;
             dr = form.ShowDialog(window);
 
-
+             
             return dr;
 
         }

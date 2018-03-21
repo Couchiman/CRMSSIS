@@ -126,7 +126,7 @@ namespace CRMSSIS.DestinationAdapter
                 return DTSValidationStatus.VS_ISBROKEN;
             }
             
-
+            //TODO VALIDATE MAPPINGS
             //if ((ComponentMetaData.InputCollection[0].InputColumnCollection.Count == 0))
             //{
             //    return DTSValidationStatus.VS_NEEDSNEWMETADATA;

@@ -42,10 +42,10 @@
             this.cbEntity = new System.Windows.Forms.ComboBox();
             this.lblOperation = new System.Windows.Forms.Label();
             this.cbOperation = new System.Windows.Forms.ComboBox();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dgAtributeMap = new System.Windows.Forms.DataGridView();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgAtributeMap)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -158,6 +158,7 @@
             this.cbEntity.Name = "cbEntity";
             this.cbEntity.Size = new System.Drawing.Size(374, 21);
             this.cbEntity.TabIndex = 21;
+            this.cbEntity.SelectedIndexChanged += new System.EventHandler(this.cbEntity_SelectedIndexChanged);
             // 
             // lblOperation
             // 
@@ -176,20 +177,20 @@
             this.cbOperation.Size = new System.Drawing.Size(187, 21);
             this.cbOperation.TabIndex = 19;
             // 
-            // dataGridView1
+            // dgAtributeMap
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 245);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(627, 179);
-            this.dataGridView1.TabIndex = 22;
+            this.dgAtributeMap.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgAtributeMap.Location = new System.Drawing.Point(12, 245);
+            this.dgAtributeMap.Name = "dgAtributeMap";
+            this.dgAtributeMap.Size = new System.Drawing.Size(627, 179);
+            this.dgAtributeMap.TabIndex = 22;
             // 
             // CRMDestinationAdapterUIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(651, 476);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.dgAtributeMap);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
@@ -203,7 +204,7 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgAtributeMap)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -224,6 +225,6 @@
         private System.Windows.Forms.ComboBox cbEntity;
         private System.Windows.Forms.Label lblOperation;
         private System.Windows.Forms.ComboBox cbOperation;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView dgAtributeMap;
     }
 }

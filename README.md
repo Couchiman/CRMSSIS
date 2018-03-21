@@ -1,7 +1,5 @@
 # CRMSSIS
-CRM SSIS Integration Components
-
-This are a basic:
+CRM SSIS Integration Components for Dynamics CRM
 
 - Connection Manager 
 - Source Adapter (more testing needed)

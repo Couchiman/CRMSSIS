@@ -7,8 +7,8 @@
     <ProjectGuid>{8CAD1B3E-4ECE-4642-9ED8-7A0954E420FB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CRMSSIS.DestinationAdapter</RootNamespace>
-    <AssemblyName>CRMSSIS.DestinationAdapter</AssemblyName>
+    <RootNamespace>CRMSSIS.CRMDestinationAdapter</RootNamespace>
+    <AssemblyName>CRMSSIS.CRMDestinationAdapter</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -137,7 +137,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Icon2.ico" />
+    <EmbeddedResource Include="Icon2.ico" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="CRMDestinationAdapterUIForm.resx">

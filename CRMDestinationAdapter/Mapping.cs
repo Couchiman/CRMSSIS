@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CRMSSIS.DestinationAdapter
+namespace CRMSSIS.CRMDestinationAdapter
 {
     public class Mapping
     {

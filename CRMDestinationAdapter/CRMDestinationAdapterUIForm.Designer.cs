@@ -1,4 +1,4 @@
-﻿namespace CRMSSIS.DestinationAdapter
+﻿namespace CRMSSIS.CRMDestinationAdapter
 {
     partial class CRMDestinationAdapterUIForm
     {

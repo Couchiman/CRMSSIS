@@ -11,13 +11,13 @@ using Microsoft.Xrm.Tooling.Connector;
 using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
 using Microsoft.Xrm.Sdk.Metadata;
 
-namespace CRMSSIS.DestinationAdapter
+namespace CRMSSIS.CRMDestinationAdapter
 {
     [DtsPipelineComponent(DisplayName = "Dynamics CRM Destination",
       ComponentType = ComponentType.DestinationAdapter,
       Description = "Connection destination for CRM Dynamics",
       IconResource = "CRMSSIS.CRMDestinationAdapter.Icon2.ico",
-      UITypeName = "CRMSSIS.DestinationAdapter.CRMDestinationAdapterUI, CRMSSIS.CRMDestinationAdapter, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5d9126043847bebf")]
+      UITypeName = "CRMSSIS.CRMDestinationAdapter.CRMDestinationAdapterUI, CRMSSIS.CRMDestinationAdapter, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5d9126043847bebf")]
     public class CRMDestinationAdapter : PipelineComponent
     {
 

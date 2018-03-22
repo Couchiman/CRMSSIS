@@ -10,11 +10,11 @@ using System.Windows.Forms;
 using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
 using Microsoft.SqlServer.Dts.Runtime;
 using Microsoft.SqlServer.Dts.Runtime.Design;
-using CRMSSIS.DestinationAdapter;
+using CRMSSIS.CRMDestinationAdapter;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 
-namespace CRMSSIS.DestinationAdapter
+namespace CRMSSIS.CRMDestinationAdapter
 {
     public partial class CRMDestinationAdapterUIForm : Form
     {
@@ -105,7 +105,7 @@ namespace CRMSSIS.DestinationAdapter
                 {
                     if (conn.GetType().ToString() == "CRMSSIS.CRMConnectionManager.CRMConnectionManager")
                     {
-                        var item = new Item(connections[i].Name, connections[i].ID);
+                        var item = new Item(connections[i].ID, connections[i].Name);
                        
                         cbConnectionList.Items.Add(item);
 
@@ -126,8 +126,8 @@ namespace CRMSSIS.DestinationAdapter
         private void loadOperationsCombobox()
         {
 
-            cbOperation.Items.Add(new Item("Upsert", "1"));
-            cbOperation.Items.Add(new Item("Delete", "2"));
+            cbOperation.Items.Add(new Item("1", "Upsert"));
+            cbOperation.Items.Add(new Item("2", "Delete"));
            
         }
         private void btnNewConnectionManager_Click(object sender, EventArgs e)

@@ -39,13 +39,13 @@ namespace CRMSSIS.CRMDestinationAdapter
             public string Text;
             public AttributeMetadata[] Metadata;
 
-            public Item(string val, string text)
+            public Item(string text, string val)
             {
                 Value = val;
                 Text = text;
             }
 
-            public Item(string val, string text, AttributeMetadata[] array)
+            public Item(string text,string val, AttributeMetadata[] array)
             {
                 Value = val;
                 Text = text;
@@ -105,7 +105,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                 {
                     if (conn.GetType().ToString() == "CRMSSIS.CRMConnectionManager.CRMConnectionManager")
                     {
-                        var item = new Item(connections[i].ID, connections[i].Name);
+                        var item = new Item(connections[i].Name, connections[i].ID);
                        
                         cbConnectionList.Items.Add(item);
 
@@ -126,8 +126,8 @@ namespace CRMSSIS.CRMDestinationAdapter
         private void loadOperationsCombobox()
         {
 
-            cbOperation.Items.Add(new Item("1", "Upsert"));
-            cbOperation.Items.Add(new Item("2", "Delete"));
+            cbOperation.Items.Add(new Item("Upsert","1"));
+            cbOperation.Items.Add(new Item("Delete","2"));
            
         }
         private void btnNewConnectionManager_Click(object sender, EventArgs e)
@@ -140,7 +140,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             {
 
 
-                var item = new Item(cm.ID, cm.Name);
+                var item = new Item(cm.Name,cm.ID);
                 
 
                 cbConnectionList.Items.Insert(0, item);

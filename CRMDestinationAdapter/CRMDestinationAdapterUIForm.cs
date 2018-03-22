@@ -13,6 +13,9 @@ using Microsoft.SqlServer.Dts.Runtime.Design;
 using CRMSSIS.CRMDestinationAdapter;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
+using System.Net;
+using Microsoft.Xrm.Tooling.Connector;
+using Microsoft.Xrm.Sdk;
 
 namespace CRMSSIS.CRMDestinationAdapter
 {
@@ -81,6 +84,27 @@ namespace CRMSSIS.CRMDestinationAdapter
                 this.metaData.RuntimeConnectionCollection[0].Name = item.Text;
 
             }
+
+            if (cbOperation.SelectedItem !=null)
+            {
+                designTimeInstance.SetComponentProperty("Operation", cbOperation.SelectedValue);
+
+            }
+
+            if (cbEntity.SelectedItem != null)
+            {
+                designTimeInstance.SetComponentProperty("Entity", cbEntity.SelectedValue);
+
+            }
+
+            if (!string.IsNullOrEmpty(txtBatchSize.Text))
+            {
+                designTimeInstance.SetComponentProperty("BatchSize", txtBatchSize.Text);
+
+            }
+
+            this.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.Close();
         }
 
         private void CRMDestinationAdapterUIForm_Load(object sender, EventArgs e)
@@ -118,6 +142,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             }
 
             loadOperationsCombobox();
+            loadEntityCombobox();
             dgAtributeMap.Enabled = false;
             cbEntity.Enabled = false;
                                  
@@ -169,34 +194,32 @@ namespace CRMSSIS.CRMDestinationAdapter
 
         private void loadEntityCombobox()
         {
-            try
-            {
-                CRMDestinationAdapter da = new CRMDestinationAdapter();
-
-                da.AcquireConnections(null);
-
-                RetrieveAllEntitiesRequest mdRequest = new RetrieveAllEntitiesRequest()
-                {
-                    EntityFilters = EntityFilters.Attributes,
-                    RetrieveAsIfPublished = false
-                };
-                RetrieveAllEntitiesResponse metaDataResponse = new RetrieveAllEntitiesResponse();
-
-                RetrieveAllEntitiesResponse allentityResponse = (RetrieveAllEntitiesResponse)da.service.Execute(mdRequest);
+            //try {
+            //    var connections = connectionService.GetConnections();
 
                 
-                foreach (EntityMetadata Entity in allentityResponse.EntityMetadata)
-                {
-                    cbEntity.Items.Add(new Item(Entity.LogicalName, Entity.LogicalName, Entity.Attributes));
-                }
+            //    RetrieveAllEntitiesRequest mdRequest = new RetrieveAllEntitiesRequest()
+            //    {
+            //        EntityFilters = EntityFilters.Attributes,
+            //        RetrieveAsIfPublished = false
+            //    };
+            //    RetrieveAllEntitiesResponse metaDataResponse = new RetrieveAllEntitiesResponse();
 
-                cbEntity.Enabled = true;
+            //    RetrieveAllEntitiesResponse allentityResponse = (RetrieveAllEntitiesResponse)service.Execute(mdRequest);
+
+                
+            //    foreach (EntityMetadata Entity in allentityResponse.EntityMetadata)
+            //    {
+            //        cbEntity.Items.Add(new Item(Entity.LogicalName, Entity.LogicalName, Entity.Attributes));
+            //    }
+
+            //    cbEntity.Enabled = true;
               
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw ex;
+            //}
 
         }
 

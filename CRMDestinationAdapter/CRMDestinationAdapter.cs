@@ -116,15 +116,15 @@ namespace CRMSSIS.CRMDestinationAdapter
         public override DTSValidationStatus Validate()
         {
 
-            bool cancel;
-            string Entity = ComponentMetaData.CustomPropertyCollection["Entity"].Value.ToString();
+            //bool cancel;
+            //string Entity = ComponentMetaData.CustomPropertyCollection["Entity"].Value.ToString();
 
-            if (string.IsNullOrWhiteSpace(Entity))
-            {
+            //if (string.IsNullOrWhiteSpace(Entity))
+            //{
                  
-                ComponentMetaData.FireError(0, ComponentMetaData.Name, "Entity must be set", "", 0, out cancel);
-                return DTSValidationStatus.VS_ISBROKEN;
-            }
+            //    ComponentMetaData.FireError(0, ComponentMetaData.Name, "Entity must be set", "", 0, out cancel);
+            //    return DTSValidationStatus.VS_ISBROKEN;
+            //}
             
             //TODO VALIDATE MAPPINGS
             //if ((ComponentMetaData.InputCollection[0].InputColumnCollection.Count == 0))

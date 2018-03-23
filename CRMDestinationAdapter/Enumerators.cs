@@ -11,12 +11,11 @@ namespace CRMSSIS.CRMDestinationAdapter
         public enum Operations
         {
        
-         //
+         //Upsert Operation
          [Description("Upsert")]
         Upsert = 0,
         //
-        // Resumen:
-        //     A federated claims identity provider. Value = 2.
+        //Delete Operation
         [Description("Delete")]
         Delete = 1
       

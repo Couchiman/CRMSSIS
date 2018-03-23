@@ -143,20 +143,47 @@ namespace CRMSSIS.CRMDestinationAdapter
                 }
             }
 
+
             loadOperationsCombobox();
+
+
+            int cboValue = (int)(Operations)this.metaData.CustomPropertyCollection["Operation"].Value;
+
+            cbOperation.SelectedIndex = cboValue;
+
+          
             loadEntityCombobox();
             dgAtributeMap.Enabled = false;
             cbEntity.Enabled = false;
                                  
 
         }
+        /// <summary>
+        /// Basic operations
+        /// </summary>
         private void loadOperationsCombobox()
         {
 
-            cbOperation.Items.Add(new Item("Upsert","1"));
-            cbOperation.Items.Add(new Item("Delete","2"));
+            cbOperation.DataSource = Enum.GetValues(typeof(Operations))
+                .Cast<Enum>()
+                .Select(value => new
+                {
+                    (Attribute.GetCustomAttribute(value.GetType().GetField(value.ToString()), typeof(DescriptionAttribute)) as DescriptionAttribute).Description,
+                    value
+                })
+                .OrderBy(item => item.value)
+                .ToList();
+            cbOperation.DisplayMember = "Description";
+            cbOperation.ValueMember = "value";
+
+            
            
         }
+        /// <summary>
+        /// New Button to create a new connection
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnNewConnectionManager_Click(object sender, EventArgs e)
         {
       
@@ -177,7 +204,11 @@ namespace CRMSSIS.CRMDestinationAdapter
 
         
     }
-
+        /// <summary>
+        /// sets the connection and loadEntities
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cbConnectionList_SelectedIndexChanged(object sender, EventArgs e)
         {
 
@@ -194,7 +225,10 @@ namespace CRMSSIS.CRMDestinationAdapter
             }
         }
 
-
+        /// <summary>
+        /// Gets the current connecion
+        /// </summary>
+        /// <returns></returns>
         private int findConnectionId()
         {
 

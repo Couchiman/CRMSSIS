@@ -129,6 +129,7 @@
     <Compile Include="CRMDestinationAdapterUIForm.Designer.cs">
       <DependentUpon>CRMDestinationAdapterUIForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Enumerators.cs" />
     <Compile Include="Mapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

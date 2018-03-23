@@ -118,9 +118,12 @@ namespace CRMSSIS.CRMDestinationAdapter
                 mi.InternalColumn = attribute.AttributeType;
 
                 IDTSInput100 external = findByName(attribute.LogicalName.ToString(), InputCollection);
+                if(external !=null)
+                { 
                 mi.ExternalColumnName = external.Name;
                 mi.ExternalColumn = external.ObjectType;
-
+                }
+                columnList.Add(mi);
             }   
         }
 

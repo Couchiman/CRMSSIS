@@ -16,6 +16,7 @@ using Microsoft.Xrm.Sdk.Metadata;
 using System.Net;
 using Microsoft.Xrm.Tooling.Connector;
 using Microsoft.Xrm.Sdk;
+using Microsoft.SqlServer.Dts.Runtime.Wrapper;
 
 namespace CRMSSIS.CRMDestinationAdapter
 {
@@ -136,6 +137,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                         if (connections[i].ID.Equals(connectionManagerId))
                         {
                             cbConnectionList.SelectedIndex = i;
+                             
                         }
                     }
                 }
@@ -187,41 +189,101 @@ namespace CRMSSIS.CRMDestinationAdapter
                 this.metaData.RuntimeConnectionCollection[0].Description = "Dynamics CRM Connection";
                 this.metaData.RuntimeConnectionCollection[0].ConnectionManagerID = item.Value;
                 this.metaData.RuntimeConnectionCollection[0].Name = item.Text;
-
+                
                 loadEntityCombobox();
             }
         }
 
+
+        private int findConnectionId()
+        {
+
+
+            var connections = connectionService.GetConnections();
+
+
+            string connectionManagerId = string.Empty;
+
+            var currentConnectionManager = this.metaData.RuntimeConnectionCollection[0];
+            if (currentConnectionManager != null)
+            {
+                connectionManagerId = currentConnectionManager.ConnectionManagerID;
+                
+            }
+
+            for (int i = 0; i < connections.Count; i++)
+            {
+                var conn = connections[i].InnerObject;
+
+                if (conn != null)
+                {
+                    if (conn.GetType().ToString() == "CRMSSIS.CRMConnectionManager.CRMConnectionManager")
+                    {
+                                             
+                        if (connections[i].ID.Equals(connectionManagerId))
+                        {
+                            return i;
+
+                        }
+                    }
+                }
+            }
+
+            return -1;
+        }
+
         private void loadEntityCombobox()
         {
-            //try {
-            //    var connections = connectionService.GetConnections();
+            try {
 
-                
-            //    RetrieveAllEntitiesRequest mdRequest = new RetrieveAllEntitiesRequest()
-            //    {
-            //        EntityFilters = EntityFilters.Attributes,
-            //        RetrieveAsIfPublished = false
-            //    };
-            //    RetrieveAllEntitiesResponse metaDataResponse = new RetrieveAllEntitiesResponse();
 
-            //    RetrieveAllEntitiesResponse allentityResponse = (RetrieveAllEntitiesResponse)service.Execute(mdRequest);
+            int connectionId = findConnectionId();
+            //  var conn = connectionService.GetDataSource(Connection.);
+            if (connectionId >-1)
+            {
+                string _connectionstring = (string)connectionService.GetConnections()[connectionId].AcquireConnection(null);
 
-                
-            //    foreach (EntityMetadata Entity in allentityResponse.EntityMetadata)
-            //    {
-            //        cbEntity.Items.Add(new Item(Entity.LogicalName, Entity.LogicalName, Entity.Attributes));
-            //    }
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            //    cbEntity.Enabled = true;
-              
-            //}
-            //catch (Exception ex)
-            //{
-            //    throw ex;
-            //}
+                    CrmServiceClient conn = new CrmServiceClient(_connectionstring);
+
+                    // Cast the proxy client to the IOrganizationService interface.
+                    IOrganizationService service = (IOrganizationService)conn.OrganizationWebProxyClient != null ? (IOrganizationService)conn.OrganizationWebProxyClient : (IOrganizationService)conn.OrganizationServiceProxy;
+
+
+                    RetrieveAllEntitiesRequest mdRequest = new RetrieveAllEntitiesRequest()
+                    {
+                        EntityFilters = EntityFilters.Attributes,
+                        RetrieveAsIfPublished = false
+                    };
+                    RetrieveAllEntitiesResponse metaDataResponse = new RetrieveAllEntitiesResponse();
+
+                    RetrieveAllEntitiesResponse allentityResponse = (RetrieveAllEntitiesResponse)service.Execute(mdRequest);
+
+                    int i = 0;
+                    foreach (EntityMetadata Entity in allentityResponse.EntityMetadata)
+                    {
+                        cbEntity.Items.Add(new Item(Entity.LogicalName, Entity.LogicalName, Entity.Attributes));
+
+                        if (metaData.CustomPropertyCollection["Entity"].ToString() == Entity.LogicalName)
+                        {
+                            cbEntity.SelectedIndex = i;
+                        }
+                        i++;
+                    }
+
+
+                    cbEntity.Enabled = true;
+                }
+                            
 
         }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+}
 
         private void loadMappingGrid(Item entityItem)
         {
@@ -231,8 +293,10 @@ namespace CRMSSIS.CRMDestinationAdapter
  
             Mapping m = new Mapping(entity.Metadata,this.metaData.InputCollection);
 
-            ConfigureMappingGrid(m);
-            dgAtributeMap.DataSource = m;
+            //ConfigureMappingGrid(m);
+            dgAtributeMap.Enabled = true;
+            dgAtributeMap.AutoGenerateColumns = true;
+            dgAtributeMap.DataSource = m.ColumnList;
             
              
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
+using Microsoft.SqlServer.Dts.Runtime.Wrapper;
 using Microsoft.Xrm.Sdk.Metadata;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace CRMSSIS.CRMDestinationAdapter
         public class MappingItem
         { 
             string externalColumnName = "";
-            DTSObjectType externalColumn;
+            DataType externalColumn;
             string internalColumnName = "";
             AttributeTypeCode? internalColumn;
             string defaultValue;
@@ -31,7 +32,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                 }
             }
 
-            public DTSObjectType ExternalColumn
+            public DataType ExternalColumnType
             {
                 get
                 {
@@ -57,7 +58,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                 }
             }
 
-            public AttributeTypeCode? InternalColumn
+            public AttributeTypeCode? InternalColumnType
             {
                 get
                 {
@@ -106,35 +107,45 @@ namespace CRMSSIS.CRMDestinationAdapter
             
         }
 
-        public Mapping(AttributeMetadata[] metadata, IDTSInputCollection100 InputCollection)
+        public Mapping(AttributeMetadata[] metadata, IDTSInput100 Input)
         {
             MappingItem mi;
 
+
             foreach (AttributeMetadata attribute in metadata)
             {
-                mi = new MappingItem();
+                IDTSInputColumn100 inputCol = Input.InputColumnCollection.New();
+
+                inputCol.Name = attribute.LogicalName;
+                 mi = new MappingItem();
 
                 mi.InternalColumnName = attribute.LogicalName;
-                mi.InternalColumn = attribute.AttributeType;
+                mi.InternalColumnType = attribute.AttributeType;
 
-                IDTSInput100 external = findByName(attribute.LogicalName.ToString(), InputCollection);
+                IDTSVirtualInputColumn100 external = findByName(attribute.LogicalName.ToString(), Input);
                 if(external !=null)
                 { 
                 mi.ExternalColumnName = external.Name;
-                mi.ExternalColumn = external.ObjectType;
+                mi.ExternalColumnType = external.DataType;
                 }
                 columnList.Add(mi);
             }   
         }
 
-        private IDTSInput100 findByName(string attributename, IDTSInputCollection100 InputCollection)
+        private IDTSVirtualInputColumn100 findByName(string attributename, IDTSInput100 Input)
         {
 
-            foreach (IDTSInput100 input in InputCollection)
+            IDTSVirtualInput100 vInput = Input.GetVirtualInput();
+
+
+
+            foreach (IDTSInputColumn100 column in Input.InputColumnCollection)
             {
-                if (input.Name == attributename)
+                IDTSVirtualInputColumn100 vColumn = vInput.VirtualInputColumnCollection.GetVirtualInputColumnByName(attributename, attributename);
+
+                if (vColumn.Name == attributename)
                 {
-                    return input;
+                    return vColumn;
                 }
             }
             return null;

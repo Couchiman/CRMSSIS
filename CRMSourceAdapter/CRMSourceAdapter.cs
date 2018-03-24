@@ -34,9 +34,10 @@ namespace CRMSSIS.CRMSourceAdapter
 
 
         private IOrganizationService service { get; set; }
-       
+       private EntityMetadata entMetadata { get; set; }
 
- 
+
+
 
         public override void PerformUpgrade(int pipelineVersion)
         {
@@ -212,6 +213,10 @@ namespace CRMSSIS.CRMSourceAdapter
 
                                 IDTSOutputColumn100 outputCol = output.OutputColumnCollection.New();
 
+                              
+
+
+                                AttributeMetadata mdta = entMetadata.Attributes.FirstOrDefault(m => m.LogicalName == row["ColumnName"].ToString());
 
                                 bool isLong = false; 
                                 DataType dType = DataRecordTypeToBufferType((Type)row["DataType"]);
@@ -223,28 +228,82 @@ namespace CRMSSIS.CRMSourceAdapter
 
                                 switch (dType)
                                 {
-                                   
+                                    //case DataType.DT_DATE:
+                                      
+                                    //    precision = 0;
+                                    //    scale = 0;
+                                    //    break;
                                     case DataType.DT_STR:
                                     case DataType.DT_TEXT:
+                                        MemoAttributeMetadata att = (MemoAttributeMetadata)mdta;
+                                        if(att.MaxLength.HasValue) length = (int)att.MaxLength;
+                                        else 
+                                        length = 1048576;
+
                                         precision = 0;
                                         scale = 0;
                                         break;
                                     case DataType.DT_CY:
+                                        MoneyAttributeMetadata attMoney = (MoneyAttributeMetadata)mdta;
+                                        if (attMoney.PrecisionSource == 0) //TODO get the other types of precision sources
+                                        {
+                                            if (attMoney.Precision.HasValue)
+                                                scale = (int)attMoney.Precision;
+                                            else
+                                                scale = 2;
+                                        }
+                                        else scale = 4;
+
+                                        int precision1 = 0, precision2 = 0;
+
+                                        if (attMoney.MaxValue.HasValue)
+                                        {
+                                            precision1 = attMoney.MaxValue.Value.ToString().Length;
+                                        }
+                                       
+                                        if (attMoney.MinValue.HasValue)
+                                        {
+                                             precision2 = attMoney.MinValue.Value.ToString().Length;
+                                        }
+                                        if (precision1 > precision2) precision = precision1;
+                                        else precision = precision2;
+
                                         length = 0;
                                         codePage = 0;
                                         if (precision == 0) precision = 23;
-                                        if (scale == 0) scale = 4;
-
+                                        
                                         if (precision > 38)
                                             precision = 38;
                                         if (scale > precision)
                                             scale = precision;
                                         break;
                                     case DataType.DT_NUMERIC:
+                                    case DataType.DT_DECIMAL:
+                                        DecimalAttributeMetadata attDecimal = (DecimalAttributeMetadata)mdta;
+                                        
+                                            if (attDecimal.Precision.HasValue)
+                                                scale = (int)attDecimal.Precision;
+                                            else
+                                                scale = 2;
+
+
+                                        int precisiondec1 = 0, precisiondec2 = 0;
+
+                                        if (attDecimal.MaxValue.HasValue)
+                                        {
+                                            precisiondec1 = attDecimal.MaxValue.Value.ToString().Length;
+                                        }
+
+                                        if (attDecimal.MinValue.HasValue)
+                                        {
+                                            precisiondec2 = attDecimal.MinValue.Value.ToString().Length;
+                                        }
+                                        if (precisiondec1 > precisiondec2) precision = precisiondec1;
+                                        else precision = precisiondec2;
+
                                         length = 0;
                                         codePage = 0;
                                         if (precision == 0) precision = 23;
-                                        if (scale == 0) scale = 10;
 
                                         if (precision > 38)
                                             precision = 38;
@@ -252,16 +311,25 @@ namespace CRMSSIS.CRMSourceAdapter
                                             scale = precision;
                                         break;
                                     
-                                    case DataType.DT_DECIMAL:
-                                        length = 0;
-                                        if (precision == 0) precision = 23;
-                                        if (scale == 0) scale = 10;
-
-                                        codePage = 0;
-                                        if (scale > 28)
-                                            scale = 28;
-                                        break;
+                                    
                                     case DataType.DT_WSTR:
+
+                                        
+
+                                        if (mdta.GetType() == typeof(StringAttributeMetadata))
+                                        { 
+                                         StringAttributeMetadata attstring = (StringAttributeMetadata)mdta;
+                                            if (attstring.MaxLength.HasValue) length = (int)attstring.MaxLength;
+                                            else length = 4000;
+                                        }
+                                        else
+                                        { 
+                                        MemoAttributeMetadata attmemo = (MemoAttributeMetadata)mdta;
+                                        length = (int)attmemo.MaxLength;
+                                        }
+
+                                        
+                                         
                                         precision = 0;
                                         scale = 0;
                                         codePage = 0;
@@ -342,7 +410,7 @@ namespace CRMSSIS.CRMSourceAdapter
                 EntityCollection result = new EntityCollection();
                 bool AddCol = true;
                 int page = 1;
-                EntityMetadata entMetadata = new EntityMetadata();
+                
                 AttributeMetadata mdta;
 
                 do
@@ -420,8 +488,10 @@ namespace CRMSSIS.CRMSourceAdapter
                                         case AttributeTypeCode.Owner:
                                             dTable.Columns.Add(columnName, typeof(Guid));
                                             break;
-                                         default:        
-                                                                     
+                                        
+                                         default:
+                                            
+                                           
                                             dTable.Columns.Add(columnName,typeof(string));
                                             break;
                                     }

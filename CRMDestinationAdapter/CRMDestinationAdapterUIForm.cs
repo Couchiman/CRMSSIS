@@ -411,19 +411,19 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             dgAtributeMap.Columns.Add(cmbExternalColumnName);
 
-            DataGridViewComboBoxColumn cmbExternalColumnType = new DataGridViewComboBoxColumn();
-            cmbExternalColumnType.HeaderText = "External Column Type";
-            cmbExternalColumnType.Name = "ExternalColumnTypeName";
-            cmbExternalColumnType.DisplayMember = "ExternalColumnTypeName";
-            cmbExternalColumnType.ValueMember = "ExternalColumnTypeName";
+            DataGridViewComboBoxColumn cmbExternalColumnTypeName = new DataGridViewComboBoxColumn();
+            cmbExternalColumnTypeName.HeaderText = "External Column Type";
+            cmbExternalColumnTypeName.Name = "ExternalColumnTypeName";
+            cmbExternalColumnTypeName.DisplayMember = "ExternalColumnTypeName";
+            cmbExternalColumnTypeName.ValueMember = "ExternalColumnTypeName";
 
 
 
             foreach (IDTSVirtualInputColumn100 vColumn in vInput.VirtualInputColumnCollection)
-      
-                cmbExternalColumnType.Items.Add(vColumn.DataType.ToString());
+
+                cmbExternalColumnTypeName.Items.Add(vColumn.DataType.ToString());
         
-            dgAtributeMap.Columns.Add(cmbExternalColumnType);
+            dgAtributeMap.Columns.Add(cmbExternalColumnTypeName);
 
 
             /// Destination Columns
@@ -440,18 +440,18 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             dgAtributeMap.Columns.Add(cmbInternalColumnName);
 
-            DataGridViewComboBoxColumn cmbInternalColumnType = new DataGridViewComboBoxColumn();
-            cmbInternalColumnType.HeaderText = "Internal Column Type";
-            cmbInternalColumnType.Name = "InternalColumnTypeName";
-            cmbInternalColumnName.DisplayMember = "InternalColumnTypeName";
-            cmbInternalColumnName.ValueMember = "InternalColumnTypeName";
+            DataGridViewComboBoxColumn cmbInternalColumnTypeName = new DataGridViewComboBoxColumn();
+            cmbInternalColumnTypeName.HeaderText = "Internal Column Type";
+            cmbInternalColumnTypeName.Name = "InternalColumnTypeName";
+            cmbInternalColumnTypeName.DisplayMember = "InternalColumnTypeName";
+            cmbInternalColumnTypeName.ValueMember = "InternalColumnTypeName";
 
             IEnumerable<string> filteredAttributeTypes = m.ColumnList.Select(x => x.InternalColumnTypeName).Distinct();
 
             foreach (string column in filteredAttributeTypes)
-                cmbInternalColumnType.Items.Add(column.ToString());
+                cmbInternalColumnTypeName.Items.Add(column.ToString());
 
-            dgAtributeMap.Columns.Add(cmbInternalColumnType);
+            dgAtributeMap.Columns.Add(cmbInternalColumnTypeName);
 
             //Default Values Column
 

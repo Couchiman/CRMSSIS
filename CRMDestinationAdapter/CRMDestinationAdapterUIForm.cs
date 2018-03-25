@@ -27,16 +27,16 @@ namespace CRMSSIS.CRMDestinationAdapter
 
         private IDtsConnectionService connectionService;
         private CManagedComponentWrapper designTimeInstance;
-
-         
+        private Mapping m;
+ 
 
         public CRMDestinationAdapterUIForm()
         {
             InitializeComponent();
         }
- 
+
         #region Items for Combos
-             
+
         public class Item
         {
             public string Value;
@@ -49,7 +49,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                 Text = text;
             }
 
-            public Item(string text,string val, AttributeMetadata[] array)
+            public Item(string text, string val, AttributeMetadata[] array)
             {
                 Value = val;
                 Text = text;
@@ -86,21 +86,29 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             }
 
-            if (cbOperation.SelectedItem !=null)
+            if (cbOperation.SelectedItem != null)
             {
-                designTimeInstance.SetComponentProperty("Operation", cbOperation.SelectedValue);
+                designTimeInstance.SetComponentProperty("Operation", EnumEx.GetValueFromDescription<Operations>(cbOperation.SelectedValue.ToString()));
 
             }
 
             if (cbEntity.SelectedItem != null)
             {
-                designTimeInstance.SetComponentProperty("Entity", cbEntity.SelectedValue);
+                var item = (Item)cbEntity.SelectedItem;
+
+                designTimeInstance.SetComponentProperty("Entity", item.Text);
 
             }
 
             if (!string.IsNullOrEmpty(txtBatchSize.Text))
             {
                 designTimeInstance.SetComponentProperty("BatchSize", txtBatchSize.Text);
+
+            }
+
+            if (m.ColumnList.Count > 0)
+            {
+                designTimeInstance.SetComponentProperty("Mapping", m);
 
             }
 
@@ -111,12 +119,15 @@ namespace CRMSSIS.CRMDestinationAdapter
         private void CRMDestinationAdapterUIForm_Load(object sender, EventArgs e)
         {
 
+            SetPictureBoxFromResource(pbLoader, "CRMSSIS.CRMDestinationAdapter.loading.gif");
+            pbLoader.Dock = DockStyle.Fill;
+
             dgAtributeMap.Enabled = false;
             cbEntity.Enabled = false;
 
             var connections = connectionService.GetConnections();
 
-            
+
             string connectionManagerId = string.Empty;
 
             var currentConnectionManager = this.metaData.RuntimeConnectionCollection[0];
@@ -134,7 +145,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                     if (conn.GetType().ToString() == "CRMSSIS.CRMConnectionManager.CRMConnectionManager")
                     {
                         var item = new Item(connections[i].Name, connections[i].ID);
-                       
+
                         cbConnectionList.Items.Add(item);
 
                         if (connections[i].ID.Equals(connectionManagerId))
@@ -148,17 +159,23 @@ namespace CRMSSIS.CRMDestinationAdapter
                 }
             }
 
+            
+           
 
+            m = (Mapping)this.metaData.CustomPropertyCollection["Mapping"].Value;
             loadOperationsCombobox();
-
-
             int cboValue = (int)(Operations)this.metaData.CustomPropertyCollection["Operation"].Value;
 
-            cbOperation.SelectedIndex = cboValue;
-                      
-            loadEntityCombobox();
-            
-                                 
+            if (cboValue > 0)
+                cbOperation.SelectedIndex = cboValue;
+
+            backgroundWorkerLoadEntities.RunWorkerAsync();
+            dgAtributeMap.DataError += new DataGridViewDataErrorEventHandler(dgAtributeMap_DataError);
+
+          
+             
+
+
 
         }
         /// <summary>
@@ -179,9 +196,17 @@ namespace CRMSSIS.CRMDestinationAdapter
             cbOperation.DisplayMember = "Description";
             cbOperation.ValueMember = "value";
 
-            
-           
+
+
         }
+
+        void dgAtributeMap_DataError(object sender, DataGridViewDataErrorEventArgs e)
+        {
+            // (No need to write anything in here)
+        }
+
+
+
         /// <summary>
         /// New Button to create a new connection
         /// </summary>
@@ -189,7 +214,7 @@ namespace CRMSSIS.CRMDestinationAdapter
         /// <param name="e"></param>
         private void btnNewConnectionManager_Click(object sender, EventArgs e)
         {
-      
+
             System.Collections.ArrayList created = connectionService.CreateConnection("CRMSSIS");
 
 
@@ -197,16 +222,16 @@ namespace CRMSSIS.CRMDestinationAdapter
             {
 
 
-                var item = new Item(cm.Name,cm.ID);
-                
+                var item = new Item(cm.Name, cm.ID);
+
 
                 cbConnectionList.Items.Insert(0, item);
             }
 
-           
 
-        
-    }
+
+
+        }
         /// <summary>
         /// sets the connection and loadEntities
         /// </summary>
@@ -223,8 +248,10 @@ namespace CRMSSIS.CRMDestinationAdapter
                 this.metaData.RuntimeConnectionCollection[0].Description = "Dynamics CRM Connection";
                 this.metaData.RuntimeConnectionCollection[0].ConnectionManagerID = item.Value;
                 this.metaData.RuntimeConnectionCollection[0].Name = item.Text;
-                
-                loadEntityCombobox();
+
+               
+                backgroundWorkerLoadEntities.RunWorkerAsync();
+              
             }
         }
 
@@ -245,7 +272,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             if (currentConnectionManager != null)
             {
                 connectionManagerId = currentConnectionManager.ConnectionManagerID;
-                
+
             }
 
             for (int i = 0; i < connections.Count; i++)
@@ -256,7 +283,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                 {
                     if (conn.GetType().ToString() == "CRMSSIS.CRMConnectionManager.CRMConnectionManager")
                     {
-                                             
+
                         if (connections[i].ID.Equals(connectionManagerId))
                         {
                             return i;
@@ -271,14 +298,15 @@ namespace CRMSSIS.CRMDestinationAdapter
 
         private void loadEntityCombobox()
         {
-            try {
-
-
-            int connectionId = findConnectionId();
-            //  var conn = connectionService.GetDataSource(Connection.);
-            if (connectionId >-1)
+            try
             {
-                string _connectionstring = (string)connectionService.GetConnections()[connectionId].AcquireConnection(null);
+                pbLoader.Visible = true;
+
+                int connectionId = findConnectionId();
+                //  var conn = connectionService.GetDataSource(Connection.);
+                if (connectionId > -1)
+                {
+                    string _connectionstring = (string)connectionService.GetConnections()[connectionId].AcquireConnection(null);
 
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
@@ -291,7 +319,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                     RetrieveAllEntitiesRequest mdRequest = new RetrieveAllEntitiesRequest()
                     {
                         EntityFilters = EntityFilters.Attributes,
-                        
+
                         RetrieveAsIfPublished = false
                     };
                     RetrieveAllEntitiesResponse metaDataResponse = new RetrieveAllEntitiesResponse();
@@ -313,63 +341,88 @@ namespace CRMSSIS.CRMDestinationAdapter
 
                     cbEntity.Enabled = true;
                 }
-                            
 
-        }
+
+            }
             catch (Exception ex)
             {
                 throw ex;
             }
+            finally
+            {
+                
+                pbLoader.Visible = false;
+            }
 
-}
+        }
 
         private void loadMappingGrid(Item entityItem)
         {
 
             Item entity = (Item)entityItem;
-            
 
-            Mapping m = new Mapping(entity.Metadata,this.metaData.InputCollection[0]);
+            IDTSInput100 input = this.metaData.InputCollection[0];
+            IDTSVirtualInput100 vInput = input.GetVirtualInput();
 
-            ConfigureMappingGrid(m, this.metaData.InputCollection[0]);
+
+            if (m == null)
+                m = new Mapping(entity.Metadata, this.metaData.InputCollection[0]);
+
+
+            //foreach (IDTSVirtualInputColumn100 vColumn in vInput.VirtualInputColumnCollection)
+            //{
+            //    //  Call the SetUsageType method of the destination  
+            //    //   to add each available virtual input column as an input column.  
+            //    designTimeInstance.SetUsageType(input.ID, vInput, vColumn.LineageID, DTSUsageType.UT_READONLY);
+            //}
+
+
             dgAtributeMap.Enabled = true;
-            dgAtributeMap.AutoGenerateColumns = true;
+            dgAtributeMap.AutoGenerateColumns = false;
+            ConfigureMappingGrid(this.metaData.InputCollection[0]);
             dgAtributeMap.DataSource = m.ColumnList;
             
-             
+
+
 
 
         }
-        private void ConfigureMappingGrid(Mapping m, IDTSInput100 Input)
+
+        
+        private void ConfigureMappingGrid(IDTSInput100 Input)
         {
 
-            /// External Columns from Source
+
+
+
+            /// External Columns from Source (Virtual Columns)
             DataGridViewComboBoxColumn cmbExternalColumnName = new DataGridViewComboBoxColumn();
             cmbExternalColumnName.HeaderText = "External Column";
             cmbExternalColumnName.Name = "ExternalColumnName";
 
             IDTSVirtualInput100 vInput = Input.GetVirtualInput();
 
-            foreach (IDTSInputColumn100 column in Input.InputColumnCollection)
+            foreach (IDTSVirtualInputColumn100 vColumn in vInput.VirtualInputColumnCollection)
             {
-                IDTSVirtualInputColumn100 vColumn = vInput.VirtualInputColumnCollection.GetVirtualInputColumnByName(column.Name, column.Name);
+
                 cmbExternalColumnName.Items.Add(vColumn.Name);
             }
-               
+
 
             dgAtributeMap.Columns.Add(cmbExternalColumnName);
 
             DataGridViewComboBoxColumn cmbExternalColumnType = new DataGridViewComboBoxColumn();
             cmbExternalColumnType.HeaderText = "External Column Type";
-            cmbExternalColumnType.Name = "ExternalColumnType";
+            cmbExternalColumnType.Name = "ExternalColumnTypeName";
+            cmbExternalColumnType.DisplayMember = "ExternalColumnTypeName";
+            cmbExternalColumnType.ValueMember = "ExternalColumnTypeName";
 
 
-                       
-            foreach (IDTSInputColumn100 column in Input.InputColumnCollection)
-            {
-                IDTSVirtualInputColumn100 vColumn = vInput.VirtualInputColumnCollection.GetVirtualInputColumnByName(column.Name, column.Name);
+
+            foreach (IDTSVirtualInputColumn100 vColumn in vInput.VirtualInputColumnCollection)
+      
                 cmbExternalColumnType.Items.Add(vColumn.DataType.ToString());
-            }
+        
             dgAtributeMap.Columns.Add(cmbExternalColumnType);
 
 
@@ -378,20 +431,25 @@ namespace CRMSSIS.CRMDestinationAdapter
             DataGridViewComboBoxColumn cmbInternalColumnName = new DataGridViewComboBoxColumn();
             cmbInternalColumnName.HeaderText = "Internal Column";
             cmbInternalColumnName.Name = "InternalColumnName";
+            cmbInternalColumnName.DisplayMember = "InternalColumnName";
+            cmbInternalColumnName.ValueMember = "InternalColumnName";
 
 
             foreach (Mapping.MappingItem column in m.ColumnList)
-                    cmbInternalColumnName.Items.Add(column.InternalColumnName);
-          
+                cmbInternalColumnName.Items.Add(column.InternalColumnName);
+
             dgAtributeMap.Columns.Add(cmbInternalColumnName);
 
             DataGridViewComboBoxColumn cmbInternalColumnType = new DataGridViewComboBoxColumn();
             cmbInternalColumnType.HeaderText = "Internal Column Type";
-            cmbInternalColumnType.Name = "InternalColumnType";
+            cmbInternalColumnType.Name = "InternalColumnTypeName";
+            cmbInternalColumnName.DisplayMember = "InternalColumnTypeName";
+            cmbInternalColumnName.ValueMember = "InternalColumnTypeName";
 
+            IEnumerable<string> filteredAttributeTypes = m.ColumnList.Select(x => x.InternalColumnTypeName).Distinct();
 
-            foreach (Mapping.MappingItem column in m.ColumnList)
-                cmbInternalColumnType.Items.Add(column.InternalColumnType.Value);
+            foreach (string column in filteredAttributeTypes)
+                cmbInternalColumnType.Items.Add(column.ToString());
 
             dgAtributeMap.Columns.Add(cmbInternalColumnType);
 
@@ -402,31 +460,62 @@ namespace CRMSSIS.CRMDestinationAdapter
             DataGridViewTextBoxColumn defaultValues = new DataGridViewTextBoxColumn();
             defaultValues.HeaderText = "Default Value";
             defaultValues.Name = "DefaultValue";
+            dgAtributeMap.Columns.Add(defaultValues);
 
             //Map the External with internal attribute
             DataGridViewCheckBoxColumn checkColumn = new DataGridViewCheckBoxColumn();
-            checkColumn.Name = "X";
+            checkColumn.Name = "Map";
             checkColumn.HeaderText = "Map";
             checkColumn.Width = 50;
             checkColumn.ReadOnly = false;
-            checkColumn.FillWeight = 10;  
+            checkColumn.FillWeight = 10;
 
             dgAtributeMap.Columns.Add(checkColumn);
+
+
+            dgAtributeMap.Columns[0].DataPropertyName = "ExternalColumnName";
+            dgAtributeMap.Columns[1].DataPropertyName = "ExternalColumnType";
+            dgAtributeMap.Columns[2].DataPropertyName = "InternalColumnName";
+            dgAtributeMap.Columns[3].DataPropertyName = "InternalColumnType";
+            dgAtributeMap.Columns[4].DataPropertyName = "DefaultValue";
+            dgAtributeMap.Columns[5].DataPropertyName = "Map";
         }
-
-
 
 
         private void cbEntity_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbEntity.SelectedItem != null)
             {
+                m = null;
                 loadMappingGrid((Item)cbEntity.SelectedItem);
             }
-            
+
+        }
+
+
+        private void SetPictureBoxFromResource(PictureBox picBox, string bmpName)
+        {
+            System.IO.Stream stream = this.GetType().Assembly.GetManifestResourceStream(bmpName);
+            //  if the stream is found...
+            if (!(stream == null))
+            {
+                Bitmap bmp = new Bitmap(stream);
+                //  and the bitmpat is loaded...
+                if (!(bmp == null))
+                {
+                    //  load it in the PictureBox
+                    picBox.Image = bmp;
+                }
+
+            }
+
+        }
+
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            loadEntityCombobox();
+
+           
         }
     }
-
-
-
 }

@@ -15,9 +15,13 @@ namespace CRMSSIS.CRMDestinationAdapter
         { 
             string externalColumnName = "";
             DataType externalColumn;
+            string externalColumnTypeName = "";
             string internalColumnName = "";
+            string internalColumnTypeName = "";
             AttributeTypeCode? internalColumn;
             string defaultValue;
+            bool map = false;
+
             
             public string ExternalColumnName
             {
@@ -84,7 +88,44 @@ namespace CRMSSIS.CRMDestinationAdapter
                 }
             }
 
-             
+            public bool Map
+            {
+                get
+                {
+                    return map;
+                }
+
+                set
+                {
+                    map = value;
+                }
+            }
+
+            public string InternalColumnTypeName
+            {
+                get
+                {
+                    return internalColumnTypeName;
+                }
+
+                set
+                {
+                    internalColumnTypeName = value;
+                }
+            }
+
+            public string ExternalColumnTypeName
+            {
+                get
+                {
+                    return externalColumnTypeName;
+                }
+
+                set
+                {
+                    externalColumnTypeName = value;
+                }
+            }
         }
 
         private List<MappingItem> columnList = new List<MappingItem>();
@@ -112,24 +153,34 @@ namespace CRMSSIS.CRMDestinationAdapter
             MappingItem mi;
 
 
+            int i = 0;
+
             foreach (AttributeMetadata attribute in metadata)
             {
-                IDTSInputColumn100 inputCol = Input.InputColumnCollection.New();
 
+                IDTSInputColumn100 inputCol = Input.InputColumnCollection.New();
                 inputCol.Name = attribute.LogicalName;
-                 mi = new MappingItem();
+                inputCol.LineageID = i++;
+                
+
+                mi = new MappingItem();
 
                 mi.InternalColumnName = attribute.LogicalName;
+                mi.InternalColumnTypeName = attribute.AttributeType.ToString();
                 mi.InternalColumnType = attribute.AttributeType;
 
-                IDTSVirtualInputColumn100 external = findByName(attribute.LogicalName.ToString(), Input);
-                if(external !=null)
-                { 
-                mi.ExternalColumnName = external.Name;
-                mi.ExternalColumnType = external.DataType;
-                }
                 columnList.Add(mi);
-            }   
+           
+            //IDTSVirtualInputColumn100 external = findByName(attribute.LogicalName.ToString(), Input);
+            //if (external != null)
+            //{
+            //    mi.ExternalColumnName = external.Name;
+            //    mi.ExternalColumnType = external.DataType;
+            //}
+        }
+           
+
+           
         }
 
         private IDTSVirtualInputColumn100 findByName(string attributename, IDTSInput100 Input)
@@ -142,9 +193,10 @@ namespace CRMSSIS.CRMDestinationAdapter
             foreach (IDTSInputColumn100 column in Input.InputColumnCollection)
             {
                 IDTSVirtualInputColumn100 vColumn = vInput.VirtualInputColumnCollection.GetVirtualInputColumnByName(attributename, attributename);
-
+                
                 if (vColumn.Name == attributename)
                 {
+                  
                     return vColumn;
                 }
             }

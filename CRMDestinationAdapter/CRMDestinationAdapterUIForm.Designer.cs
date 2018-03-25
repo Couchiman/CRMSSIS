@@ -43,9 +43,12 @@
             this.lblOperation = new System.Windows.Forms.Label();
             this.cbOperation = new System.Windows.Forms.ComboBox();
             this.dgAtributeMap = new System.Windows.Forms.DataGridView();
+            this.backgroundWorkerLoadEntities = new System.ComponentModel.BackgroundWorker();
+            this.pbLoader = new System.Windows.Forms.PictureBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgAtributeMap)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbLoader)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -185,11 +188,25 @@
             this.dgAtributeMap.Size = new System.Drawing.Size(627, 179);
             this.dgAtributeMap.TabIndex = 22;
             // 
+            // backgroundWorkerLoadEntities
+            // 
+            this.backgroundWorkerLoadEntities.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            // 
+            // pbLoader
+            // 
+            this.pbLoader.Location = new System.Drawing.Point(464, 14);
+            this.pbLoader.Name = "pbLoader";
+            this.pbLoader.Size = new System.Drawing.Size(161, 82);
+            this.pbLoader.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pbLoader.TabIndex = 23;
+            this.pbLoader.TabStop = false;
+            // 
             // CRMDestinationAdapterUIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(651, 476);
+            this.Controls.Add(this.pbLoader);
             this.Controls.Add(this.dgAtributeMap);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnCancel);
@@ -205,6 +222,7 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgAtributeMap)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbLoader)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -226,5 +244,7 @@
         private System.Windows.Forms.Label lblOperation;
         private System.Windows.Forms.ComboBox cbOperation;
         private System.Windows.Forms.DataGridView dgAtributeMap;
+        private System.ComponentModel.BackgroundWorker backgroundWorkerLoadEntities;
+        private System.Windows.Forms.PictureBox pbLoader;
     }
 }

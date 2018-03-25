@@ -104,6 +104,13 @@ namespace CRMSSIS.CRMDestinationAdapter
             Entity.Name = "Entity";
             Entity.Value = "";
 
+
+            IDTSCustomProperty100 Mapping = ComponentMetaData.CustomPropertyCollection.New();
+            Mapping.Description = "Mapping";
+            Mapping.Name = "Mapping";
+            
+             
+
             IDTSInput100 input = ComponentMetaData.InputCollection.New();
             input.Name = "Input";
            

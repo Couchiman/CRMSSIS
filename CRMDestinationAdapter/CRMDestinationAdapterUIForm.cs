@@ -362,21 +362,35 @@ namespace CRMSSIS.CRMDestinationAdapter
             Item entity = (Item)entityItem;
 
             IDTSInput100 input = this.metaData.InputCollection[0];
-            IDTSVirtualInput100 vInput = input.GetVirtualInput();
 
+           
+            IDTSVirtualInput100 vInput = input.GetVirtualInput();
+         
 
             if (m == null)
+            {
+                int i = 0;
+                input.InputColumnCollection.RemoveAll();
+
+                //foreach (AttributeMetadata attribute in entity.Metadata)
+                //{
+                //    IDTSInputColumn100 inputCol = input.InputColumnCollection.New();
+                //    inputCol.Name = attribute.LogicalName;
+                //    inputCol.LineageID = i++;
+                //}
+                ////AutoMapping
+                foreach (IDTSVirtualInputColumn100 vColumn in vInput.VirtualInputColumnCollection)
+                {
+                    //  Call the SetUsageType method of the destination  
+                    //   to add each available virtual input column as an input column.  
+                    designTimeInstance.SetUsageType(input.ID, vInput, vColumn.LineageID, DTSUsageType.UT_READONLY);
+                }
+
+                MessageBox.Show(input.InputColumnCollection.Count.ToString());
+                MessageBox.Show(vInput.VirtualInputColumnCollection.Count.ToString());
+
                 m = new Mapping(entity.Metadata, this.metaData.InputCollection[0]);
-
-
-            //foreach (IDTSVirtualInputColumn100 vColumn in vInput.VirtualInputColumnCollection)
-            //{
-            //    //  Call the SetUsageType method of the destination  
-            //    //   to add each available virtual input column as an input column.  
-            //    designTimeInstance.SetUsageType(input.ID, vInput, vColumn.LineageID, DTSUsageType.UT_READONLY);
-            //}
-
-
+            }
             dgAtributeMap.Enabled = true;
             dgAtributeMap.AutoGenerateColumns = false;
             ConfigureMappingGrid(this.metaData.InputCollection[0]);
@@ -399,17 +413,17 @@ namespace CRMSSIS.CRMDestinationAdapter
             DataGridViewComboBoxColumn cmbExternalColumnName = new DataGridViewComboBoxColumn();
             cmbExternalColumnName.HeaderText = "External Column";
             cmbExternalColumnName.Name = "ExternalColumnName";
-
-            IDTSVirtualInput100 vInput = Input.GetVirtualInput();
-
-            foreach (IDTSVirtualInputColumn100 vColumn in vInput.VirtualInputColumnCollection)
-            {
-
-                cmbExternalColumnName.Items.Add(vColumn.Name);
-            }
+            cmbExternalColumnName.DisplayMember = "ExternalColumnName";
+            cmbExternalColumnName.ValueMember = "ExternalColumnName";
 
 
+            IEnumerable<string> filteredAttributeTypesExtName = m.ColumnList.Select(x => x.ExternalColumnName).Distinct();
+
+            foreach (string column in filteredAttributeTypesExtName)
+                cmbExternalColumnName.Items.Add(column.ToString());
+        
             dgAtributeMap.Columns.Add(cmbExternalColumnName);
+                       
 
             DataGridViewComboBoxColumn cmbExternalColumnTypeName = new DataGridViewComboBoxColumn();
             cmbExternalColumnTypeName.HeaderText = "External Column Type";
@@ -417,12 +431,13 @@ namespace CRMSSIS.CRMDestinationAdapter
             cmbExternalColumnTypeName.DisplayMember = "ExternalColumnTypeName";
             cmbExternalColumnTypeName.ValueMember = "ExternalColumnTypeName";
 
+            
+            IEnumerable<string> filteredAttributeTypesExt = m.ColumnList.Select(x => x.ExternalColumnTypeName).Distinct();
+
+            foreach (string column in filteredAttributeTypesExt)
+                cmbExternalColumnTypeName.Items.Add(column.ToString());
 
 
-            foreach (IDTSVirtualInputColumn100 vColumn in vInput.VirtualInputColumnCollection)
-
-                cmbExternalColumnTypeName.Items.Add(vColumn.DataType.ToString());
-        
             dgAtributeMap.Columns.Add(cmbExternalColumnTypeName);
 
 

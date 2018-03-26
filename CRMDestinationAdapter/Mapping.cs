@@ -148,20 +148,17 @@ namespace CRMSSIS.CRMDestinationAdapter
             
         }
 
-        public Mapping(AttributeMetadata[] metadata, IDTSInput100 Input)
+        public Mapping(AttributeMetadata[] metadata, IDTSInput100 input)
         {
             MappingItem mi;
 
 
-            int i = 0;
+           
 
             foreach (AttributeMetadata attribute in metadata)
             {
 
-                IDTSInputColumn100 inputCol = Input.InputColumnCollection.New();
-                inputCol.Name = attribute.LogicalName;
-                inputCol.LineageID = i++;
-                
+                             
 
                 mi = new MappingItem();
 
@@ -169,43 +166,30 @@ namespace CRMSSIS.CRMDestinationAdapter
                 mi.InternalColumnTypeName = attribute.AttributeType.ToString();
                 mi.InternalColumnType = attribute.AttributeType;
 
-                columnList.Add(mi);
-           
-            //IDTSVirtualInputColumn100 external = findByName(attribute.LogicalName.ToString(), Input);
-            //if (external != null)
-            //{
-            //    mi.ExternalColumnName = external.Name;
-            //    mi.ExternalColumnType = external.DataType;
-            //}
-        }
-    //        For Each vColumn As IDTSVirtualInputColumn100 In vInput.VirtualInputColumnCollection
-    //  ' Call the SetUsageType method of the destination  
-    //  '  to add each available virtual input column as an input column.  
-    //  destDesignTime.SetUsageType(input.ID, vInput, vColumn.LineageID, DTSUsageType.UT_READONLY)
-    //Next
+                 
+                IDTSVirtualInput100 vInput = input.GetVirtualInput();
 
-
-        }
-
-        private IDTSVirtualInputColumn100 findByName(string attributename, IDTSInput100 Input)
-        {
-
-            IDTSVirtualInput100 vInput = Input.GetVirtualInput();
-
-
-
-            foreach (IDTSInputColumn100 column in Input.InputColumnCollection)
-            {
-                IDTSVirtualInputColumn100 vColumn = vInput.VirtualInputColumnCollection.;
-                
-                if (vColumn.Name == attributename)
+                foreach (IDTSVirtualInputColumn100 vColumn in vInput.VirtualInputColumnCollection)
                 {
-                  
-                    return vColumn;
+                    if (vColumn.LineageID == input.InputColumnCollection.GetInputColumnByLineageID(vColumn.LineageID).LineageID)
+                    { 
+                    mi.ExternalColumnName = vColumn.Name.ToString();
+                    mi.ExternalColumnType = vColumn.DataType;
+                    mi.ExternalColumnTypeName = vColumn.DataType.ToString();
+                    }
                 }
-            }
-            return null;
+
+               
+
+                columnList.Add(mi);
+            
         }
+           
+
+           
+        }
+
+      
 
     }
 }

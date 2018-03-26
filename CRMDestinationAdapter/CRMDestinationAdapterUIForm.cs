@@ -474,9 +474,9 @@ namespace CRMSSIS.CRMDestinationAdapter
 
 
             dgAtributeMap.Columns[0].DataPropertyName = "ExternalColumnName";
-            dgAtributeMap.Columns[1].DataPropertyName = "ExternalColumnType";
+            dgAtributeMap.Columns[1].DataPropertyName = "ExternalColumnTypeName";
             dgAtributeMap.Columns[2].DataPropertyName = "InternalColumnName";
-            dgAtributeMap.Columns[3].DataPropertyName = "InternalColumnType";
+            dgAtributeMap.Columns[3].DataPropertyName = "InternalColumnTypeName";
             dgAtributeMap.Columns[4].DataPropertyName = "DefaultValue";
             dgAtributeMap.Columns[5].DataPropertyName = "Map";
         }

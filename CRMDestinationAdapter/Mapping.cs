@@ -178,9 +178,13 @@ namespace CRMSSIS.CRMDestinationAdapter
             //    mi.ExternalColumnType = external.DataType;
             //}
         }
-           
+    //        For Each vColumn As IDTSVirtualInputColumn100 In vInput.VirtualInputColumnCollection
+    //  ' Call the SetUsageType method of the destination  
+    //  '  to add each available virtual input column as an input column.  
+    //  destDesignTime.SetUsageType(input.ID, vInput, vColumn.LineageID, DTSUsageType.UT_READONLY)
+    //Next
 
-           
+
         }
 
         private IDTSVirtualInputColumn100 findByName(string attributename, IDTSInput100 Input)
@@ -192,7 +196,7 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             foreach (IDTSInputColumn100 column in Input.InputColumnCollection)
             {
-                IDTSVirtualInputColumn100 vColumn = vInput.VirtualInputColumnCollection.GetVirtualInputColumnByName(attributename, attributename);
+                IDTSVirtualInputColumn100 vColumn = vInput.VirtualInputColumnCollection.;
                 
                 if (vColumn.Name == attributename)
                 {

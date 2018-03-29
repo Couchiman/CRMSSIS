@@ -70,7 +70,6 @@
     <Compile Include="CRMConnMgrUIForm.Designer.cs">
       <DependentUpon>CRMConnMgrUIForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Enumerators.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -103,6 +102,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\Release\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CRMSSIS.CRMCommon\CRMSSIS.CRMCommon.csproj">
+      <Project>{1f3e62e7-739d-45c6-b2ab-78e8ca7eff32}</Project>
+      <Name>CRMSSIS.CRMCommon</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

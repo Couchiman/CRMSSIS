@@ -4,6 +4,8 @@ using System.Xml;
 using System.ComponentModel;
 using System.Collections.Generic;
 using System.Text;
+using CRMSSIS.CRMCommon.Enumerators;
+using CRMSSIS.CRMCommon.Controls;
 
 namespace CRMSSIS.CRMConnectionManager
 {

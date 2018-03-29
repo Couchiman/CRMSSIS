@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CRMSSIS.CRMDestinationAdapter
+namespace CRMSSIS.CRMCommon.Enumerators
 {
     
         public enum Operations
@@ -21,6 +21,28 @@ namespace CRMSSIS.CRMDestinationAdapter
       
         
         }
+
+
+    public enum AuthenticationProviderTypeDescriptive
+    {
+
+        //
+        // Resumen:
+        //     An Active Directory identity provider. Value = 1.
+        [Description("Active Directory")]
+        ActiveDirectory = 0,
+        //
+        // Resumen:
+        //     A federated claims identity provider. Value = 2.
+        [Description("IFD")]
+        IFD = 1,
+        //
+        // Resumen:
+        //     A Microsoft account identity provider. Value = 3.
+        [Description("Office 365")]
+        Office365 = 2,
+
+    }
 
     public static class EnumEx
     {

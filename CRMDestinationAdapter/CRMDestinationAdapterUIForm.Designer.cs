@@ -45,6 +45,7 @@
             this.dgAtributeMap = new System.Windows.Forms.DataGridView();
             this.backgroundWorkerLoadEntities = new System.ComponentModel.BackgroundWorker();
             this.pbLoader = new System.Windows.Forms.PictureBox();
+            this.lblNextStep = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgAtributeMap)).BeginInit();
@@ -72,7 +73,6 @@
             this.cbConnectionList.Name = "cbConnectionList";
             this.cbConnectionList.Size = new System.Drawing.Size(188, 21);
             this.cbConnectionList.TabIndex = 1;
-            this.cbConnectionList.SelectedIndexChanged += new System.EventHandler(this.cbConnectionList_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -161,7 +161,6 @@
             this.cbEntity.Name = "cbEntity";
             this.cbEntity.Size = new System.Drawing.Size(374, 21);
             this.cbEntity.TabIndex = 21;
-            this.cbEntity.SelectedIndexChanged += new System.EventHandler(this.cbEntity_SelectedIndexChanged);
             // 
             // lblOperation
             // 
@@ -201,11 +200,23 @@
             this.pbLoader.TabIndex = 23;
             this.pbLoader.TabStop = false;
             // 
+            // lblNextStep
+            // 
+            this.lblNextStep.AutoSize = true;
+            this.lblNextStep.Location = new System.Drawing.Point(35, 319);
+            this.lblNextStep.Name = "lblNextStep";
+            this.lblNextStep.Size = new System.Drawing.Size(546, 13);
+            this.lblNextStep.TabIndex = 24;
+            this.lblNextStep.Text = "Click \"Ok\" to proceed and connect your Datsource. Then reopen this window to cont" +
+    "inue with mapping procedure";
+            this.lblNextStep.Visible = false;
+            // 
             // CRMDestinationAdapterUIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(651, 476);
+            this.Controls.Add(this.lblNextStep);
             this.Controls.Add(this.pbLoader);
             this.Controls.Add(this.dgAtributeMap);
             this.Controls.Add(this.groupBox2);
@@ -246,5 +257,6 @@
         private System.Windows.Forms.DataGridView dgAtributeMap;
         private System.ComponentModel.BackgroundWorker backgroundWorkerLoadEntities;
         private System.Windows.Forms.PictureBox pbLoader;
+        private System.Windows.Forms.Label lblNextStep;
     }
 }

@@ -171,6 +171,12 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CRMSSIS.CRMCommon\CRMSSIS.CRMCommon.csproj">
+      <Project>{1f3e62e7-739d-45c6-b2ab-78e8ca7eff32}</Project>
+      <Name>CRMSSIS.CRMCommon</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

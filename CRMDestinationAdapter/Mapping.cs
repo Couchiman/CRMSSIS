@@ -166,20 +166,17 @@ namespace CRMSSIS.CRMDestinationAdapter
                 mi.InternalColumnTypeName = attribute.AttributeType.ToString();
                 mi.InternalColumnType = attribute.AttributeType;
 
-                 
-                IDTSVirtualInput100 vInput = input.GetVirtualInput();
-
-                foreach (IDTSVirtualInputColumn100 vColumn in vInput.VirtualInputColumnCollection)
+                //Maps by name the Input collection with Dynamics CRM collection
+                foreach (IDTSInputColumn100 inputcol in input.InputColumnCollection)
                 {
-                    if (vColumn.LineageID == input.InputColumnCollection.GetInputColumnByLineageID(vColumn.LineageID).LineageID)
-                    { 
-                    mi.ExternalColumnName = vColumn.Name.ToString();
-                    mi.ExternalColumnType = vColumn.DataType;
-                    mi.ExternalColumnTypeName = vColumn.DataType.ToString();
+                    if (inputcol.Name == attribute.LogicalName)
+                    {
+                        mi.ExternalColumnName = inputcol.Name;
+                        mi.ExternalColumnType = inputcol.DataType;
+                        mi.ExternalColumnTypeName = inputcol.DataType.ToString();
                     }
                 }
-
-               
+                         
 
                 columnList.Add(mi);
             

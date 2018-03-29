@@ -10,13 +10,13 @@ using System.Windows.Forms;
 using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
 using Microsoft.SqlServer.Dts.Runtime;
 using Microsoft.SqlServer.Dts.Runtime.Design;
-using CRMSSIS.CRMDestinationAdapter;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
 using System.Net;
 using Microsoft.Xrm.Tooling.Connector;
 using Microsoft.Xrm.Sdk;
-using Microsoft.SqlServer.Dts.Runtime.Wrapper;
+using CRMSSIS.CRMCommon.Enumerators;
+using CRMSSIS.CRMCommon.Controls;
 
 namespace CRMSSIS.CRMDestinationAdapter
 {
@@ -35,34 +35,6 @@ namespace CRMSSIS.CRMDestinationAdapter
             InitializeComponent();
         }
 
-        #region Items for Combos
-
-        public class Item
-        {
-            public string Value;
-            public string Text;
-            public AttributeMetadata[] Metadata;
-
-            public Item(string text, string val)
-            {
-                Value = val;
-                Text = text;
-            }
-
-            public Item(string text, string val, AttributeMetadata[] array)
-            {
-                Value = val;
-                Text = text;
-                Metadata = array;
-
-            }
-
-            public override string ToString()
-            {
-                return Text;
-            }
-        }
-        #endregion
 
         public CRMDestinationAdapterUIForm(Microsoft.SqlServer.Dts.Pipeline.Wrapper.IDTSComponentMetaData100 metaData, IDtsConnectionService connectionService)
       : this()
@@ -94,10 +66,10 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             if (cbEntity.SelectedItem != null)
             {
-                var item = (Item)cbEntity.SelectedItem;
+                //var item = (Item)cbEntity.SelectedItem;
 
-                designTimeInstance.SetComponentProperty("Entity", item.Text);
-
+                designTimeInstance.SetComponentProperty("Entity", (Item)cbEntity.SelectedItem);
+              
             }
 
             if (!string.IsNullOrEmpty(txtBatchSize.Text))
@@ -106,7 +78,7 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             }
 
-            if (m.ColumnList.Count > 0)
+            if (m !=null)
             {
                 designTimeInstance.SetComponentProperty("Mapping", m);
 
@@ -119,10 +91,11 @@ namespace CRMSSIS.CRMDestinationAdapter
         private void CRMDestinationAdapterUIForm_Load(object sender, EventArgs e)
         {
 
-            SetPictureBoxFromResource(pbLoader, "CRMSSIS.CRMDestinationAdapter.loading.gif");
-            pbLoader.Dock = DockStyle.Fill;
+           
 
             dgAtributeMap.Enabled = false;
+            dgAtributeMap.Visible = false;
+            lblNextStep.Visible = false;
             cbEntity.Enabled = false;
 
             var connections = connectionService.GetConnections();
@@ -159,21 +132,44 @@ namespace CRMSSIS.CRMDestinationAdapter
                 }
             }
 
-            
-           
+                      
 
-            m = (Mapping)this.metaData.CustomPropertyCollection["Mapping"].Value;
+           
             loadOperationsCombobox();
             int cboValue = (int)(Operations)this.metaData.CustomPropertyCollection["Operation"].Value;
 
             if (cboValue > 0)
                 cbOperation.SelectedIndex = cboValue;
 
-            backgroundWorkerLoadEntities.RunWorkerAsync();
-            dgAtributeMap.DataError += new DataGridViewDataErrorEventHandler(dgAtributeMap_DataError);
+            Item Entity = (Item)this.metaData.CustomPropertyCollection["Entity"].Value;
 
-          
+            if (Entity !=null)
+            {
+                cbEntity.Items.Add(Entity);
+                cbEntity.SelectedIndex = 0;
+
              
+                this.cbEntity.SelectedIndexChanged += new System.EventHandler(this.cbEntity_SelectedIndexChanged);
+                m = (Mapping)this.metaData.CustomPropertyCollection["Mapping"].Value;
+                dgAtributeMap.Visible = true;
+                loadMappingGrid((Item)cbEntity.SelectedItem);
+            }
+            else
+            {
+                if (cbConnectionList.SelectedItem != null)
+                {
+                    SetPictureBoxFromResource(pbLoader, "CRMSSIS.CRMDestinationAdapter.loading.gif");
+                    pbLoader.Dock = DockStyle.Fill;
+
+                    backgroundWorkerLoadEntities.RunWorkerAsync();
+                }
+                
+
+            }
+            dgAtributeMap.DataError += new DataGridViewDataErrorEventHandler(dgAtributeMap_DataError);
+            cbConnectionList.SelectedIndexChanged += new System.EventHandler(this.cbConnectionList_SelectedIndexChanged);
+
+
 
 
 
@@ -249,9 +245,11 @@ namespace CRMSSIS.CRMDestinationAdapter
                 this.metaData.RuntimeConnectionCollection[0].ConnectionManagerID = item.Value;
                 this.metaData.RuntimeConnectionCollection[0].Name = item.Text;
 
-               
+                SetPictureBoxFromResource(pbLoader, "CRMSSIS.CRMDestinationAdapter.loading.gif");
+                pbLoader.Dock = DockStyle.Fill;
+
                 backgroundWorkerLoadEntities.RunWorkerAsync();
-              
+
             }
         }
 
@@ -326,20 +324,16 @@ namespace CRMSSIS.CRMDestinationAdapter
 
                     RetrieveAllEntitiesResponse allentityResponse = (RetrieveAllEntitiesResponse)service.Execute(mdRequest);
 
-                    int i = 0;
+                    
                     foreach (EntityMetadata Entity in allentityResponse.EntityMetadata)
                     {
                         cbEntity.Items.Add(new Item(Entity.LogicalName, Entity.LogicalName, Entity.Attributes));
-
-                        if (metaData.CustomPropertyCollection["Entity"].ToString() == Entity.LogicalName)
-                        {
-                            cbEntity.SelectedIndex = i;
-                        }
-                        i++;
+                       
                     }
 
 
                     cbEntity.Enabled = true;
+                    lblNextStep.Visible = true;
                 }
 
 
@@ -363,31 +357,11 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             IDTSInput100 input = this.metaData.InputCollection[0];
 
-           
-            IDTSVirtualInput100 vInput = input.GetVirtualInput();
+              
          
 
             if (m == null)
-            {
-                int i = 0;
-                input.InputColumnCollection.RemoveAll();
-
-                //foreach (AttributeMetadata attribute in entity.Metadata)
-                //{
-                //    IDTSInputColumn100 inputCol = input.InputColumnCollection.New();
-                //    inputCol.Name = attribute.LogicalName;
-                //    inputCol.LineageID = i++;
-                //}
-                ////AutoMapping
-                foreach (IDTSVirtualInputColumn100 vColumn in vInput.VirtualInputColumnCollection)
-                {
-                    //  Call the SetUsageType method of the destination  
-                    //   to add each available virtual input column as an input column.  
-                    designTimeInstance.SetUsageType(input.ID, vInput, vColumn.LineageID, DTSUsageType.UT_READONLY);
-                }
-
-                MessageBox.Show(input.InputColumnCollection.Count.ToString());
-                MessageBox.Show(vInput.VirtualInputColumnCollection.Count.ToString());
+            {           
 
                 m = new Mapping(entity.Metadata, this.metaData.InputCollection[0]);
             }
@@ -401,26 +375,24 @@ namespace CRMSSIS.CRMDestinationAdapter
 
 
         }
+     
 
-        
         private void ConfigureMappingGrid(IDTSInput100 Input)
         {
 
 
 
 
-            /// External Columns from Source (Virtual Columns)
+            /// External Columns from Source (Input Columns)
             DataGridViewComboBoxColumn cmbExternalColumnName = new DataGridViewComboBoxColumn();
             cmbExternalColumnName.HeaderText = "External Column";
             cmbExternalColumnName.Name = "ExternalColumnName";
             cmbExternalColumnName.DisplayMember = "ExternalColumnName";
             cmbExternalColumnName.ValueMember = "ExternalColumnName";
-
-
-            IEnumerable<string> filteredAttributeTypesExtName = m.ColumnList.Select(x => x.ExternalColumnName).Distinct();
-
-            foreach (string column in filteredAttributeTypesExtName)
-                cmbExternalColumnName.Items.Add(column.ToString());
+                       
+          
+            foreach (IDTSInputColumn100 column in this.metaData.InputCollection[0].InputColumnCollection)
+                cmbExternalColumnName.Items.Add(column.Name.ToString());
         
             dgAtributeMap.Columns.Add(cmbExternalColumnName);
                        
@@ -431,13 +403,18 @@ namespace CRMSSIS.CRMDestinationAdapter
             cmbExternalColumnTypeName.DisplayMember = "ExternalColumnTypeName";
             cmbExternalColumnTypeName.ValueMember = "ExternalColumnTypeName";
 
+
+            List<string> mDataTypes = new List<string>();
+
+            foreach (IDTSInputColumn100 column in this.metaData.InputCollection[0].InputColumnCollection)
+            {
+                if (!mDataTypes.Contains(column.DataType.ToString())) mDataTypes.Add(column.DataType.ToString());
+
+            }
+
             
-            IEnumerable<string> filteredAttributeTypesExt = m.ColumnList.Select(x => x.ExternalColumnTypeName).Distinct();
-
-            foreach (string column in filteredAttributeTypesExt)
-                cmbExternalColumnTypeName.Items.Add(column.ToString());
-
-
+            cmbExternalColumnTypeName.Items.AddRange(mDataTypes.ToArray());
+            
             dgAtributeMap.Columns.Add(cmbExternalColumnTypeName);
 
 
@@ -501,6 +478,11 @@ namespace CRMSSIS.CRMDestinationAdapter
         {
             if (cbEntity.SelectedItem != null)
             {
+                SetPictureBoxFromResource(pbLoader, "CRMSSIS.CRMDestinationAdapter.loading.gif");
+                pbLoader.Dock = DockStyle.Fill;
+
+                backgroundWorkerLoadEntities.RunWorkerAsync();
+
                 m = null;
                 loadMappingGrid((Item)cbEntity.SelectedItem);
             }

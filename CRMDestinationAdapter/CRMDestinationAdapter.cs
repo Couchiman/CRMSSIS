@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.SqlServer.Dts.Pipeline;
-using Microsoft.SqlServer.Dts.Runtime.Wrapper;
 using Microsoft.Xrm.Sdk;
 using System.Net;
 using Microsoft.Xrm.Tooling.Connector;
 using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
 using Microsoft.Xrm.Sdk.Metadata;
+
+using CRMSSIS.CRMCommon.Controls;
+using Microsoft.Xrm.Sdk.Messages;
+using System.ServiceModel;
 
 namespace CRMSSIS.CRMDestinationAdapter
 {
@@ -100,9 +99,9 @@ namespace CRMSSIS.CRMDestinationAdapter
             BatchSize.Value = 1;
 
             IDTSCustomProperty100 Entity = ComponentMetaData.CustomPropertyCollection.New();
-            Entity.Description = "Entity Logical Name";
+            Entity.Description = "Entity";
             Entity.Name = "Entity";
-            Entity.Value = "";
+            
 
 
             IDTSCustomProperty100 Mapping = ComponentMetaData.CustomPropertyCollection.New();
@@ -123,30 +122,48 @@ namespace CRMSSIS.CRMDestinationAdapter
         public override DTSValidationStatus Validate()
         {
 
-            //bool cancel;
-            //string Entity = ComponentMetaData.CustomPropertyCollection["Entity"].Value.ToString();
 
-            //if (string.IsNullOrWhiteSpace(Entity))
-            //{
-                 
-            //    ComponentMetaData.FireError(0, ComponentMetaData.Name, "Entity must be set", "", 0, out cancel);
-            //    return DTSValidationStatus.VS_ISBROKEN;
-            //}
-            
-            //TODO VALIDATE MAPPINGS
-            //if ((ComponentMetaData.InputCollection[0].InputColumnCollection.Count == 0))
-            //{
-            //    return DTSValidationStatus.VS_NEEDSNEWMETADATA;
-            //}
+            bool cancel = false;
 
+
+            if (ComponentMetaData.CustomPropertyCollection["Entity"].Value ==null)
+            {
+
+                ComponentMetaData.FireError(0, ComponentMetaData.Name, "Entity must be set", "", 0, out cancel);
+                return DTSValidationStatus.VS_ISBROKEN;
+            }
+
+
+            if ((ComponentMetaData.CustomPropertyCollection["Mapping"].Value ==null))
+            {
+                ComponentMetaData.FireError(0, ComponentMetaData.Name, "Column mapping has not been set", "", 0, out cancel);
+                return DTSValidationStatus.VS_ISBROKEN;
+            }
 
             return base.Validate();
         }
       
 
-       
+public override void OnInputPathAttached(int inputID)
+        {
+            base.OnInputPathAttached(inputID);
 
-        
+          
+            for (int i = 0; i < ComponentMetaData.InputCollection.Count; i++)
+            {
+                ComponentMetaData.InputCollection[i].InputColumnCollection.RemoveAll();
+                IDTSVirtualInput100 input = ComponentMetaData.InputCollection[i].GetVirtualInput();
+                foreach (IDTSVirtualInputColumn100 vcol in input.VirtualInputColumnCollection)
+                {
+                    input.SetUsageType(vcol.LineageID, DTSUsageType.UT_READONLY);
+                }
+            }
+        }
+        //public override void OnInputPathDetached(int inputID)
+        //{
+        //    input.InputColumnCollection.RemoveAll();
+        //}
+
         //private void CreateExternalMetaDataColumn(IDTSInput100 input, IDTSInputColumn100 inputColumn)
         //{
         //    IDTSExternalMetadataColumn100 externalColumn = input.ExternalMetadataColumnCollection.New();
@@ -174,22 +191,81 @@ namespace CRMSSIS.CRMDestinationAdapter
 
                 mapInputColsToBufferCols[i] = BufferManager.FindColumnByLineageID(input.Buffer, input.InputColumnCollection[i].LineageID);
             }
+
+            mapping = (Mapping)ComponentMetaData.CustomPropertyCollection["Mapping"].Value;
         }
 
         public override void ProcessInput(int inputID, PipelineBuffer buffer)
         {
+            EntityCollection newEntityCollection = new EntityCollection();
+
             while ((buffer.NextRow()))
             {
+                Entity newEntity = new Entity(((Item)ComponentMetaData.CustomPropertyCollection["Entity"].Value).Text);
+
                 foreach (int col in mapInputColsToBufferCols)
                 {
                     if (buffer.IsNull(col) == false)
                     {
+                        IDTSInput100 input = ComponentMetaData.InputCollection[0];
+
+                        Mapping.MappingItem mappedColumn = mapping.ColumnList.Find(x => x.ExternalColumnName == input.InputColumnCollection[col].Name && x.Map == true);
+
+                        if (mappedColumn != null)
+                        {
+                            newEntity.Attributes[mappedColumn.InternalColumnName] = buffer[col];
+                        }
                         //TODO From here 
                         //Build Entity - Upsert Operation
                         //Add Operation Type for Status Operation/Association, etc...
-                       // service.Execute(entity);
+                        // 
+                    }
+                    newEntityCollection.Entities.Add(newEntity);
+                }
+                
+            }
+
+                ExecuteMultipleRequest requestWithResults = new ExecuteMultipleRequest()
+                {
+                    // Assign settings that define execution behavior: continue on error, return responses. 
+                    Settings = new ExecuteMultipleSettings()
+                    {
+                        ContinueOnError = true,
+                        ReturnResponses = true
+                    },
+                    // Create an empty organization request collection.
+                    Requests = new OrganizationRequestCollection()
+                };
+
+
+                foreach (var entity in newEntityCollection.Entities)
+                {
+                    CreateRequest createRequest = new CreateRequest { Target = entity };
+                    requestWithResults.Requests.Add(createRequest);
+                }
+
+                try
+                {
+                    var responseRecords =
+                        (ExecuteTransactionResponse)service.Execute(requestWithResults);
+
+                    int i = 0;
+                    // Display the results returned in the responses.
+                    foreach (var responseItem in responseRecords.Responses)
+                    {
+                        if (responseItem != null)
+                            //TODO
+                            //DisplayResponse(requestWithResults.Requests[i], responseItem);
+                        i++;
                     }
                 }
+                catch (FaultException<OrganizationServiceFault> ex)
+                {
+                    Console.WriteLine("Create request failed for the account{0} and the reason being: {1}",
+                        ((ExecuteTransactionFault)(ex.Detail)).FaultedRequestIndex + 1, ex.Detail.Message);
+                    throw;
+                }
+
             }
         }
 

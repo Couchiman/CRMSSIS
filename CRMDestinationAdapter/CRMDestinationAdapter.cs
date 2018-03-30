@@ -104,13 +104,14 @@ namespace CRMSSIS.CRMDestinationAdapter
             IDTSCustomProperty100 Entity = ComponentMetaData.CustomPropertyCollection.New();
             Entity.Description = "Entity";
             Entity.Name = "Entity";
+            Entity.TypeConverter = "NOTBROWSABLE";
 
 
 
             IDTSCustomProperty100 Mapping = ComponentMetaData.CustomPropertyCollection.New();
             Mapping.Description = "Mapping";
             Mapping.Name = "Mapping";
-
+            Mapping.TypeConverter = "NOTBROWSABLE";
 
 
             IDTSInput100 input = ComponentMetaData.InputCollection.New();

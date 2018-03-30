@@ -155,7 +155,7 @@ namespace CRMSSIS.CRMDestinationAdapter
 
              
                 this.cbEntity.SelectedIndexChanged += new System.EventHandler(this.cbEntity_SelectedIndexChanged);
-                if (!string.IsNullOrEmpty(this.metaData.CustomPropertyCollection["Mapping"].Value.ToString()))
+                if (this.metaData.CustomPropertyCollection["Mapping"].Value !=null)
                 m = CRMCommon.JSONSerialization.Deserialize<Mapping>(this.metaData.CustomPropertyCollection["Mapping"].Value.ToString());
                
                 dgAtributeMap.Visible = true;

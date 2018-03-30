@@ -115,6 +115,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.lblNextStep);
             this.groupBox2.Controls.Add(this.txtBatchSize);
             this.groupBox2.Controls.Add(this.lblBatchSize);
             this.groupBox2.Controls.Add(this.label2);
@@ -203,7 +204,7 @@
             // lblNextStep
             // 
             this.lblNextStep.AutoSize = true;
-            this.lblNextStep.Location = new System.Drawing.Point(35, 319);
+            this.lblNextStep.Location = new System.Drawing.Point(15, 121);
             this.lblNextStep.Name = "lblNextStep";
             this.lblNextStep.Size = new System.Drawing.Size(546, 13);
             this.lblNextStep.TabIndex = 24;
@@ -216,7 +217,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(651, 476);
-            this.Controls.Add(this.lblNextStep);
             this.Controls.Add(this.pbLoader);
             this.Controls.Add(this.dgAtributeMap);
             this.Controls.Add(this.groupBox2);

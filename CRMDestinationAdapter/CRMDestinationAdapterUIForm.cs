@@ -162,6 +162,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                     pbLoader.Dock = DockStyle.Fill;
 
                     backgroundWorkerLoadEntities.RunWorkerAsync();
+                    lblNextStep.Visible = true;
                 }
                 
 
@@ -333,7 +334,7 @@ namespace CRMSSIS.CRMDestinationAdapter
 
 
                     cbEntity.Enabled = true;
-                    lblNextStep.Visible = true;
+                   
                 }
 
 
@@ -346,6 +347,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             {
                 
                 pbLoader.Visible = false;
+                
             }
 
         }
@@ -357,23 +359,14 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             IDTSInput100 input = this.metaData.InputCollection[0];
 
-              
-         
 
-            if (m == null)
-            {           
-
-                m = new Mapping(entity.Metadata, this.metaData.InputCollection[0]);
-            }
+            if (m == null) m = new Mapping(entity.Metadata, input);
+            
+        
             dgAtributeMap.Enabled = true;
-            dgAtributeMap.AutoGenerateColumns = false;
-            ConfigureMappingGrid(this.metaData.InputCollection[0]);
+            ConfigureMappingGrid(input);
             dgAtributeMap.DataSource = m.ColumnList;
             
-
-
-
-
         }
      
 
@@ -381,7 +374,7 @@ namespace CRMSSIS.CRMDestinationAdapter
         {
 
 
-
+            dgAtributeMap.AutoGenerateColumns = false;
 
             /// External Columns from Source (Input Columns)
             DataGridViewComboBoxColumn cmbExternalColumnName = new DataGridViewComboBoxColumn();

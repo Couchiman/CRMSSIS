@@ -4,6 +4,7 @@ using Microsoft.Xrm.Sdk.Metadata;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@ namespace CRMSSIS.CRMDestinationAdapter
 {
     public class Mapping
     {
+        [DataContract (Name = "MappingItem")]
         public class MappingItem
         { 
             string externalColumnName = "";
@@ -22,7 +24,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             string defaultValue;
             bool map = false;
 
-            
+            [DataMember(Name = "ExternalColumnName")]
             public string ExternalColumnName
             {
                 get
@@ -36,6 +38,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                 }
             }
 
+            [DataMember(Name = "ExternalColumnType")]
             public DataType ExternalColumnType
             {
                 get
@@ -48,7 +51,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                     externalColumn = value;
                 }
             }
-
+            [DataMember(Name = "InternalColumnName")]
             public string InternalColumnName
             {
                 get
@@ -61,7 +64,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                     internalColumnName = value;
                 }
             }
-
+            [DataMember(Name = "InternalColumnType")]
             public AttributeTypeCode? InternalColumnType
             {
                 get
@@ -74,7 +77,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                     internalColumn = value;
                 }
             }
-
+            [DataMember(Name = "DefaultValue")]
             public string DefaultValue
             {
                 get
@@ -87,7 +90,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                     defaultValue = value;
                 }
             }
-
+            [DataMember(Name = "Map")]
             public bool Map
             {
                 get
@@ -100,7 +103,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                     map = value;
                 }
             }
-
+            [DataMember(Name = "InternalColumnTypeName")]
             public string InternalColumnTypeName
             {
                 get
@@ -113,7 +116,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                     internalColumnTypeName = value;
                 }
             }
-
+            [DataMember(Name = "ExternalColumnTypeName")]
             public string ExternalColumnTypeName
             {
                 get

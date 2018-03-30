@@ -17,6 +17,7 @@ using Microsoft.Xrm.Tooling.Connector;
 using Microsoft.Xrm.Sdk;
 using CRMSSIS.CRMCommon.Enumerators;
 using CRMSSIS.CRMCommon.Controls;
+using CRMSSIS.CRMCommon;
 
 namespace CRMSSIS.CRMDestinationAdapter
 {
@@ -66,9 +67,10 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             if (cbEntity.SelectedItem != null)
             {
-                //var item = (Item)cbEntity.SelectedItem;
-
-                designTimeInstance.SetComponentProperty("Entity", (Item)cbEntity.SelectedItem);
+                Item item = (Item)cbEntity.SelectedItem;
+                //First Serialize the object because complex objects are not supported by SSIS
+          
+                designTimeInstance.SetComponentProperty("Entity", CRMSSIS.CRMCommon.JSONSerialization.Serialize<Item>(item));
               
             }
 
@@ -80,7 +82,7 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             if (m !=null)
             {
-                designTimeInstance.SetComponentProperty("Mapping", m);
+                designTimeInstance.SetComponentProperty("Mapping", CRMCommon.JSONSerialization.Serialize<Mapping>(m));
 
             }
 
@@ -141,16 +143,21 @@ namespace CRMSSIS.CRMDestinationAdapter
             if (cboValue > 0)
                 cbOperation.SelectedIndex = cboValue;
 
-            Item Entity = (Item)this.metaData.CustomPropertyCollection["Entity"].Value;
-
-            if (Entity !=null)
+             
+            
+            if (this.metaData.CustomPropertyCollection["Entity"].Value != null)
             {
+
+                Item Entity = (Item)CRMSSIS.CRMCommon.JSONSerialization.Deserialize<Item>(this.metaData.CustomPropertyCollection["Entity"].Value.ToString());
+
                 cbEntity.Items.Add(Entity);
                 cbEntity.SelectedIndex = 0;
 
              
                 this.cbEntity.SelectedIndexChanged += new System.EventHandler(this.cbEntity_SelectedIndexChanged);
-                m = (Mapping)this.metaData.CustomPropertyCollection["Mapping"].Value;
+                if (!string.IsNullOrEmpty(this.metaData.CustomPropertyCollection["Mapping"].Value.ToString()))
+                m = CRMCommon.JSONSerialization.Deserialize<Mapping>(this.metaData.CustomPropertyCollection["Mapping"].Value.ToString());
+               
                 dgAtributeMap.Visible = true;
                 loadMappingGrid((Item)cbEntity.SelectedItem);
             }

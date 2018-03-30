@@ -189,8 +189,8 @@ namespace CRMSSIS.CRMDestinationAdapter
 
                 mapInputColsToBufferCols[i] = BufferManager.FindColumnByLineageID(input.Buffer, input.InputColumnCollection[i].LineageID);
             }
-
-            mapping = (Mapping)ComponentMetaData.CustomPropertyCollection["Mapping"].Value;
+            
+            mapping = CRMCommon.JSONSerialization.Deserialize<Mapping>(ComponentMetaData.CustomPropertyCollection["Mapping"].Value.ToString());
         }
 
 
@@ -203,7 +203,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             EntityCollection newEntityCollection = new EntityCollection();
             List<OrganizationRequest> Rqs = new List<OrganizationRequest>();
 
-            string EntityName = ((Item)ComponentMetaData.CustomPropertyCollection["Entity"].Value).Text;
+            string EntityName = (CRMCommon.JSONSerialization.Deserialize<Item>(ComponentMetaData.CustomPropertyCollection["Entity"].Value.ToString())).Text;
 
 
             while ((buffer.NextRow()))
@@ -220,10 +220,8 @@ namespace CRMSSIS.CRMDestinationAdapter
                         Mapping.MappingItem mappedColumn = mapping.ColumnList.Find(x => x.ExternalColumnName == input.InputColumnCollection[col].Name && x.Map == true);
 
                         if (mappedColumn != null)
-                        {
                             newEntity.Attributes[mappedColumn.InternalColumnName] = buffer[col];
-                        }
-
+                        
                     }
 
                 }

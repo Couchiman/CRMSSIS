@@ -208,11 +208,12 @@ namespace CRMSSIS.CRMDestinationAdapter
             Mapping.MappingItem mappedColumn;
             IDTSInputColumn100 input;
 
-          
+
+            Entity newEntity;
 
             while ((buffer.NextRow()))
             {
-                Entity newEntity = new Entity(EntityName);
+                newEntity = new Entity(EntityName);
                 bchCnt++;
 
                 foreach (int col in mapInputColsToBufferCols)
@@ -224,7 +225,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                     if(mappedColumn != null)
                     { 
                     if (buffer.IsNull(col) == false)
-                                newEntity.Attributes[mappedColumn.InternalColumnName] = buffer[col];    
+                                newEntity.Attributes[mappedColumn.InternalColumnName] = buffer[col].ToString();    
                      else
                                 newEntity.Attributes[mappedColumn.InternalColumnName] = mappedColumn.DefaultValue;
                     }
@@ -257,7 +258,12 @@ namespace CRMSSIS.CRMDestinationAdapter
             CRMIntegrate[] Integ = new CRMIntegrate[2];
             IEnumerable<ExecuteMultipleResponseItem> FltResp;
             IEnumerable<ExecuteMultipleResponseItem> OkResp;
-            int batchSize = (int)ComponentMetaData.CustomPropertyCollection["BatchSize"].Value;
+            int bsize;
+
+            int.TryParse(ComponentMetaData.CustomPropertyCollection["BatchSize"].Value.ToString(), out bsize);
+            int batchSize = bsize;
+
+            
 
             if (bchCnt == batchSize * 2 || (ir + 1) == RowCount)
             {

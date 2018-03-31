@@ -390,13 +390,15 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             dgAtributeMap.AutoGenerateColumns = false;
 
+            dgAtributeMap.RowHeadersWidth = 20;
+
             /// External Columns from Source (Input Columns)
             DataGridViewComboBoxColumn cmbExternalColumnName = new DataGridViewComboBoxColumn();
             cmbExternalColumnName.HeaderText = "External Column";
             cmbExternalColumnName.Name = "ExternalColumnName";
             cmbExternalColumnName.DisplayMember = "ExternalColumnName";
             cmbExternalColumnName.ValueMember = "ExternalColumnName";
-            cmbExternalColumnName.Width = 155;
+            cmbExternalColumnName.Width = 160;
 
             foreach (IDTSInputColumn100 column in this.metaData.InputCollection[0].InputColumnCollection)
                 cmbExternalColumnName.Items.Add(column.Name.ToString());
@@ -433,7 +435,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             cmbInternalColumnName.Name = "InternalColumnName";
             cmbInternalColumnName.DisplayMember = "InternalColumnName";
             cmbInternalColumnName.ValueMember = "InternalColumnName";
-            cmbInternalColumnName.Width = 155;
+            cmbInternalColumnName.Width = 160;
 
             foreach (Mapping.MappingItem column in m.ColumnList)
                 cmbInternalColumnName.Items.Add(column.InternalColumnName);

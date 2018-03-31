@@ -205,9 +205,9 @@
             // 
             this.btnRefresh.Location = new System.Drawing.Point(518, 56);
             this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(75, 23);
+            this.btnRefresh.Size = new System.Drawing.Size(116, 23);
             this.btnRefresh.TabIndex = 25;
-            this.btnRefresh.Text = "Refresh";
+            this.btnRefresh.Text = "Refresh Entities";
             this.btnRefresh.UseVisualStyleBackColor = true;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 

@@ -254,7 +254,10 @@ namespace CRMSSIS.CRMDestinationAdapter
                 this.metaData.RuntimeConnectionCollection[0].ConnectionManagerID = item.Value;
                 this.metaData.RuntimeConnectionCollection[0].Name = item.Text;
 
-               
+                SetPictureBoxFromResource(pbLoader, "CRMSSIS.CRMDestinationAdapter.loading.gif");
+                pbLoader.Dock = DockStyle.Fill;
+
+                backgroundWorkerLoadEntities.RunWorkerAsync();
 
             }
         }
@@ -368,8 +371,8 @@ namespace CRMSSIS.CRMDestinationAdapter
             if (m == null)
             {
                 m = new Mapping(entity.Metadata, input);
-                dgAtributeMap.Rows.Clear();
-                dgAtributeMap.Refresh();
+                dgAtributeMap.DataSource = null;
+                 
             }
             
         
@@ -393,8 +396,8 @@ namespace CRMSSIS.CRMDestinationAdapter
             cmbExternalColumnName.Name = "ExternalColumnName";
             cmbExternalColumnName.DisplayMember = "ExternalColumnName";
             cmbExternalColumnName.ValueMember = "ExternalColumnName";
-                       
-          
+            cmbExternalColumnName.Width = 155;
+
             foreach (IDTSInputColumn100 column in this.metaData.InputCollection[0].InputColumnCollection)
                 cmbExternalColumnName.Items.Add(column.Name.ToString());
         
@@ -402,10 +405,11 @@ namespace CRMSSIS.CRMDestinationAdapter
                        
 
             DataGridViewComboBoxColumn cmbExternalColumnTypeName = new DataGridViewComboBoxColumn();
-            cmbExternalColumnTypeName.HeaderText = "External Column Type";
+            cmbExternalColumnTypeName.HeaderText = "Column Type";
             cmbExternalColumnTypeName.Name = "ExternalColumnTypeName";
             cmbExternalColumnTypeName.DisplayMember = "ExternalColumnTypeName";
             cmbExternalColumnTypeName.ValueMember = "ExternalColumnTypeName";
+            cmbExternalColumnTypeName.Width = 75;
 
 
             List<string> mDataTypes = new List<string>();
@@ -429,7 +433,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             cmbInternalColumnName.Name = "InternalColumnName";
             cmbInternalColumnName.DisplayMember = "InternalColumnName";
             cmbInternalColumnName.ValueMember = "InternalColumnName";
-
+            cmbInternalColumnName.Width = 155;
 
             foreach (Mapping.MappingItem column in m.ColumnList)
                 cmbInternalColumnName.Items.Add(column.InternalColumnName);
@@ -437,11 +441,11 @@ namespace CRMSSIS.CRMDestinationAdapter
             dgAtributeMap.Columns.Add(cmbInternalColumnName);
 
             DataGridViewComboBoxColumn cmbInternalColumnTypeName = new DataGridViewComboBoxColumn();
-            cmbInternalColumnTypeName.HeaderText = "Internal Column Type";
+            cmbInternalColumnTypeName.HeaderText = "Column Type";
             cmbInternalColumnTypeName.Name = "InternalColumnTypeName";
             cmbInternalColumnTypeName.DisplayMember = "InternalColumnTypeName";
             cmbInternalColumnTypeName.ValueMember = "InternalColumnTypeName";
-
+            cmbInternalColumnTypeName.Width = 75;
             IEnumerable<string> filteredAttributeTypes = m.ColumnList.Select(x => x.InternalColumnTypeName).Distinct();
 
             foreach (string column in filteredAttributeTypes)
@@ -461,13 +465,13 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             DataGridViewCheckBoxColumn isRequired = new DataGridViewCheckBoxColumn();
             isRequired.HeaderText = "isRequired";
-            isRequired.Width = 50;
+            isRequired.Width = 55;
             isRequired.ReadOnly = true;
             dgAtributeMap.Columns.Add(isRequired);
 
             DataGridViewCheckBoxColumn isPrimary = new DataGridViewCheckBoxColumn();
             isPrimary.HeaderText = "isPrimary";
-            isPrimary.Width = 50;
+            isPrimary.Width = 55;
             isPrimary.ReadOnly = true;
             dgAtributeMap.Columns.Add(isPrimary);
 
@@ -498,11 +502,7 @@ namespace CRMSSIS.CRMDestinationAdapter
         {
             if (cbEntity.SelectedItem != null)
             {
-                SetPictureBoxFromResource(pbLoader, "CRMSSIS.CRMDestinationAdapter.loading.gif");
-                pbLoader.Dock = DockStyle.Fill;
-
-                backgroundWorkerLoadEntities.RunWorkerAsync();
-
+            
                 m = null;
                 loadMappingGrid((Item)cbEntity.SelectedItem);
             }
@@ -537,10 +537,13 @@ namespace CRMSSIS.CRMDestinationAdapter
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
-            SetPictureBoxFromResource(pbLoader, "CRMSSIS.CRMDestinationAdapter.loading.gif");
-            pbLoader.Dock = DockStyle.Fill;
+            if(cbConnectionList.SelectedItem !=null)
+            { 
+                SetPictureBoxFromResource(pbLoader, "CRMSSIS.CRMDestinationAdapter.loading.gif");
+                pbLoader.Dock = DockStyle.Fill;
 
-            backgroundWorkerLoadEntities.RunWorkerAsync();
+                backgroundWorkerLoadEntities.RunWorkerAsync();
+            }
         }
     }
 }

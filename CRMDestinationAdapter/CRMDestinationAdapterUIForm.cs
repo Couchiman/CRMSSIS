@@ -97,7 +97,7 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             dgAtributeMap.Enabled = false;
             dgAtributeMap.Visible = false;
-            lblNextStep.Visible = false;
+            
             cbEntity.Enabled = false;
 
             var connections = connectionService.GetConnections();
@@ -157,7 +157,8 @@ namespace CRMSSIS.CRMDestinationAdapter
                 this.cbEntity.SelectedIndexChanged += new System.EventHandler(this.cbEntity_SelectedIndexChanged);
                 if (this.metaData.CustomPropertyCollection["Mapping"].Value !=null)
                 m = CRMCommon.JSONSerialization.Deserialize<Mapping>(this.metaData.CustomPropertyCollection["Mapping"].Value.ToString());
-               
+                
+
                 dgAtributeMap.Visible = true;
                 loadMappingGrid((Item)cbEntity.SelectedItem);
             }
@@ -169,7 +170,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                     pbLoader.Dock = DockStyle.Fill;
 
                     backgroundWorkerLoadEntities.RunWorkerAsync();
-                    lblNextStep.Visible = true;
+                  
                 }
                 
 
@@ -253,10 +254,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                 this.metaData.RuntimeConnectionCollection[0].ConnectionManagerID = item.Value;
                 this.metaData.RuntimeConnectionCollection[0].Name = item.Text;
 
-                SetPictureBoxFromResource(pbLoader, "CRMSSIS.CRMDestinationAdapter.loading.gif");
-                pbLoader.Dock = DockStyle.Fill;
-
-                backgroundWorkerLoadEntities.RunWorkerAsync();
+               
 
             }
         }
@@ -367,13 +365,19 @@ namespace CRMSSIS.CRMDestinationAdapter
             IDTSInput100 input = this.metaData.InputCollection[0];
 
 
-            if (m == null) m = new Mapping(entity.Metadata, input);
+            if (m == null)
+            {
+                m = new Mapping(entity.Metadata, input);
+                dgAtributeMap.Rows.Clear();
+                dgAtributeMap.Refresh();
+            }
             
         
             dgAtributeMap.Enabled = true;
             ConfigureMappingGrid(input);
             dgAtributeMap.DataSource = m.ColumnList;
             
+
         }
      
 
@@ -454,6 +458,19 @@ namespace CRMSSIS.CRMDestinationAdapter
             defaultValues.Name = "DefaultValue";
             dgAtributeMap.Columns.Add(defaultValues);
 
+
+            DataGridViewCheckBoxColumn isRequired = new DataGridViewCheckBoxColumn();
+            isRequired.HeaderText = "isRequired";
+            isRequired.Width = 50;
+            isRequired.ReadOnly = true;
+            dgAtributeMap.Columns.Add(isRequired);
+
+            DataGridViewCheckBoxColumn isPrimary = new DataGridViewCheckBoxColumn();
+            isPrimary.HeaderText = "isPrimary";
+            isPrimary.Width = 50;
+            isPrimary.ReadOnly = true;
+            dgAtributeMap.Columns.Add(isPrimary);
+
             //Map the External with internal attribute
             DataGridViewCheckBoxColumn checkColumn = new DataGridViewCheckBoxColumn();
             checkColumn.Name = "Map";
@@ -470,7 +487,10 @@ namespace CRMSSIS.CRMDestinationAdapter
             dgAtributeMap.Columns[2].DataPropertyName = "InternalColumnName";
             dgAtributeMap.Columns[3].DataPropertyName = "InternalColumnTypeName";
             dgAtributeMap.Columns[4].DataPropertyName = "DefaultValue";
-            dgAtributeMap.Columns[5].DataPropertyName = "Map";
+            dgAtributeMap.Columns[5].DataPropertyName = "isRequired";
+            dgAtributeMap.Columns[6].DataPropertyName = "isPrimary";
+
+            dgAtributeMap.Columns[7].DataPropertyName = "Map";
         }
 
 
@@ -513,6 +533,14 @@ namespace CRMSSIS.CRMDestinationAdapter
             loadEntityCombobox();
 
            
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            SetPictureBoxFromResource(pbLoader, "CRMSSIS.CRMDestinationAdapter.loading.gif");
+            pbLoader.Dock = DockStyle.Fill;
+
+            backgroundWorkerLoadEntities.RunWorkerAsync();
         }
     }
 }

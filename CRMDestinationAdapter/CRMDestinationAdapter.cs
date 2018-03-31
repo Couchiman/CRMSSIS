@@ -205,7 +205,10 @@ namespace CRMSSIS.CRMDestinationAdapter
             List<OrganizationRequest> Rqs = new List<OrganizationRequest>();
 
             string EntityName = (CRMCommon.JSONSerialization.Deserialize<Item>(ComponentMetaData.CustomPropertyCollection["Entity"].Value.ToString())).Text;
+            Mapping.MappingItem mappedColumn;
+            IDTSInputColumn100 input;
 
+          
 
             while ((buffer.NextRow()))
             {
@@ -214,17 +217,17 @@ namespace CRMSSIS.CRMDestinationAdapter
 
                 foreach (int col in mapInputColsToBufferCols)
                 {
+                    input = ComponentMetaData.InputCollection[0].InputColumnCollection[col];
+
+                    mappedColumn = mapping.ColumnList.Find(x => x.ExternalColumnName == input.Name && x.Map == true);
+
+                    if(mappedColumn != null)
+                    { 
                     if (buffer.IsNull(col) == false)
-                    {
-                        IDTSInput100 input = ComponentMetaData.InputCollection[0];
-
-                        Mapping.MappingItem mappedColumn = mapping.ColumnList.Find(x => x.ExternalColumnName == input.InputColumnCollection[col].Name && x.Map == true);
-
-                        if (mappedColumn != null)
-                            newEntity.Attributes[mappedColumn.InternalColumnName] = buffer[col];
-                        
+                                newEntity.Attributes[mappedColumn.InternalColumnName] = buffer[col];    
+                     else
+                                newEntity.Attributes[mappedColumn.InternalColumnName] = mappedColumn.DefaultValue;
                     }
-
                 }
                 newEntityCollection.Entities.Add(newEntity);
                 Rqs.Add(new CreateRequest { Target = newEntity });

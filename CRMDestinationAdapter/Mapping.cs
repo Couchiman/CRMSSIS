@@ -20,6 +20,9 @@ namespace CRMSSIS.CRMDestinationAdapter
             string externalColumnTypeName = "";
             string internalColumnName = "";
             string internalColumnTypeName = "";
+            Boolean IsRequired = false;
+            Boolean IsPrimary = false;
+
             AttributeTypeCode? internalColumn;
             string defaultValue;
             bool map = false;
@@ -129,6 +132,32 @@ namespace CRMSSIS.CRMDestinationAdapter
                     externalColumnTypeName = value;
                 }
             }
+            [DataMember(Name = "isRequired")]
+            public bool isRequired
+            {
+                get
+                {
+                    return IsRequired;
+                }
+
+                set
+                {
+                    IsRequired = value;
+                }
+            }
+            [DataMember(Name = "isPrimary")]
+            public bool isPrimary
+            {
+                get
+                {
+                    return IsPrimary;
+                }
+
+                set
+                {
+                    IsPrimary = value;
+                }
+            }
         }
 
         private List<MappingItem> columnList = new List<MappingItem>();
@@ -168,6 +197,9 @@ namespace CRMSSIS.CRMDestinationAdapter
                 mi.InternalColumnName = attribute.LogicalName;
                 mi.InternalColumnTypeName = attribute.AttributeType.ToString();
                 mi.InternalColumnType = attribute.AttributeType;
+                mi.isPrimary = attribute.IsPrimaryId.HasValue ? (bool)attribute.IsPrimaryId : false;
+                mi.isRequired = attribute.IsRequiredForForm.HasValue ? (bool)attribute.IsRequiredForForm : false;
+
 
                 //Maps by name the Input collection with Dynamics CRM collection
                 foreach (IDTSInputColumn100 inputcol in input.InputColumnCollection)

@@ -45,7 +45,7 @@
             this.dgAtributeMap = new System.Windows.Forms.DataGridView();
             this.backgroundWorkerLoadEntities = new System.ComponentModel.BackgroundWorker();
             this.pbLoader = new System.Windows.Forms.PictureBox();
-            this.lblNextStep = new System.Windows.Forms.Label();
+            this.btnRefresh = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgAtributeMap)).BeginInit();
@@ -115,7 +115,7 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.lblNextStep);
+            this.groupBox2.Controls.Add(this.btnRefresh);
             this.groupBox2.Controls.Add(this.txtBatchSize);
             this.groupBox2.Controls.Add(this.lblBatchSize);
             this.groupBox2.Controls.Add(this.label2);
@@ -124,7 +124,7 @@
             this.groupBox2.Controls.Add(this.cbOperation);
             this.groupBox2.Location = new System.Drawing.Point(8, 102);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(631, 137);
+            this.groupBox2.Size = new System.Drawing.Size(807, 137);
             this.groupBox2.TabIndex = 21;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Configure Operation";
@@ -185,7 +185,7 @@
             this.dgAtributeMap.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgAtributeMap.Location = new System.Drawing.Point(12, 245);
             this.dgAtributeMap.Name = "dgAtributeMap";
-            this.dgAtributeMap.Size = new System.Drawing.Size(627, 179);
+            this.dgAtributeMap.Size = new System.Drawing.Size(803, 179);
             this.dgAtributeMap.TabIndex = 22;
             // 
             // backgroundWorkerLoadEntities
@@ -201,22 +201,21 @@
             this.pbLoader.TabIndex = 23;
             this.pbLoader.TabStop = false;
             // 
-            // lblNextStep
+            // btnRefresh
             // 
-            this.lblNextStep.AutoSize = true;
-            this.lblNextStep.Location = new System.Drawing.Point(15, 121);
-            this.lblNextStep.Name = "lblNextStep";
-            this.lblNextStep.Size = new System.Drawing.Size(546, 13);
-            this.lblNextStep.TabIndex = 24;
-            this.lblNextStep.Text = "Click \"Ok\" to proceed and connect your Datsource. Then reopen this window to cont" +
-    "inue with mapping procedure";
-            this.lblNextStep.Visible = false;
+            this.btnRefresh.Location = new System.Drawing.Point(518, 56);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(75, 23);
+            this.btnRefresh.TabIndex = 25;
+            this.btnRefresh.Text = "Refresh";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // CRMDestinationAdapterUIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(651, 476);
+            this.ClientSize = new System.Drawing.Size(827, 476);
             this.Controls.Add(this.pbLoader);
             this.Controls.Add(this.dgAtributeMap);
             this.Controls.Add(this.groupBox2);
@@ -257,6 +256,6 @@
         private System.Windows.Forms.DataGridView dgAtributeMap;
         private System.ComponentModel.BackgroundWorker backgroundWorkerLoadEntities;
         private System.Windows.Forms.PictureBox pbLoader;
-        private System.Windows.Forms.Label lblNextStep;
+        private System.Windows.Forms.Button btnRefresh;
     }
 }

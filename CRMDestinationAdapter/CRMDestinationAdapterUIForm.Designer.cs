@@ -36,6 +36,7 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.btnRefresh = new System.Windows.Forms.Button();
             this.txtBatchSize = new System.Windows.Forms.TextBox();
             this.lblBatchSize = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -45,7 +46,6 @@
             this.dgAtributeMap = new System.Windows.Forms.DataGridView();
             this.backgroundWorkerLoadEntities = new System.ComponentModel.BackgroundWorker();
             this.pbLoader = new System.Windows.Forms.PictureBox();
-            this.btnRefresh = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgAtributeMap)).BeginInit();
@@ -96,9 +96,9 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(322, 441);
+            this.btnCancel.Location = new System.Drawing.Point(494, 441);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.Size = new System.Drawing.Size(80, 23);
             this.btnCancel.TabIndex = 11;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -107,7 +107,7 @@
             // 
             this.btnOK.Location = new System.Drawing.Point(240, 441);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(75, 23);
+            this.btnOK.Size = new System.Drawing.Size(80, 23);
             this.btnOK.TabIndex = 12;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
@@ -128,6 +128,16 @@
             this.groupBox2.TabIndex = 21;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Configure Operation";
+            // 
+            // btnRefresh
+            // 
+            this.btnRefresh.Location = new System.Drawing.Point(518, 56);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(116, 23);
+            this.btnRefresh.TabIndex = 25;
+            this.btnRefresh.Text = "Refresh Entities";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // txtBatchSize
             // 
@@ -200,16 +210,6 @@
             this.pbLoader.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pbLoader.TabIndex = 23;
             this.pbLoader.TabStop = false;
-            // 
-            // btnRefresh
-            // 
-            this.btnRefresh.Location = new System.Drawing.Point(518, 56);
-            this.btnRefresh.Name = "btnRefresh";
-            this.btnRefresh.Size = new System.Drawing.Size(116, 23);
-            this.btnRefresh.TabIndex = 25;
-            this.btnRefresh.Text = "Refresh Entities";
-            this.btnRefresh.UseVisualStyleBackColor = true;
-            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
             // CRMDestinationAdapterUIForm
             // 

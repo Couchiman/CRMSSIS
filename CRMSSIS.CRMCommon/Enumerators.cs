@@ -15,15 +15,17 @@ namespace CRMSSIS.CRMCommon.Enumerators
          [Description("Create")]
         Create = 0,
         //
-        //Delete Operation
+        //Update Operation
         [Description("Update")]
         Update = 1,
         //Delete Operation
         [Description("Delete")]
-        Delete = 2
-      
-        
-        }
+        Delete = 2,
+        [Description("Status")]
+        Status = 3
+
+
+    }
 
 
     public enum AuthenticationProviderTypeDescriptive

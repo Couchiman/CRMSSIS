@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using CRMSSIS.CRMCommon;
 
 namespace CRMSSIS.CRMDestinationAdapter
 {
@@ -195,7 +196,9 @@ namespace CRMSSIS.CRMDestinationAdapter
             
         }
 
-        public Mapping(AttributeMetadata[] metadata, IDTSInput100 input)
+        /// <summary>
+       
+        public Mapping(AttributeMetadata[] metadata, IDTSInput100 input, int Operation)
         {
             MappingItem mi;
 
@@ -206,29 +209,30 @@ namespace CRMSSIS.CRMDestinationAdapter
             {
 
                              
+                if(SupportedTypes.isValidAttribute(attribute,Operation))
+                { 
+                    mi = new MappingItem();
 
-                mi = new MappingItem();
-
-                mi.InternalColumnName = attribute.LogicalName;
-                mi.InternalColumnTypeName = attribute.AttributeType.ToString();
-                mi.InternalColumnType = attribute.AttributeType;
-                mi.isPrimary = attribute.IsPrimaryId.HasValue ? (bool)attribute.IsPrimaryId : false;
-                mi.isRequired = attribute.IsRequiredForForm.HasValue ? (bool)attribute.IsRequiredForForm : false;
+                    mi.InternalColumnName = attribute.LogicalName;
+                    mi.InternalColumnTypeName = attribute.AttributeType.ToString();
+                    mi.InternalColumnType = attribute.AttributeType;
+                    mi.isPrimary = attribute.IsPrimaryId.HasValue ? (bool)attribute.IsPrimaryId : false;
+                    mi.isRequired = attribute.IsRequiredForForm.HasValue ? (bool)attribute.IsRequiredForForm : false;
 
                
 
-                //Maps by name the Input collection with Dynamics CRM collection
-                foreach (IDTSInputColumn100 inputcol in input.InputColumnCollection)
-                {
-                    if (inputcol.Name == attribute.LogicalName)
+                    //Maps by name the Input collection with Dynamics CRM collection
+                    foreach (IDTSInputColumn100 inputcol in input.InputColumnCollection)
                     {
-                        mi.ExternalColumnName = inputcol.Name;
-                        mi.ExternalColumnType = inputcol.DataType;
-                        mi.ExternalColumnTypeName = inputcol.DataType.ToString();
+                        if (inputcol.Name == attribute.LogicalName)
+                        {
+                            mi.ExternalColumnName = inputcol.Name;
+                            mi.ExternalColumnType = inputcol.DataType;
+                            mi.ExternalColumnTypeName = inputcol.DataType.ToString();
+                        }
                     }
-                }
-                         
 
+                }
                 columnList.Add(mi);
             
         }

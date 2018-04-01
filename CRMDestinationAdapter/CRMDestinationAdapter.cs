@@ -294,22 +294,30 @@ namespace CRMSSIS.CRMDestinationAdapter
                         // newEntity.Attributes[mappedColumn.InternalColumnName] = mappedColumn.DefaultValue;
                     }
                 }
-                newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
-                newEntityCollection.Entities.Add(newEntity);
+                             
 
                 switch (operation)
                 {
                     case 0:
                         Rqs.Add(new CreateRequest { Target = newEntity });
+                        newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
                         break;
                     case 1:
                         Rqs.Add(new UpdateRequest { Target = newEntity });
+                        newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
                         break;
                     case 2:
                         Rqs.Add(new DeleteRequest { Target = newEntity.ToEntityReference() });
                         break;
+                    case 3:
+                        Rqs.Add(new SetStateRequest {
+                            EntityMoniker = newEntity.ToEntityReference(),
+                            State = new OptionSetValue((int)newEntity.Attributes["statecode"]),
+                            Status = new OptionSetValue((int)newEntity.Attributes["statuscode"])
+                        });
+                        break;
                 }
-               
+                newEntityCollection.Entities.Add(newEntity);
                 rowIndexList.Add(ir);
                 ir++;
 

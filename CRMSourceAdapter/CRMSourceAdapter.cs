@@ -13,6 +13,7 @@ using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Crm.Sdk.Messages;
 using System.Collections.Generic;
 using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
+using CRMSSIS.CRMCommon;
 
 
 namespace CRMSSIS.CRMSourceAdapter
@@ -421,50 +422,52 @@ namespace CRMSSIS.CRMSourceAdapter
                                 {
                                     mdta = entMetadata.Attributes.FirstOrDefault(m => m.LogicalName == columnName);
                                    
-
-
-                                    switch (mdta.AttributeType.Value)
-                                    {
-                                        //    break;
-                                        case AttributeTypeCode.BigInt:
-                                            dTable.Columns.Add(columnName, typeof(Int64));
+                                  
+                                    if(SupportedTypes.isValidAttribute(mdta))
+                                    { 
+                                        switch (mdta.AttributeType.Value)
+                                        {
+                                            //    break;
+                                            case AttributeTypeCode.BigInt:
+                                                dTable.Columns.Add(columnName, typeof(Int64));
                                             
-                                            break;
-                                        case AttributeTypeCode.Boolean:
-                                            dTable.Columns.Add(columnName, typeof(bool));
-                                            break;
-                                        case AttributeTypeCode.DateTime:
-                                            dTable.Columns.Add(columnName, typeof(DateTime));
+                                                break;
+                                            case AttributeTypeCode.Boolean:
+                                                dTable.Columns.Add(columnName, typeof(bool));
+                                                break;
+                                            case AttributeTypeCode.DateTime:
+                                                dTable.Columns.Add(columnName, typeof(DateTime));
 
-                                            break;
-                                        case AttributeTypeCode.Decimal:
-                                            dTable.Columns.Add(columnName, typeof(decimal));
+                                                break;
+                                            case AttributeTypeCode.Decimal:
+                                                dTable.Columns.Add(columnName, typeof(decimal));
                                             
-                                            break;
-                                        case AttributeTypeCode.Double:
-                                        case AttributeTypeCode.Money:
+                                                break;
+                                            case AttributeTypeCode.Double:
+                                            case AttributeTypeCode.Money:
                                            
-                                            dTable.Columns.Add(columnName, typeof(float));
-                                            break;
-                                        case AttributeTypeCode.Integer:
-                                        case AttributeTypeCode.Picklist:
-                                            dTable.Columns.Add(columnName, typeof(Int32));
-                                            break;
-                                        case AttributeTypeCode.Uniqueidentifier:
-                                        case AttributeTypeCode.Customer:
-                                        case AttributeTypeCode.Lookup:
-                                        case AttributeTypeCode.PartyList:
-                                        case AttributeTypeCode.Owner:
-                                            dTable.Columns.Add(columnName, typeof(Guid));
-                                            break;
+                                                dTable.Columns.Add(columnName, typeof(float));
+                                                break;
+                                            case AttributeTypeCode.Integer:
+                                            case AttributeTypeCode.Picklist:
+                                                dTable.Columns.Add(columnName, typeof(Int32));
+                                                break;
+                                            case AttributeTypeCode.Uniqueidentifier:
+                                            case AttributeTypeCode.Customer:
+                                            case AttributeTypeCode.Lookup:
+                                            case AttributeTypeCode.PartyList:
+                                            case AttributeTypeCode.Owner:
+                                                dTable.Columns.Add(columnName, typeof(Guid));
+                                                break;
                                         
-                                         default:
+                                             default:
                                             
                                            
-                                            dTable.Columns.Add(columnName,typeof(string));
-                                            break;
+                                                dTable.Columns.Add(columnName,typeof(string));
+                                                break;
+                                        }
                                     }
-                                   
+
                                 }
                             }
                         }

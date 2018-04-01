@@ -326,8 +326,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                     RetrieveAllEntitiesRequest mdRequest = new RetrieveAllEntitiesRequest()
                     {
                         EntityFilters = EntityFilters.Attributes,
-
-                        RetrieveAsIfPublished = false
+                        RetrieveAsIfPublished = true
                     };
                     RetrieveAllEntitiesResponse metaDataResponse = new RetrieveAllEntitiesResponse();
 
@@ -367,10 +366,11 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             IDTSInput100 input = this.metaData.InputCollection[0];
 
+            int operation = (int)EnumEx.GetValueFromDescription<Operations>(cbOperation.SelectedValue.ToString());
 
             if (m == null)
             {
-                m = new Mapping(entity.Metadata, input);
+                m = new Mapping(entity.Metadata, input, operation);
                 dgAtributeMap.DataSource = null;
                 dgAtributeMap.Rows.Clear();
                 dgAtributeMap.Refresh();

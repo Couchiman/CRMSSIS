@@ -183,6 +183,7 @@ namespace CRMSSIS.CRMDestinationAdapter
         List<int> rowIndexList = new List<int>();
         int ir = 0;
         int batchSize = 1;
+        int operation = 0;
         Guid currentUserId;
         string retError = string.Empty;
         string retOK = string.Empty;
@@ -204,10 +205,12 @@ namespace CRMSSIS.CRMDestinationAdapter
             
             mapping = CRMCommon.JSONSerialization.Deserialize<Mapping>(ComponentMetaData.CustomPropertyCollection["Mapping"].Value.ToString());
 
-            int bsize;
-                        
-            int.TryParse(ComponentMetaData.CustomPropertyCollection["BatchSize"].Value.ToString(), out bsize);
-            batchSize = bsize;
+          
+            batchSize = Convert.ToInt32(ComponentMetaData.CustomPropertyCollection["BatchSize"].Value.ToString());
+
+            operation = Convert.ToInt32(ComponentMetaData.CustomPropertyCollection["Operation"].Value.ToString());
+           
+             
 
             var userRequest = new WhoAmIRequest();
             var userResponse = (WhoAmIResponse)service.Execute(userRequest);
@@ -254,7 +257,20 @@ namespace CRMSSIS.CRMDestinationAdapter
                 }
                 newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
                 newEntityCollection.Entities.Add(newEntity);
-                Rqs.Add(new CreateRequest { Target = newEntity });
+
+                switch (operation)
+                {
+                    case 0:
+                        Rqs.Add(new CreateRequest { Target = newEntity });
+                        break;
+                    case 1:
+                        Rqs.Add(new UpdateRequest { Target = newEntity });
+                        break;
+                    case 2:
+                        Rqs.Add(new DeleteRequest { Target = newEntity.ToEntityReference() });
+                        break;
+                }
+               
                 rowIndexList.Add(ir);
                 ir++;
 

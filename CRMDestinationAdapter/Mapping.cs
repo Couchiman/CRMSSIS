@@ -231,9 +231,9 @@ namespace CRMSSIS.CRMDestinationAdapter
                             mi.ExternalColumnTypeName = inputcol.DataType.ToString();
                         }
                     }
-
+                    columnList.Add(mi);
                 }
-                columnList.Add(mi);
+                
             
         }
            

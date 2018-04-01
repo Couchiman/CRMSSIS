@@ -285,13 +285,9 @@ namespace CRMSSIS.CRMDestinationAdapter
                     if(mappedColumn != null)
                     {
                         if (buffer.IsNull(col) == false)
-                            
-                                //newEntity.Attributes[mappedColumn.InternalColumnName] = buffer[col].ToString();
-
-                         AttributesBuilder(mappedColumn, buffer[col], ref newEntity);
+                              AttributesBuilder(mappedColumn, buffer[col], ref newEntity);
                      else
                              AttributesBuilder(mappedColumn, mappedColumn.DefaultValue, ref newEntity);
-                        // newEntity.Attributes[mappedColumn.InternalColumnName] = mappedColumn.DefaultValue;
                     }
                 }
                              

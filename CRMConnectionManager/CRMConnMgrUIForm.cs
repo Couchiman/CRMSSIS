@@ -21,9 +21,10 @@ namespace CRMSSIS.CRMConnectionManager
 
           
         }
-
+        #region properties
         private ConnectionManager _connectionManager { get; set; }
         private System.IServiceProvider _serviceProvider { get; set; }
+        #endregion
 
         public void Initialize (ConnectionManager connectionManager, IServiceProvider serviceProvider) 
         {
@@ -33,12 +34,12 @@ namespace CRMSSIS.CRMConnectionManager
             LoadAuthCombo(cboAuthType);
             ConfigureControlsFromConnectionManager();
            
-            
-
         }
 
   
-
+        /// <summary>
+        /// presets information into controls when UI appears from metadata
+        /// </summary>
         private void ConfigureControlsFromConnectionManager()
         {
  
@@ -68,8 +69,9 @@ namespace CRMSSIS.CRMConnectionManager
 
         }
 
-
-
+        /// <summary>
+        /// sets changes to component metadata.
+        /// </summary>
         private void ConfigureConnectionManagerFromControls()
         {
 
@@ -98,7 +100,10 @@ namespace CRMSSIS.CRMConnectionManager
 
         }
 
-
+        /// <summary>
+        /// Creates Authentication Type Combo
+        /// </summary>
+        /// <param name="cbo"></param>
         public static void LoadAuthCombo(ComboBox cbo)
         {
             cbo.DataSource = Enum.GetValues(typeof(AuthenticationProviderTypeDescriptive))
@@ -117,6 +122,11 @@ namespace CRMSSIS.CRMConnectionManager
              
         }
 
+        /// <summary>
+        /// OK button to save changes in connection manager
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnOk_Click(object sender, EventArgs e)
         {
             ConfigureConnectionManagerFromControls();
@@ -130,10 +140,6 @@ namespace CRMSSIS.CRMConnectionManager
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
-
-        private void cboAuthType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
+ 
     }
 }

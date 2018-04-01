@@ -27,18 +27,11 @@ namespace CRMSSIS.CRMSourceAdapter
     public class CRMSourceAdapter : PipelineComponent
     {
 
-        //[SSIS.Pipeline]
-        //Error: Cannot find the connection manager with ID "{B116844B-768A-4A52-B3DE-EDD303605854}" in the connection manager 
-        //    collection due to error code 0xC0010009. That connection manager is needed by "CRM Dynamics Source.Connections[CRMSSIS]"
-        //    in the connection manager collection of "CRM Dynamics Source". Verify that a connection manager in the connection manager collection,
-        //    Connections, has been created with that ID.--> FIX Run as 64 Bit in False on the SIIS Project
-
-
+        #region properties
         private IOrganizationService service { get; set; }
        private EntityMetadata entMetadata { get; set; }
-
-
-
+        #endregion
+        #region design time methods
 
         public override void PerformUpgrade(int pipelineVersion)
         {
@@ -46,8 +39,11 @@ namespace CRMSSIS.CRMSourceAdapter
             ComponentMetaData.CustomPropertyCollection["UserComponentTypeName"].Value = this.GetType().AssemblyQualifiedName;
 
         }
-        
 
+        /// <summary>
+        /// Connects to Dynamics instance using connection string.
+        /// </summary>
+        /// <param name="transaction"></param>
         public override void AcquireConnections(object transaction)
         {
 
@@ -96,56 +92,10 @@ namespace CRMSSIS.CRMSourceAdapter
         }
 
      
-        public override void PrimeOutput(int outputs, int[] outputIDs, PipelineBuffer[] buffers)
-        {
-
-            //System.Diagnostics.Debugger.Launch();
-
-            base.PrimeOutput(outputs, outputIDs, buffers);
-
-            IDTSOutput100 output = ComponentMetaData.OutputCollection.FindObjectByID(outputIDs[0]);
-            PipelineBuffer buffer = buffers[0];
-
-            DataTable dt = new DataTable();
-                        
-            dt = GetData(ComponentMetaData.CustomPropertyCollection["FetchXML"].Value.ToString(), false);
-            
-            foreach (DataRow row in dt.Rows)
-            {
-                buffer.AddRow();
-
-                for (int x = 0; x < mapOutputColsToBufferCols.Length; x++)
-                {
-                    if (row.IsNull(x))
-                        buffer.SetNull(mapOutputColsToBufferCols[x]);
-                    else
-                        buffer[mapOutputColsToBufferCols[x]] = row[x];
-                }
-            }
-
-            buffer.SetEndOfRowset();
-        }
-
-        public int[] mapOutputColsToBufferCols;
-
-        public override void PreExecute()
-        {
-
-           
-            base.PreExecute();
-            
-            IDTSOutput100 output =  ComponentMetaData.OutputCollection[0];
-            mapOutputColsToBufferCols = new int[output.OutputColumnCollection.Count];
-
-            for (int i = 0; i < ComponentMetaData.OutputCollection[0].OutputColumnCollection.Count; i++)
-            {
-                // Here, "i" is the column count in the component's outputcolumncollection
-                // and the value of mapOutputColsToBufferCols[i] is the index of the corresponding column in the
-                // buffer.
-                mapOutputColsToBufferCols[i] = BufferManager.FindColumnByLineageID(output.Buffer, output.OutputColumnCollection[i].LineageID);
-            }
-        }
-
+        /// <summary>
+        /// Validates properties required by the component
+        /// </summary>
+        /// <returns></returns>
         public override DTSValidationStatus Validate()
         {
 
@@ -177,12 +127,18 @@ namespace CRMSSIS.CRMSourceAdapter
             return base.Validate();
         }
 
-       
+       /// <summary>
+       /// When metadata changes, changes re adds output columns
+       /// </summary>
         public override void ReinitializeMetaData()
         {
             AddOutputColumns(ComponentMetaData.CustomPropertyCollection["FetchXML"].Value.ToString());
             base.ReinitializeMetaData();
         }
+        /// <summary>
+        /// Add output columns
+        /// </summary>
+        /// <param name="propertyValue"></param>
         public void AddOutputColumns(String propertyValue)
         {
             if (!String.IsNullOrEmpty(propertyValue))
@@ -353,12 +309,16 @@ namespace CRMSSIS.CRMSourceAdapter
 
                         }
 
-                        //DtsPipelineComponentAttribute componentAttribute = (DtsPipelineComponentAttribute)Attribute.GetCustomAttribute(this.GetType(), typeof(DtsPipelineComponentAttribute), false);
-                        //ComponentMetaData.Version = componentAttribute.CurrentVersion;
+                         
                     }
                 }
             }
         }
+        /// <summary>
+        /// Add external output columns for offline support
+        /// </summary>
+        /// <param name="output"></param>
+        /// <param name="outputColumn"></param>
         private void CreateExternalMetaDataColumn(IDTSOutput100 output, IDTSOutputColumn100 outputColumn)
         {
             IDTSExternalMetadataColumn100 externalColumn = output.ExternalMetadataColumnCollection.New();
@@ -369,6 +329,9 @@ namespace CRMSSIS.CRMSourceAdapter
             externalColumn.Scale = outputColumn.Scale;
             outputColumn.ExternalMetadataColumnID = externalColumn.ID;
         }
+        /// <summary>
+        /// Add user and hidden properties to configure the control
+        /// </summary>
         public override void ProvideComponentProperties()
         {
             base.RemoveAllInputsOutputsAndCustomProperties();
@@ -392,7 +355,12 @@ namespace CRMSSIS.CRMSourceAdapter
             connection.ConnectionManagerID = "CRMSSIS";
              
         }
-
+        /// <summary>
+        /// Gets information from Dynamics entity based on FetchXML query
+        /// </summary>
+        /// <param name="FetchXML"></param>
+        /// <param name="top"></param>
+        /// <returns></returns>
         public DataTable GetData(String FetchXML, Boolean top)
         {
 
@@ -584,7 +552,58 @@ namespace CRMSSIS.CRMSourceAdapter
             }
 
         }
+        #endregion
+        #region runtime methods
+        public override void PrimeOutput(int outputs, int[] outputIDs, PipelineBuffer[] buffers)
+        {
+
+            //System.Diagnostics.Debugger.Launch();
+
+            base.PrimeOutput(outputs, outputIDs, buffers);
+
+            IDTSOutput100 output = ComponentMetaData.OutputCollection.FindObjectByID(outputIDs[0]);
+            PipelineBuffer buffer = buffers[0];
+
+            DataTable dt = new DataTable();
+
+            dt = GetData(ComponentMetaData.CustomPropertyCollection["FetchXML"].Value.ToString(), false);
+
+            foreach (DataRow row in dt.Rows)
+            {
+                buffer.AddRow();
+
+                for (int x = 0; x < mapOutputColsToBufferCols.Length; x++)
+                {
+                    if (row.IsNull(x))
+                        buffer.SetNull(mapOutputColsToBufferCols[x]);
+                    else
+                        buffer[mapOutputColsToBufferCols[x]] = row[x];
+                }
+            }
+
+            buffer.SetEndOfRowset();
+        }
+
+        public int[] mapOutputColsToBufferCols;
 
 
+        public override void PreExecute()
+        {
+
+
+            base.PreExecute();
+
+            IDTSOutput100 output = ComponentMetaData.OutputCollection[0];
+            mapOutputColsToBufferCols = new int[output.OutputColumnCollection.Count];
+
+            for (int i = 0; i < ComponentMetaData.OutputCollection[0].OutputColumnCollection.Count; i++)
+            {
+                // Here, "i" is the column count in the component's outputcolumncollection
+                // and the value of mapOutputColsToBufferCols[i] is the index of the corresponding column in the
+                // buffer.
+                mapOutputColsToBufferCols[i] = BufferManager.FindColumnByLineageID(output.Buffer, output.OutputColumnCollection[i].LineageID);
+            }
+        }
+        #endregion
     }
 }

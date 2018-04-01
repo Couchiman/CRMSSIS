@@ -25,9 +25,36 @@ namespace CRMSSIS.CRMDestinationAdapter
     public class CRMDestinationAdapter : PipelineComponent
     {
 
+        #region properties
+
         public IOrganizationService service { get; set; }
         public Mapping mapping { get; set; }
+        #endregion
 
+        #region variables
+        public int[] mapInputColsToBufferCols;
+        int bchCnt = 0;
+        List<int> rowIndexList = new List<int>();
+        int ir = 0;
+        int batchSize = 1;
+        int operation = 0;
+        Guid currentUserId;
+        string retError = string.Empty;
+        string retOK = string.Empty;
+        #endregion
+
+        #region strucutures
+        private struct CRMIntegrate
+        {
+            public ExecuteMultipleRequest Req;
+            public ExecuteMultipleResponse Resp;
+            public string ExceptionMessage;
+            public List<int> DataTableRowsIndex;
+
+        }
+        #endregion
+
+        #region design-time methods
 
         public override void PerformUpgrade(int pipelineVersion)
         {
@@ -35,7 +62,10 @@ namespace CRMSSIS.CRMDestinationAdapter
             ComponentMetaData.CustomPropertyCollection["UserComponentTypeName"].Value = this.GetType().AssemblyQualifiedName;
 
         }
-
+        /// <summary>
+        /// Connects to Dynamics instance using connection string.
+        /// </summary>
+        /// <param name="transaction"></param>
         public override void AcquireConnections(object transaction)
         {
 
@@ -83,7 +113,9 @@ namespace CRMSSIS.CRMDestinationAdapter
 
         }
 
-
+        /// <summary>
+        /// Add user and hidden properties to configure the control
+        /// </summary>
         public override void ProvideComponentProperties()
         {
             base.RemoveAllInputsOutputsAndCustomProperties();
@@ -136,6 +168,10 @@ namespace CRMSSIS.CRMDestinationAdapter
 
         }
 
+        /// <summary>
+        /// Validates properties required by the component
+        /// </summary>
+        /// <returns></returns>
         public override DTSValidationStatus Validate()
         {
 
@@ -160,7 +196,10 @@ namespace CRMSSIS.CRMDestinationAdapter
             return base.Validate();
         }
 
-
+        /// <summary>
+        /// Capture when dataflow component is attached
+        /// </summary>
+        /// <param name="inputID"></param>
         public override void OnInputPathAttached(int inputID)
         {
             base.OnInputPathAttached(inputID);
@@ -178,16 +217,12 @@ namespace CRMSSIS.CRMDestinationAdapter
         }
 
 
-        public int[] mapInputColsToBufferCols;
-        int bchCnt = 0;
-        List<int> rowIndexList = new List<int>();
-        int ir = 0;
-        int batchSize = 1;
-        int operation = 0;
-        Guid currentUserId;
-        string retError = string.Empty;
-        string retOK = string.Empty;
+        #endregion
 
+        #region runtime methods
+        /// <summary>
+        /// setups the operation with required values and maps buffer with inputcolumns
+        /// </summary>
         public override void PreExecute()
         {
 
@@ -219,7 +254,11 @@ namespace CRMSSIS.CRMDestinationAdapter
 
         }
 
-        
+        /// <summary>
+        /// Process the rows from the datasource
+        /// </summary>
+        /// <param name="inputID"></param>
+        /// <param name="buffer"></param>
         public override void ProcessInput(int inputID, PipelineBuffer buffer)
         {
             EntityCollection newEntityCollection = new EntityCollection();
@@ -330,14 +369,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                     break;
             }
         }
-        private struct CRMIntegrate
-        {
-            public ExecuteMultipleRequest Req;
-            public ExecuteMultipleResponse Resp;
-            public string ExceptionMessage;
-            public List<int> DataTableRowsIndex;
-
-        }
+      
 
         private void SendRowsToCRM(EntityCollection EntityList, string EntityName, List<OrganizationRequest> Rqs, int RowCount)
         {
@@ -464,4 +496,5 @@ namespace CRMSSIS.CRMDestinationAdapter
         }
 
     }
+    #endregion
 }

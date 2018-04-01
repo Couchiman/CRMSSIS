@@ -18,7 +18,7 @@ namespace CRMSSIS.CRMConnectionManager
     public class CRMConnectionManager : ConnectionManagerBase, IDTSComponentPersist
     {
 
-
+        #region properties
         public bool UsesSSL { get; set; }
         public string Port { get; set; }
 
@@ -35,8 +35,7 @@ namespace CRMSSIS.CRMConnectionManager
 
         private string _connectionString;
 
-        //public override int Version { get { return 2; } }
-
+        
         public override string ConnectionString
         {
             get
@@ -50,6 +49,8 @@ namespace CRMSSIS.CRMConnectionManager
                 _connectionString = value;
             }
         }
+
+        #endregion
 
         public CRMConnectionManager()
         {
@@ -65,7 +66,9 @@ namespace CRMSSIS.CRMConnectionManager
             TimeOut =0;
 
         }
-
+        /// <summary>
+        /// Updates the connection string when user changes it.
+        /// </summary>
         private void UpdateConnectionString()
         {
 
@@ -126,6 +129,11 @@ namespace CRMSSIS.CRMConnectionManager
             _connectionString = temporaryString.Trim();
         }
 
+        /// <summary>
+        /// Validates required properties. 
+        /// </summary>
+        /// <param name="infoEvents"></param>
+        /// <returns></returns>
         public override Microsoft.SqlServer.Dts.Runtime.DTSExecResult Validate(Microsoft.SqlServer.Dts.Runtime.IDTSInfoEvents infoEvents)
         {
          
@@ -141,7 +149,11 @@ namespace CRMSSIS.CRMConnectionManager
             }
 
         }
-
+        /// <summary>
+        /// Gets connection string to be used in Destination and Source adapters.
+        /// </summary>
+        /// <param name="txn"></param>
+        /// <returns></returns>
         public override object AcquireConnection(object txn)
         {
 
@@ -159,23 +171,27 @@ namespace CRMSSIS.CRMConnectionManager
 
         }
 
-
+        /// <summary>
+        /// Liberates connection object
+        /// </summary>
+        /// <param name="connection"></param>
         public override void ReleaseConnection(object connection)
         {
             base.ReleaseConnection(connection);
             connection = null;
         }
 
+        /// <summary>
+        /// Persists Connection String information
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="infoEvents"></param>
         void IDTSComponentPersist.SaveToXML(XmlDocument doc, IDTSInfoEvents infoEvents)
         {
             // Create a root node for the data
             XmlElement rootElement = doc.CreateElement(String.Empty, "CRMConnectionManager", String.Empty);
             
-
-            //XmlAttribute ConnectionString = doc.CreateAttribute("ConnectionString");
-            //ConnectionString.Value =_connectionString;
-            //rootElement.Attributes.Append(ConnectionString);
-
+         
             doc.AppendChild(rootElement);
 
             XmlNode node = doc.CreateNode(XmlNodeType.Element, "AuthType", String.Empty);
@@ -266,7 +282,11 @@ namespace CRMSSIS.CRMConnectionManager
 
 
         }
-
+        /// <summary>
+        /// Loads Connection String persisted information
+        /// </summary>
+        /// <param name="rootNode"></param>
+        /// <param name="infoEvents"></param>
         void IDTSComponentPersist.LoadFromXML(XmlElement rootNode, IDTSInfoEvents infoEvents)
         {
             // Create a root node for the data

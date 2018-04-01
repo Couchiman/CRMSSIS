@@ -174,7 +174,7 @@
             this.cboAuthType.Name = "cboAuthType";
             this.cboAuthType.Size = new System.Drawing.Size(132, 21);
             this.cboAuthType.TabIndex = 13;
-            this.cboAuthType.SelectedIndexChanged += new System.EventHandler(this.cboAuthType_SelectedIndexChanged);
+             
             // 
             // txtCallerId
             // 

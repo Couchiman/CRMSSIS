@@ -12,14 +12,14 @@ namespace CRMSSIS.CRMCommon.Enumerators
         {
        
          //Upsert Operation
-         [Description("Bulk Create")]
+         [Description("Create")]
         Create = 0,
         //
         //Delete Operation
-        [Description("Bulk Update")]
+        [Description("Update")]
         Update = 1,
         //Delete Operation
-        [Description("Bulk Delete")]
+        [Description("Delete")]
         Delete = 2
       
         

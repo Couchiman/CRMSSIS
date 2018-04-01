@@ -372,7 +372,9 @@ namespace CRMSSIS.CRMDestinationAdapter
             {
                 m = new Mapping(entity.Metadata, input);
                 dgAtributeMap.DataSource = null;
-                 
+                dgAtributeMap.Rows.Clear();
+                dgAtributeMap.Refresh();
+                                
             }
             
         
@@ -382,7 +384,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             
 
         }
-     
+
 
         private void ConfigureMappingGrid(IDTSInput100 Input)
         {
@@ -398,13 +400,13 @@ namespace CRMSSIS.CRMDestinationAdapter
             cmbExternalColumnName.Name = "ExternalColumnName";
             cmbExternalColumnName.DisplayMember = "ExternalColumnName";
             cmbExternalColumnName.ValueMember = "ExternalColumnName";
-            cmbExternalColumnName.Width = 160;
+            cmbExternalColumnName.Width = 120;
 
             foreach (IDTSInputColumn100 column in this.metaData.InputCollection[0].InputColumnCollection)
                 cmbExternalColumnName.Items.Add(column.Name.ToString());
-        
+
             dgAtributeMap.Columns.Add(cmbExternalColumnName);
-                       
+
 
             DataGridViewComboBoxColumn cmbExternalColumnTypeName = new DataGridViewComboBoxColumn();
             cmbExternalColumnTypeName.HeaderText = "Column Type";
@@ -422,9 +424,9 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             }
 
-            
+
             cmbExternalColumnTypeName.Items.AddRange(mDataTypes.ToArray());
-            
+
             dgAtributeMap.Columns.Add(cmbExternalColumnTypeName);
 
 
@@ -435,7 +437,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             cmbInternalColumnName.Name = "InternalColumnName";
             cmbInternalColumnName.DisplayMember = "InternalColumnName";
             cmbInternalColumnName.ValueMember = "InternalColumnName";
-            cmbInternalColumnName.Width = 160;
+            cmbInternalColumnName.Width = 120;
 
             foreach (Mapping.MappingItem column in m.ColumnList)
                 cmbInternalColumnName.Items.Add(column.InternalColumnName);
@@ -455,6 +457,7 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             dgAtributeMap.Columns.Add(cmbInternalColumnTypeName);
 
+         
             //Default Values Column
 
 
@@ -492,13 +495,57 @@ namespace CRMSSIS.CRMDestinationAdapter
             dgAtributeMap.Columns[1].DataPropertyName = "ExternalColumnTypeName";
             dgAtributeMap.Columns[2].DataPropertyName = "InternalColumnName";
             dgAtributeMap.Columns[3].DataPropertyName = "InternalColumnTypeName";
+    
             dgAtributeMap.Columns[4].DataPropertyName = "DefaultValue";
             dgAtributeMap.Columns[5].DataPropertyName = "isRequired";
             dgAtributeMap.Columns[6].DataPropertyName = "isPrimary";
 
             dgAtributeMap.Columns[7].DataPropertyName = "Map";
+
+            dgAtributeMap.DataBindingComplete += dgAtributeMap_DataBindingComplete;
         }
 
+        private void dgAtributeMap_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        {
+            string colName = "TargetEntity";
+
+            if (dgAtributeMap.Columns.Contains(colName))
+            {
+                dgAtributeMap.Columns.Remove(colName);
+            }
+
+            DataGridViewComboBoxColumn column = new DataGridViewComboBoxColumn();
+            column.Name = colName;
+            dgAtributeMap.Columns.Add(column);
+
+            Item Entity = (Item)CRMSSIS.CRMCommon.JSONSerialization.Deserialize<Item>(this.metaData.CustomPropertyCollection["Entity"].Value.ToString());
+
+            foreach (DataGridViewRow row in dgAtributeMap.Rows)
+            {
+                var mappingitem = (Mapping.MappingItem)row.DataBoundItem;
+                var cell = row.Cells[colName] as DataGridViewComboBoxCell;
+
+                
+                foreach (AttributeMetadata attribute in Entity.Metadata)
+                {
+                    if(mappingitem.InternalColumnName == attribute.LogicalName)
+                    { 
+                        switch (attribute.AttributeType.Value)
+                        {
+                            case AttributeTypeCode.Lookup:
+                            case AttributeTypeCode.Customer:
+                            case AttributeTypeCode.PartyList:
+                            case AttributeTypeCode.Owner:
+                             
+                               cell.Items.AddRange(((Microsoft.Xrm.Sdk.Metadata.LookupAttributeMetadata)attribute).Targets);
+                                
+                                break;
+                        }
+                    }
+                }
+                
+            }
+        }
 
         private void cbEntity_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -506,7 +553,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             {
             
                 m = null;
-                loadMappingGrid((Item)cbEntity.SelectedItem);
+               loadMappingGrid((Item)cbEntity.SelectedItem);
             }
 
         }

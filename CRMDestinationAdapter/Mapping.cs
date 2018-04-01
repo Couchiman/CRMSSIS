@@ -2,6 +2,7 @@
 using Microsoft.SqlServer.Dts.Runtime.Wrapper;
 using Microsoft.Xrm.Sdk.Metadata;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -22,6 +23,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             string internalColumnTypeName = "";
             Boolean IsRequired = false;
             Boolean IsPrimary = false;
+            string targetEntity =""; 
 
             AttributeTypeCode? internalColumn;
             string defaultValue;
@@ -158,6 +160,19 @@ namespace CRMSSIS.CRMDestinationAdapter
                     IsPrimary = value;
                 }
             }
+            [DataMember(Name = "TargetEntity")]
+            public string TargetEntity
+            {
+                get
+                {
+                    return targetEntity;
+                }
+
+                set
+                {
+                    targetEntity = value;
+                }
+            }
         }
 
         private List<MappingItem> columnList = new List<MappingItem>();
@@ -200,6 +215,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                 mi.isPrimary = attribute.IsPrimaryId.HasValue ? (bool)attribute.IsPrimaryId : false;
                 mi.isRequired = attribute.IsRequiredForForm.HasValue ? (bool)attribute.IsRequiredForForm : false;
 
+               
 
                 //Maps by name the Input collection with Dynamics CRM collection
                 foreach (IDTSInputColumn100 inputcol in input.InputColumnCollection)

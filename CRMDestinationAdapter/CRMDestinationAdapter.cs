@@ -12,6 +12,8 @@ using System.ServiceModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Crm.Sdk.Messages;
+using System.Globalization;
 
 namespace CRMSSIS.CRMDestinationAdapter
 {
@@ -122,9 +124,11 @@ namespace CRMSSIS.CRMDestinationAdapter
             CRMErrors.Description = "Errors during integration process";
 
 
+
             IDTSCustomProperty100 CRMOK = ComponentMetaData.CustomPropertyCollection.New();
             CRMOK.Name = "CRMOK";
             CRMOK.Description = "Valid GUIDs integrated registers";
+           
 
             IDTSRuntimeConnection100 connection = ComponentMetaData.RuntimeConnectionCollection.New();
             connection.Name = "CRMSSIS";
@@ -175,6 +179,13 @@ namespace CRMSSIS.CRMDestinationAdapter
 
 
         public int[] mapInputColsToBufferCols;
+        int bchCnt = 0;
+        List<int> rowIndexList = new List<int>();
+        int ir = 0;
+        int batchSize = 1;
+        Guid currentUserId;
+        string retError = string.Empty;
+        string retOK = string.Empty;
 
         public override void PreExecute()
         {
@@ -192,13 +203,20 @@ namespace CRMSSIS.CRMDestinationAdapter
             }
             
             mapping = CRMCommon.JSONSerialization.Deserialize<Mapping>(ComponentMetaData.CustomPropertyCollection["Mapping"].Value.ToString());
+
+            int bsize;
+                        
+            int.TryParse(ComponentMetaData.CustomPropertyCollection["BatchSize"].Value.ToString(), out bsize);
+            batchSize = bsize;
+
+            var userRequest = new WhoAmIRequest();
+            var userResponse = (WhoAmIResponse)service.Execute(userRequest);
+            
+            currentUserId = userResponse.UserId;
+
         }
 
-
-        int bchCnt = 0;
-        List<int> rowIndexList = new List<int>();
-        int ir = 0;
-
+        
         public override void ProcessInput(int inputID, PipelineBuffer buffer)
         {
             EntityCollection newEntityCollection = new EntityCollection();
@@ -223,24 +241,78 @@ namespace CRMSSIS.CRMDestinationAdapter
                     mappedColumn = mapping.ColumnList.Find(x => x.ExternalColumnName == input.Name && x.Map == true);
 
                     if(mappedColumn != null)
-                    { 
-                    if (buffer.IsNull(col) == false)
-                                newEntity.Attributes[mappedColumn.InternalColumnName] = buffer[col].ToString();    
+                    {
+                        if (buffer.IsNull(col) == false)
+                            
+                                //newEntity.Attributes[mappedColumn.InternalColumnName] = buffer[col].ToString();
+
+                         AttributesBuilder(mappedColumn, buffer[col], ref newEntity);
                      else
-                                newEntity.Attributes[mappedColumn.InternalColumnName] = mappedColumn.DefaultValue;
+                             AttributesBuilder(mappedColumn, mappedColumn.DefaultValue, ref newEntity);
+                        // newEntity.Attributes[mappedColumn.InternalColumnName] = mappedColumn.DefaultValue;
                     }
                 }
+                newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
                 newEntityCollection.Entities.Add(newEntity);
                 Rqs.Add(new CreateRequest { Target = newEntity });
                 rowIndexList.Add(ir);
                 ir++;
 
-                SendRowsToCRM(newEntityCollection, EntityName, Rqs, buffer.RowCount);
-
+                 SendRowsToCRM(newEntityCollection, EntityName, Rqs, buffer.RowCount);
+               
 
             }
 
+          
+        }
+        private void AttributesBuilder(Mapping.MappingItem mappedColumn, object value, ref Entity newEntity)
+        {
+            switch (mappedColumn.InternalColumnType.Value)
+            {
+                //    break;
+                case AttributeTypeCode.BigInt:
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToInt64(value, CultureInfo.CreateSpecificCulture("en-US"));
+                    
+                    break;
+                case AttributeTypeCode.Boolean:
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToBoolean(value, CultureInfo.CreateSpecificCulture("en-US"));
+                    break;
+                case AttributeTypeCode.DateTime:
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToDateTime(value, CultureInfo.CreateSpecificCulture("en-US"));
 
+                    break;
+                case AttributeTypeCode.Decimal:
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToDecimal(value, CultureInfo.CreateSpecificCulture("en-US"));
+
+                    break;
+                case AttributeTypeCode.Double:
+                case AttributeTypeCode.Money:
+
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToDouble(value, CultureInfo.CreateSpecificCulture("en-US"));
+                    break;
+                case AttributeTypeCode.Integer:
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToInt32(value, CultureInfo.CreateSpecificCulture("en-US"));
+                    break;
+                case AttributeTypeCode.Picklist:
+
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = new OptionSetValue(Convert.ToInt32(value, CultureInfo.CreateSpecificCulture("en-US")));
+                    break;
+                case AttributeTypeCode.Uniqueidentifier:
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = new Guid(Convert.ToString(value, CultureInfo.CreateSpecificCulture("en-US")));
+                    break;
+                case AttributeTypeCode.Owner:
+                    break;
+                case AttributeTypeCode.Customer:
+                case AttributeTypeCode.Lookup:
+                case AttributeTypeCode.PartyList:
+                   
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = new EntityReference(mappedColumn.TargetEntity, new Guid(Convert.ToString(value, CultureInfo.CreateSpecificCulture("en-US"))));
+                    break;
+
+                default:
+                        newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToString(value, CultureInfo.CreateSpecificCulture("en-US"));
+                    break;
+            }
         }
         private struct CRMIntegrate
         {
@@ -258,12 +330,8 @@ namespace CRMSSIS.CRMDestinationAdapter
             CRMIntegrate[] Integ = new CRMIntegrate[2];
             IEnumerable<ExecuteMultipleResponseItem> FltResp;
             IEnumerable<ExecuteMultipleResponseItem> OkResp;
-            int bsize;
-
-            int.TryParse(ComponentMetaData.CustomPropertyCollection["BatchSize"].Value.ToString(), out bsize);
-            int batchSize = bsize;
-
-            
+          
+                       
 
             if (bchCnt == batchSize * 2 || (ir + 1) == RowCount)
             {
@@ -336,8 +404,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                                                }
                                );
 
-                string retError = string.Empty;
-                string retOK = string.Empty;
+               
 
 
                 foreach (CRMIntegrate irsp in Integ)
@@ -365,15 +432,20 @@ namespace CRMSSIS.CRMDestinationAdapter
 
                 }
 
-                ComponentMetaData.CustomPropertyCollection["CRMErrors"].Value = ComponentMetaData.CustomPropertyCollection["CRMErrors"].Value + Environment.NewLine + retError;
-                ComponentMetaData.CustomPropertyCollection["CRMOK"].Value = ComponentMetaData.CustomPropertyCollection["CRMErrors"].Value + Environment.NewLine + retOK;
-
+               
                 Rqs.Clear();
                 rowIndexList.Clear();
             }
 
         }
 
+        public override void PostExecute()
+        {
+            
+            ComponentMetaData.CustomPropertyCollection["CRMErrors"].Value =retError;
+            ComponentMetaData.CustomPropertyCollection["CRMOK"].Value =  retOK;
+            
+        }
 
     }
 }

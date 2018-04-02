@@ -54,8 +54,9 @@ namespace CRMSSIS.CRMCommon
         {
             RetrieveEntityRequest retrieveEntityRequest = new RetrieveEntityRequest
             {
-                EntityFilters = EntityFilters.Entity,
-                LogicalName = entityName
+                EntityFilters = EntityFilters.Attributes,
+                LogicalName = entityName,
+                RetrieveAsIfPublished = true
             };
 
             return  (RetrieveEntityResponse)service.Execute(retrieveEntityRequest);

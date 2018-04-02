@@ -607,7 +607,7 @@ namespace CRMSSIS.CRMDestinationAdapter
 
                             RetrieveEntityResponse retrieveEntityResponse = CRMSSIS.CRMCommon.CRM.RetrieveEntityRequestMetadata(service, entity.Text);
 
-                            this.metaData.CustomPropertyCollection["Entity"].Value = new Item(entity.Text, entity.Text, retrieveEntityResponse.EntityMetadata.Attributes);
+                            this.metaData.CustomPropertyCollection["Entity"].Value = CRMSSIS.CRMCommon.JSONSerialization.Serialize<Item>(new Item(entity.Text, entity.Text, retrieveEntityResponse.EntityMetadata.Attributes));
                             int operation = (int)EnumEx.GetValueFromDescription<Operations>(cbOperation.SelectedValue.ToString());
 
                             m.RefreshMapping(input, entity.Metadata, retrieveEntityResponse.EntityMetadata.Attributes, operation);

@@ -35,6 +35,7 @@
             this.btnNewConnectionManager = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
+            this.btnRefreshMetadata = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.txtBatchSize = new System.Windows.Forms.TextBox();
@@ -46,7 +47,6 @@
             this.dgAtributeMap = new System.Windows.Forms.DataGridView();
             this.backgroundWorkerLoadEntities = new System.ComponentModel.BackgroundWorker();
             this.pbLoader = new System.Windows.Forms.PictureBox();
-            this.btnRefreshMetadata = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgAtributeMap)).BeginInit();
@@ -114,6 +114,16 @@
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
+            // btnRefreshMetadata
+            // 
+            this.btnRefreshMetadata.Location = new System.Drawing.Point(128, 441);
+            this.btnRefreshMetadata.Name = "btnRefreshMetadata";
+            this.btnRefreshMetadata.Size = new System.Drawing.Size(107, 23);
+            this.btnRefreshMetadata.TabIndex = 13;
+            this.btnRefreshMetadata.Text = "Refresh Metadata";
+            this.btnRefreshMetadata.UseVisualStyleBackColor = true;
+            this.btnRefreshMetadata.Click += new System.EventHandler(this.btnRefreshMetadata_Click);
+            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.btnRefresh);
@@ -139,6 +149,7 @@
             this.btnRefresh.Text = "Refresh Entities";
             this.btnRefresh.UseVisualStyleBackColor = true;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+           
             // 
             // txtBatchSize
             // 
@@ -211,28 +222,20 @@
             this.pbLoader.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pbLoader.TabIndex = 99;
             this.pbLoader.TabStop = false;
-            // 
-            // btnRefreshMetadata
-            // 
-            this.btnRefreshMetadata.Location = new System.Drawing.Point(128, 441);
-            this.btnRefreshMetadata.Name = "btnRefreshMetadata";
-            this.btnRefreshMetadata.Size = new System.Drawing.Size(107, 23);
-            this.btnRefreshMetadata.TabIndex = 23;
-            this.btnRefreshMetadata.Text = "Refresh Metadata";
-            this.btnRefreshMetadata.UseVisualStyleBackColor = true;
-            this.btnRefreshMetadata.Click += new System.EventHandler(this.btnRefreshMetadata_Click);
+     
             // 
             // CRMDestinationAdapterUIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(827, 476);
-            this.Controls.Add(this.btnRefreshMetadata);
+
             this.Controls.Add(this.pbLoader);
             this.Controls.Add(this.dgAtributeMap);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
+            this.Controls.Add(this.btnRefreshMetadata);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

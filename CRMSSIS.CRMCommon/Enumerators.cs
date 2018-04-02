@@ -22,7 +22,9 @@ namespace CRMSSIS.CRMCommon.Enumerators
         [Description("Delete")]
         Delete = 2,
         [Description("Status")]
-        Status = 3
+        Status = 3,
+        [Description("Upsert")]
+        Upsert = 4
 
 
     }

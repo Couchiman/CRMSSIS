@@ -281,7 +281,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                              
 
                 switch (operation)
-                {    //Create
+                {    //Create  
                     case 0:
                         Rqs.Add(new CreateRequest { Target = newEntity });
                         newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
@@ -303,6 +303,11 @@ namespace CRMSSIS.CRMDestinationAdapter
                             Status = new OptionSetValue((int)newEntity.Attributes["statuscode"])
                         });
                         break;
+                    case 4:
+                        Rqs.Add(new UpsertRequest { Target = newEntity });
+                        newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
+                        break;
+
                 }
                 newEntityCollection.Entities.Add(newEntity);
                 rowIndexList.Add(ir);

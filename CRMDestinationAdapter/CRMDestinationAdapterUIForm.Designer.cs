@@ -149,11 +149,11 @@
             this.btnRefresh.Text = "Refresh Entities";
             this.btnRefresh.UseVisualStyleBackColor = true;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
-           
             // 
             // txtBatchSize
             // 
             this.txtBatchSize.Location = new System.Drawing.Point(120, 90);
+            this.txtBatchSize.MaxLength = 3;
             this.txtBatchSize.Name = "txtBatchSize";
             this.txtBatchSize.Size = new System.Drawing.Size(100, 20);
             this.txtBatchSize.TabIndex = 24;
@@ -222,14 +222,12 @@
             this.pbLoader.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pbLoader.TabIndex = 99;
             this.pbLoader.TabStop = false;
-     
             // 
             // CRMDestinationAdapterUIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(827, 476);
-
             this.Controls.Add(this.pbLoader);
             this.Controls.Add(this.dgAtributeMap);
             this.Controls.Add(this.groupBox2);

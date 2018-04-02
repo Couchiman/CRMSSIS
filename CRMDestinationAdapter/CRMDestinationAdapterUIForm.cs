@@ -98,6 +98,8 @@ namespace CRMSSIS.CRMDestinationAdapter
             dgAtributeMap.Enabled = false;
             dgAtributeMap.Visible = false;
             
+
+
             cbEntity.Enabled = false;
 
             var connections = connectionService.GetConnections();
@@ -310,28 +312,14 @@ namespace CRMSSIS.CRMDestinationAdapter
                 pbLoader.Visible = true;
 
                 int connectionId = findConnectionId();
-                //  var conn = connectionService.GetDataSource(Connection.);
+                
                 if (connectionId > -1)
                 {
                     string _connectionstring = (string)connectionService.GetConnections()[connectionId].AcquireConnection(null);
 
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                    IOrganizationService service = CRMCommon.CRM.Connect(_connectionstring);
 
-                    CrmServiceClient conn = new CrmServiceClient(_connectionstring);
-
-                    // Cast the proxy client to the IOrganizationService interface.
-                    IOrganizationService service = (IOrganizationService)conn.OrganizationWebProxyClient != null ? (IOrganizationService)conn.OrganizationWebProxyClient : (IOrganizationService)conn.OrganizationServiceProxy;
-
-
-                    RetrieveAllEntitiesRequest mdRequest = new RetrieveAllEntitiesRequest()
-                    {
-                        EntityFilters = EntityFilters.Attributes,
-                        RetrieveAsIfPublished = true
-                    };
-                    RetrieveAllEntitiesResponse metaDataResponse = new RetrieveAllEntitiesResponse();
-
-                    RetrieveAllEntitiesResponse allentityResponse = (RetrieveAllEntitiesResponse)service.Execute(mdRequest);
-
+                    RetrieveAllEntitiesResponse allentityResponse  = CRMCommon.CRM.RetrieveAllEntityMetatada(service);
                     
                     foreach (EntityMetadata Entity in allentityResponse.EntityMetadata)
                     {
@@ -593,6 +581,62 @@ namespace CRMSSIS.CRMDestinationAdapter
 
                 backgroundWorkerLoadEntities.RunWorkerAsync();
             }
+        }
+
+        private void btnMapping_Click(object sender, EventArgs e)
+        {
+           
+                if (this.metaData.CustomPropertyCollection["Entity"].Value != null)
+                {
+
+                    Item entity = (Item)CRMSSIS.CRMCommon.JSONSerialization.Deserialize<Item>(this.metaData.CustomPropertyCollection["Entity"].Value.ToString());
+
+
+                    IDTSInput100 input = this.metaData.InputCollection[0];
+
+                    int connectionId = findConnectionId();
+                  
+                    if (connectionId > -1)
+                    {
+                        try
+                        {
+                            string _connectionstring = (string)connectionService.GetConnections()[connectionId].AcquireConnection(null);
+
+                            IOrganizationService service = CRMSSIS.CRMCommon.CRM.Connect(_connectionstring);
+
+                            RetrieveEntityResponse retrieveEntityResponse = CRMSSIS.CRMCommon.CRM.RetrieveEntityRequestMetadata(service, entity.Text);
+
+                            this.metaData.CustomPropertyCollection["Entity"].Value = new Item(entity.Text, entity.Text, retrieveEntityResponse.EntityMetadata.Attributes);
+                            int operation = (int)EnumEx.GetValueFromDescription<Operations>(cbOperation.SelectedValue.ToString());
+
+                            m.RefreshMapping(input, entity.Metadata, retrieveEntityResponse.EntityMetadata.Attributes, operation);
+
+                        //Refresh Grid
+                        dgAtributeMap.DataSource = null;
+                        dgAtributeMap.Rows.Clear();
+                        dgAtributeMap.Refresh();
+
+                        ConfigureMappingGrid(input);
+                        dgAtributeMap.DataSource = m.ColumnList;
+
+                    }
+                        catch (Exception ex)
+                        {
+                            throw ex;
+                        }
+
+                 
+                    }
+
+
+
+                }
+                else
+                {
+                    MessageBox.Show("Entity must be set", "Warning", MessageBoxButtons.OK);
+                }
+
+            
         }
     }
 }

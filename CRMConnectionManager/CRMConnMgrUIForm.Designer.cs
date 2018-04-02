@@ -48,11 +48,11 @@
             this.lblPort = new System.Windows.Forms.Label();
             this.txtPort = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.chkSSL = new System.Windows.Forms.CheckBox();
-            this.lblPassword = new System.Windows.Forms.Label();
-            this.txtPassword = new System.Windows.Forms.TextBox();
             this.lblminutes = new System.Windows.Forms.Label();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.txtPassword = new System.Windows.Forms.TextBox();
+            this.lblPassword = new System.Windows.Forms.Label();
+            this.chkSSL = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -91,7 +91,7 @@
             this.txtOrganizationUri.Location = new System.Drawing.Point(112, 45);
             this.txtOrganizationUri.Name = "txtOrganizationUri";
             this.txtOrganizationUri.Size = new System.Drawing.Size(251, 20);
-            this.txtOrganizationUri.TabIndex = 3;
+            this.txtOrganizationUri.TabIndex = 9;
             // 
             // lblHomeRealmUri
             // 
@@ -107,7 +107,7 @@
             this.txtHomeRealUri.Location = new System.Drawing.Point(112, 19);
             this.txtHomeRealUri.Name = "txtHomeRealUri";
             this.txtHomeRealUri.Size = new System.Drawing.Size(350, 20);
-            this.txtHomeRealUri.TabIndex = 5;
+            this.txtHomeRealUri.TabIndex = 13;
             // 
             // lblUsername
             // 
@@ -165,7 +165,7 @@
             this.txtTimeout.MaxLength = 5;
             this.txtTimeout.Name = "txtTimeout";
             this.txtTimeout.Size = new System.Drawing.Size(40, 20);
-            this.txtTimeout.TabIndex = 12;
+            this.txtTimeout.TabIndex = 14;
             // 
             // cboAuthType
             // 
@@ -173,8 +173,7 @@
             this.cboAuthType.Location = new System.Drawing.Point(112, 18);
             this.cboAuthType.Name = "cboAuthType";
             this.cboAuthType.Size = new System.Drawing.Size(132, 21);
-            this.cboAuthType.TabIndex = 13;
-             
+            this.cboAuthType.TabIndex = 6;
             // 
             // txtCallerId
             // 
@@ -207,7 +206,7 @@
             this.txtPort.Location = new System.Drawing.Point(455, 44);
             this.txtPort.Name = "txtPort";
             this.txtPort.Size = new System.Drawing.Size(48, 20);
-            this.txtPort.TabIndex = 18;
+            this.txtPort.TabIndex = 8;
             // 
             // groupBox1
             // 
@@ -224,6 +223,15 @@
             this.groupBox1.TabIndex = 19;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Advanced";
+            // 
+            // lblminutes
+            // 
+            this.lblminutes.AutoSize = true;
+            this.lblminutes.Location = new System.Drawing.Point(158, 48);
+            this.lblminutes.Name = "lblminutes";
+            this.lblminutes.Size = new System.Drawing.Size(111, 13);
+            this.lblminutes.TabIndex = 16;
+            this.lblminutes.Text = "minutes. (0 for default)";
             // 
             // groupBox2
             // 
@@ -247,15 +255,14 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Basic";
             // 
-            // chkSSL
+            // txtPassword
             // 
-            this.chkSSL.AutoSize = true;
-            this.chkSSL.Location = new System.Drawing.Point(371, 49);
-            this.chkSSL.Name = "chkSSL";
-            this.chkSSL.Size = new System.Drawing.Size(46, 17);
-            this.chkSSL.TabIndex = 19;
-            this.chkSSL.Text = "SSL";
-            this.chkSSL.UseVisualStyleBackColor = true;
+            this.txtPassword.Location = new System.Drawing.Point(112, 128);
+            this.txtPassword.MaxLength = 20;
+            this.txtPassword.Name = "txtPassword";
+            this.txtPassword.PasswordChar = '*';
+            this.txtPassword.Size = new System.Drawing.Size(133, 20);
+            this.txtPassword.TabIndex = 12;
             // 
             // lblPassword
             // 
@@ -266,23 +273,15 @@
             this.lblPassword.TabIndex = 20;
             this.lblPassword.Text = "Password";
             // 
-            // txtPassword
+            // chkSSL
             // 
-            this.txtPassword.Location = new System.Drawing.Point(112, 128);
-            this.txtPassword.MaxLength = 20;
-            this.txtPassword.Name = "txtPassword";
-            this.txtPassword.PasswordChar = '*';
-            this.txtPassword.Size = new System.Drawing.Size(133, 20);
-            this.txtPassword.TabIndex = 16;
-            // 
-            // lblminutes
-            // 
-            this.lblminutes.AutoSize = true;
-            this.lblminutes.Location = new System.Drawing.Point(158, 48);
-            this.lblminutes.Name = "lblminutes";
-            this.lblminutes.Size = new System.Drawing.Size(111, 13);
-            this.lblminutes.TabIndex = 16;
-            this.lblminutes.Text = "minutes. (0 for default)";
+            this.chkSSL.AutoSize = true;
+            this.chkSSL.Location = new System.Drawing.Point(371, 49);
+            this.chkSSL.Name = "chkSSL";
+            this.chkSSL.Size = new System.Drawing.Size(46, 17);
+            this.chkSSL.TabIndex = 7;
+            this.chkSSL.Text = "SSL";
+            this.chkSSL.UseVisualStyleBackColor = true;
             // 
             // CRMConnMgrUIForm
             // 

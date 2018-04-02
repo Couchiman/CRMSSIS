@@ -30,7 +30,7 @@ namespace CRMSSIS.CRMSourceAdapter
 
         #region properties
         private IOrganizationService service { get; set; }
-       private EntityMetadata entMetadata { get; set; }
+        private EntityMetadata entMetadata { get; set; }
         #endregion
         #region design time methods
 
@@ -56,26 +56,14 @@ namespace CRMSSIS.CRMSourceAdapter
                     var connectionManager = ComponentMetaData.RuntimeConnectionCollection[0].ConnectionManager;
 
 
-                   string _connectionstring = (string)connectionManager.AcquireConnection(null);
+                    string _connectionstring = (string)connectionManager.AcquireConnection(null);
 
                     if (connectionManager == null)
                         throw new Exception("Could not get connection manager");
 
-
-
                     try
                     {
-                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                         
-                        CrmServiceClient conn = new CrmServiceClient(_connectionstring);
-                       
-                        // Cast the proxy client to the IOrganizationService interface.
-                        this.service = (IOrganizationService)conn.OrganizationWebProxyClient != null ? (IOrganizationService)conn.OrganizationWebProxyClient : (IOrganizationService)conn.OrganizationServiceProxy;
-
-                        
-
-                        if (!conn.IsReady)
-                            throw new Exception("Cannot connect to Dynamics Instance");
+                        CRMCommon.CRM.Connect(_connectionstring);
 
                     }
                     catch (Exception ex)
@@ -88,11 +76,11 @@ namespace CRMSSIS.CRMSourceAdapter
                 {
                     throw new Exception("Couldn't get the Connection Manager");
                 }
-                }
+            }
 
         }
 
-     
+
         /// <summary>
         /// Validates properties required by the component
         /// </summary>
@@ -124,13 +112,13 @@ namespace CRMSSIS.CRMSourceAdapter
                 return DTSValidationStatus.VS_NEEDSNEWMETADATA;
             }
 
-          
+
             return base.Validate();
         }
 
-       /// <summary>
-       /// When metadata changes, changes re adds output columns
-       /// </summary>
+        /// <summary>
+        /// When metadata changes, changes re adds output columns
+        /// </summary>
         public override void ReinitializeMetaData()
         {
             AddOutputColumns(ComponentMetaData.CustomPropertyCollection["FetchXML"].Value.ToString());
@@ -146,7 +134,7 @@ namespace CRMSSIS.CRMSourceAdapter
             {
 
                 if (service == null)
-                    AcquireConnections(null); 
+                    AcquireConnections(null);
 
                 if (service != null)
                 {
@@ -171,12 +159,12 @@ namespace CRMSSIS.CRMSourceAdapter
 
                                 IDTSOutputColumn100 outputCol = output.OutputColumnCollection.New();
 
-                              
+
 
 
                                 AttributeMetadata mdta = entMetadata.Attributes.FirstOrDefault(m => m.LogicalName == row["ColumnName"].ToString());
 
-                                bool isLong = false; 
+                                bool isLong = false;
                                 DataType dType = DataRecordTypeToBufferType((Type)row["DataType"]);
                                 dType = ConvertBufferDataTypeToFitManaged(dType, ref isLong);
                                 int length = ((int)row["ColumnSize"]) == -1 ? 4000 : (int)row["ColumnSize"];
@@ -187,16 +175,16 @@ namespace CRMSSIS.CRMSourceAdapter
                                 switch (dType)
                                 {
                                     //case DataType.DT_DATE:
-                                      
+
                                     //    precision = 0;
                                     //    scale = 0;
                                     //    break;
                                     case DataType.DT_STR:
                                     case DataType.DT_TEXT:
                                         MemoAttributeMetadata att = (MemoAttributeMetadata)mdta;
-                                        if(att.MaxLength.HasValue) length = (int)att.MaxLength;
-                                        else 
-                                        length = 1048576;
+                                        if (att.MaxLength.HasValue) length = (int)att.MaxLength;
+                                        else
+                                            length = 1048576;
 
                                         precision = 0;
                                         scale = 0;
@@ -218,10 +206,10 @@ namespace CRMSSIS.CRMSourceAdapter
                                         {
                                             precision1 = attMoney.MaxValue.Value.ToString().Length;
                                         }
-                                       
+
                                         if (attMoney.MinValue.HasValue)
                                         {
-                                             precision2 = attMoney.MinValue.Value.ToString().Length;
+                                            precision2 = attMoney.MinValue.Value.ToString().Length;
                                         }
                                         if (precision1 > precision2) precision = precision1;
                                         else precision = precision2;
@@ -229,7 +217,7 @@ namespace CRMSSIS.CRMSourceAdapter
                                         length = 0;
                                         codePage = 0;
                                         if (precision == 0) precision = 23;
-                                        
+
                                         if (precision > 38)
                                             precision = 38;
                                         if (scale > precision)
@@ -238,11 +226,11 @@ namespace CRMSSIS.CRMSourceAdapter
                                     case DataType.DT_NUMERIC:
                                     case DataType.DT_DECIMAL:
                                         DecimalAttributeMetadata attDecimal = (DecimalAttributeMetadata)mdta;
-                                        
-                                            if (attDecimal.Precision.HasValue)
-                                                scale = (int)attDecimal.Precision;
-                                            else
-                                                scale = 2;
+
+                                        if (attDecimal.Precision.HasValue)
+                                            scale = (int)attDecimal.Precision;
+                                        else
+                                            scale = 2;
 
 
                                         int precisiondec1 = 0, precisiondec2 = 0;
@@ -268,26 +256,26 @@ namespace CRMSSIS.CRMSourceAdapter
                                         if (scale > precision)
                                             scale = precision;
                                         break;
-                                    
-                                    
+
+
                                     case DataType.DT_WSTR:
 
-                                        
+
 
                                         if (mdta.GetType() == typeof(StringAttributeMetadata))
-                                        { 
-                                         StringAttributeMetadata attstring = (StringAttributeMetadata)mdta;
+                                        {
+                                            StringAttributeMetadata attstring = (StringAttributeMetadata)mdta;
                                             if (attstring.MaxLength.HasValue) length = (int)attstring.MaxLength;
                                             else length = 4000;
                                         }
                                         else
-                                        { 
-                                        MemoAttributeMetadata attmemo = (MemoAttributeMetadata)mdta;
-                                        length = (int)attmemo.MaxLength;
+                                        {
+                                            MemoAttributeMetadata attmemo = (MemoAttributeMetadata)mdta;
+                                            length = (int)attmemo.MaxLength;
                                         }
 
-                                        
-                                         
+
+
                                         precision = 0;
                                         scale = 0;
                                         codePage = 0;
@@ -310,7 +298,7 @@ namespace CRMSSIS.CRMSourceAdapter
 
                         }
 
-                         
+
                     }
                 }
             }
@@ -338,7 +326,7 @@ namespace CRMSSIS.CRMSourceAdapter
             base.RemoveAllInputsOutputsAndCustomProperties();
             ComponentMetaData.RuntimeConnectionCollection.RemoveAll();
 
-            
+
             ComponentMetaData.Name = "Dynamics CRM Source Adapter";
             ComponentMetaData.ContactInfo = "couchiman@gmail.com";
             ComponentMetaData.Description = "Allows to connect to Dynamics CRM Source";
@@ -354,7 +342,7 @@ namespace CRMSSIS.CRMSourceAdapter
             IDTSRuntimeConnection100 connection = ComponentMetaData.RuntimeConnectionCollection.New();
             connection.Name = "CRMSSIS";
             connection.ConnectionManagerID = "CRMSSIS";
-             
+
         }
         /// <summary>
         /// Gets information from Dynamics entity based on FetchXML query
@@ -380,7 +368,7 @@ namespace CRMSSIS.CRMSourceAdapter
                 EntityCollection result = new EntityCollection();
                 bool AddCol = true;
                 int page = 1;
-                
+
                 AttributeMetadata mdta;
 
                 do
@@ -421,16 +409,16 @@ namespace CRMSSIS.CRMSourceAdapter
                                 if (!dTable.Columns.Contains(columnName))
                                 {
                                     mdta = entMetadata.Attributes.FirstOrDefault(m => m.LogicalName == columnName);
-                                   
-                                  
-                                    if(SupportedTypes.isValidAttribute(mdta))
-                                    { 
+
+
+                                    if (SupportedTypes.isValidAttribute(mdta))
+                                    {
                                         switch (mdta.AttributeType.Value)
                                         {
                                             //    break;
                                             case AttributeTypeCode.BigInt:
                                                 dTable.Columns.Add(columnName, typeof(Int64));
-                                            
+
                                                 break;
                                             case AttributeTypeCode.Boolean:
                                                 dTable.Columns.Add(columnName, typeof(bool));
@@ -441,11 +429,11 @@ namespace CRMSSIS.CRMSourceAdapter
                                                 break;
                                             case AttributeTypeCode.Decimal:
                                                 dTable.Columns.Add(columnName, typeof(decimal));
-                                            
+
                                                 break;
                                             case AttributeTypeCode.Double:
                                             case AttributeTypeCode.Money:
-                                           
+
                                                 dTable.Columns.Add(columnName, typeof(float));
                                                 break;
                                             case AttributeTypeCode.Integer:
@@ -459,11 +447,11 @@ namespace CRMSSIS.CRMSourceAdapter
                                             case AttributeTypeCode.Owner:
                                                 dTable.Columns.Add(columnName, typeof(Guid));
                                                 break;
-                                        
-                                             default:
-                                            
-                                           
-                                                dTable.Columns.Add(columnName,typeof(string));
+
+                                            default:
+
+
+                                                dTable.Columns.Add(columnName, typeof(string));
                                                 break;
                                         }
                                     }
@@ -506,14 +494,14 @@ namespace CRMSSIS.CRMSourceAdapter
                                 case AttributeTypeCode.PartyList:
                                 case AttributeTypeCode.Owner:
 
-                                    
+
                                     dRow[colName] = (Guid)((Microsoft.Xrm.Sdk.EntityReference)entity.Attributes.Values.ElementAt(i)).Id;
                                     break;
                                 case AttributeTypeCode.BigInt:
                                     dRow[colName] = (Int64?)entity.Attributes.Values.ElementAt(i);
                                     break;
                                 case AttributeTypeCode.Decimal:
-                                 
+
                                     dRow[colName] = (decimal?)entity.Attributes.Values.ElementAt(i);
                                     break;
                                 case AttributeTypeCode.Double:
@@ -536,16 +524,16 @@ namespace CRMSSIS.CRMSourceAdapter
                                     break;
                                 default:
                                     dRow[colName] = (string)entity.Attributes.Values.ElementAt(i);
-                                    
+
                                     break;
                             }
                         }
                         dTable.Rows.Add(dRow);
-                       
+
                     }
                 }
                 while (result.MoreRecords);
-                
+
                 return dTable;
 
             }

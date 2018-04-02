@@ -46,6 +46,7 @@
             this.dgAtributeMap = new System.Windows.Forms.DataGridView();
             this.backgroundWorkerLoadEntities = new System.ComponentModel.BackgroundWorker();
             this.pbLoader = new System.Windows.Forms.PictureBox();
+            this.btnMapping = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgAtributeMap)).BeginInit();
@@ -105,7 +106,7 @@
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(240, 441);
+            this.btnOK.Location = new System.Drawing.Point(288, 441);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
             this.btnOK.TabIndex = 12;
@@ -211,11 +212,22 @@
             this.pbLoader.TabIndex = 23;
             this.pbLoader.TabStop = false;
             // 
+            // btnMapping
+            // 
+            this.btnMapping.Location = new System.Drawing.Point(128, 441);
+            this.btnMapping.Name = "btnMapping";
+            this.btnMapping.Size = new System.Drawing.Size(107, 23);
+            this.btnMapping.TabIndex = 24;
+            this.btnMapping.Text = "Refresh Mapping";
+            this.btnMapping.UseVisualStyleBackColor = true;
+            this.btnMapping.Click += new System.EventHandler(this.btnMapping_Click);
+            // 
             // CRMDestinationAdapterUIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(827, 476);
+            this.Controls.Add(this.btnMapping);
             this.Controls.Add(this.pbLoader);
             this.Controls.Add(this.dgAtributeMap);
             this.Controls.Add(this.groupBox2);
@@ -257,5 +269,6 @@
         private System.ComponentModel.BackgroundWorker backgroundWorkerLoadEntities;
         private System.Windows.Forms.PictureBox pbLoader;
         private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Button btnMapping;
     }
 }

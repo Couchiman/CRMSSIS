@@ -82,28 +82,14 @@ namespace CRMSSIS.CRMDestinationAdapter
                     if (connectionManager == null)
                         throw new Exception("Could not get connection manager");
 
-
-
                     try
                     {
-                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-                        CrmServiceClient conn = new CrmServiceClient(_connectionstring);
-
-                        // Cast the proxy client to the IOrganizationService interface.
-                        this.service = (IOrganizationService)conn.OrganizationWebProxyClient != null ? (IOrganizationService)conn.OrganizationWebProxyClient : (IOrganizationService)conn.OrganizationServiceProxy;
-
-
-
-                        if (!conn.IsReady)
-                            throw new Exception("Cannot connect to Dynamics Instance");
-
+                        CRMCommon.CRM.Connect(_connectionstring);
                     }
                     catch (Exception ex)
                     {
                         throw ex;
                     }
-
                 }
                 else
                 {
@@ -195,6 +181,27 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             return base.Validate();
         }
+
+        /// <summary>
+        /// When metadata changes, changes re adds output columns
+        /// </summary>
+        public override void ReinitializeMetaData()
+        {
+            for (int i = 0; i < ComponentMetaData.InputCollection.Count; i++)
+            {
+                ComponentMetaData.InputCollection[i].InputColumnCollection.RemoveAll();
+                IDTSVirtualInput100 input = ComponentMetaData.InputCollection[i].GetVirtualInput();
+                foreach (IDTSVirtualInputColumn100 vcol in input.VirtualInputColumnCollection)
+                {
+                    input.SetUsageType(vcol.LineageID, DTSUsageType.UT_READONLY);
+                }
+            }
+
+           
+            base.ReinitializeMetaData();
+        }
+
+
 
         /// <summary>
         /// Capture when dataflow component is attached

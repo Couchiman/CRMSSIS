@@ -209,7 +209,7 @@
             this.pbLoader.Name = "pbLoader";
             this.pbLoader.Size = new System.Drawing.Size(161, 82);
             this.pbLoader.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pbLoader.TabIndex = 23;
+            this.pbLoader.TabIndex = 99;
             this.pbLoader.TabStop = false;
             // 
             // btnMapping
@@ -217,7 +217,7 @@
             this.btnMapping.Location = new System.Drawing.Point(128, 441);
             this.btnMapping.Name = "btnMapping";
             this.btnMapping.Size = new System.Drawing.Size(107, 23);
-            this.btnMapping.TabIndex = 24;
+            this.btnMapping.TabIndex = 23;
             this.btnMapping.Text = "Refresh Mapping";
             this.btnMapping.UseVisualStyleBackColor = true;
             this.btnMapping.Click += new System.EventHandler(this.btnMapping_Click);

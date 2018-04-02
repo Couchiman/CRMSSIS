@@ -18,7 +18,7 @@ namespace CRMSSIS.CRMCommon
             bool valid = false;
 
             //Create/Update Operation or default types
-            if (!Operation.HasValue || Operation == 0 || Operation == 1)
+            if (!Operation.HasValue || Operation == 0 || Operation == 1 || Operation ==4)
             {
                 switch (attribute.AttributeType.Value)
                 {

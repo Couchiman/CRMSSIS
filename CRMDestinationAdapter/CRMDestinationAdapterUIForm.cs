@@ -142,7 +142,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             loadOperationsCombobox();
             int cboValue = (int)(Operations)this.metaData.CustomPropertyCollection["Operation"].Value;
 
-            if (cboValue > 0)
+            if (cboValue >= 0)
                 cbOperation.SelectedIndex = cboValue;
 
              

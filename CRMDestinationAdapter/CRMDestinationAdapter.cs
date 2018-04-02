@@ -181,26 +181,7 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             return base.Validate();
         }
-
-        /// <summary>
-        /// When metadata changes, changes re adds output columns
-        /// </summary>
-        public override void ReinitializeMetaData()
-        {
-            for (int i = 0; i < ComponentMetaData.InputCollection.Count; i++)
-            {
-                ComponentMetaData.InputCollection[i].InputColumnCollection.RemoveAll();
-                IDTSVirtualInput100 input = ComponentMetaData.InputCollection[i].GetVirtualInput();
-                foreach (IDTSVirtualInputColumn100 vcol in input.VirtualInputColumnCollection)
-                {
-                    input.SetUsageType(vcol.LineageID, DTSUsageType.UT_READONLY);
-                }
-            }
-
-           
-            base.ReinitializeMetaData();
-        }
-
+ 
 
 
         /// <summary>

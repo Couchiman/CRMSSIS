@@ -584,10 +584,22 @@ namespace CRMSSIS.CRMDestinationAdapter
             }
         }
 
-        private void btnMapping_Click(object sender, EventArgs e)
+        private void btnRefreshMetadata_Click(object sender, EventArgs e)
         {
-           
-                if (this.metaData.CustomPropertyCollection["Entity"].Value != null)
+            //Forces meadata refresh
+            for (int i = 0; i < this.metaData.InputCollection.Count; i++)
+            {
+                this.metaData.InputCollection[i].InputColumnCollection.RemoveAll();
+                IDTSVirtualInput100 input = this.metaData.InputCollection[i].GetVirtualInput();
+                foreach (IDTSVirtualInputColumn100 vcol in input.VirtualInputColumnCollection)
+                {
+                    input.SetUsageType(vcol.LineageID, DTSUsageType.UT_READONLY);
+                }
+            }
+
+
+
+            if (this.metaData.CustomPropertyCollection["Entity"].Value != null)
                 {
 
                     Item entity = (Item)CRMSSIS.CRMCommon.JSONSerialization.Deserialize<Item>(this.metaData.CustomPropertyCollection["Entity"].Value.ToString());

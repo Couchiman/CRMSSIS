@@ -393,6 +393,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             foreach (IDTSInputColumn100 column in this.metaData.InputCollection[0].InputColumnCollection)
                 cmbExternalColumnName.Items.Add(column.Name.ToString());
 
+            cmbExternalColumnName.Items.Add("");
             dgAtributeMap.Columns.Add(cmbExternalColumnName);
 
 
@@ -411,7 +412,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                 if (!mDataTypes.Contains(column.DataType.ToString())) mDataTypes.Add(column.DataType.ToString());
 
             }
-
+            mDataTypes.Add("");
 
             cmbExternalColumnTypeName.Items.AddRange(mDataTypes.ToArray());
 

@@ -63,7 +63,7 @@ namespace CRMSSIS.CRMSourceAdapter
 
                     try
                     {
-                        CRMCommon.CRM.Connect(_connectionstring);
+                        service = CRMCommon.CRM.Connect(_connectionstring);
 
                     }
                     catch (Exception ex)

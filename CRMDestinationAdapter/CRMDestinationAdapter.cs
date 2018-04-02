@@ -84,7 +84,7 @@ namespace CRMSSIS.CRMDestinationAdapter
 
                     try
                     {
-                        CRMCommon.CRM.Connect(_connectionstring);
+                        service = CRMCommon.CRM.Connect(_connectionstring);
                     }
                     catch (Exception ex)
                     {
@@ -232,12 +232,12 @@ namespace CRMSSIS.CRMDestinationAdapter
             batchSize = Convert.ToInt32(ComponentMetaData.CustomPropertyCollection["BatchSize"].Value.ToString());
 
             operation = Convert.ToInt32(ComponentMetaData.CustomPropertyCollection["Operation"].Value.ToString());
-           
-             
+
+          
 
             var userRequest = new WhoAmIRequest();
             var userResponse = (WhoAmIResponse)service.Execute(userRequest);
-            
+
             currentUserId = userResponse.UserId;
 
         }
@@ -281,18 +281,21 @@ namespace CRMSSIS.CRMDestinationAdapter
                              
 
                 switch (operation)
-                {
+                {    //Create
                     case 0:
                         Rqs.Add(new CreateRequest { Target = newEntity });
                         newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
                         break;
+                        //Update
                     case 1:
                         Rqs.Add(new UpdateRequest { Target = newEntity });
                         newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
                         break;
+                        //Delete
                     case 2:
                         Rqs.Add(new DeleteRequest { Target = newEntity.ToEntityReference() });
                         break;
+                        //status
                     case 3:
                         Rqs.Add(new SetStateRequest {
                             EntityMoniker = newEntity.ToEntityReference(),

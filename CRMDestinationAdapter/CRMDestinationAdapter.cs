@@ -475,8 +475,10 @@ namespace CRMSSIS.CRMDestinationAdapter
                         OkResp = irsp.Resp.Responses.Where(r => r.Fault == null);
 
                         foreach (ExecuteMultipleResponseItem itm in OkResp)
+                            if(operation ==0)
                             retOK += string.Format("{0} \r\n", ((CreateResponse)itm.Response).id.ToString());
-
+                        else
+                            retOK += string.Format("{0} \r\n", itm.Response.ResponseName);
 
                     }
                     else if (irsp.ExceptionMessage != "")

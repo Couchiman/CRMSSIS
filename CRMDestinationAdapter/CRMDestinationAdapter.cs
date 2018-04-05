@@ -36,13 +36,12 @@ namespace CRMSSIS.CRMDestinationAdapter
         int bchCnt = 0;
         List<int> rowIndexList = new List<int>();
         List<int> rowInputList = new List<int>();
-        Dictionary<int, string> errorResult = new Dictionary<int, string>();
+     
         int ir = 0;
         int batchSize = 1;
         int operation = 0;
         Guid currentUserId;
-        string retError = string.Empty;
-        string retOK = string.Empty;
+  
         private PipelineBuffer[] cahedBuffer;
        
        
@@ -154,11 +153,17 @@ namespace CRMSSIS.CRMDestinationAdapter
             CRMOK.SynchronousInputID = input.ID;
             CRMOK.ExclusionGroup = 1;
 
+
+            IDTSOutputColumn100 outColID = CRMOK.OutputColumnCollection.New();
+            outColID.Name = "EntityID";
+            outColID.SetDataTypeProperties(Microsoft.SqlServer.Dts.Runtime.Wrapper.DataType.DT_WSTR, 1000, 0, 0, 0);
+
+
             IDTSOutput100 CRMErrors = ComponentMetaData.OutputCollection.New();
             CRMErrors.Name = "CRMErrors";
             CRMErrors.SynchronousInputID = input.ID;
             CRMErrors.ExclusionGroup = 1;
-            CRMErrors.IsErrorOut = true;
+            
 
 
 
@@ -218,21 +223,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                     input.SetUsageType(vcol.LineageID, DTSUsageType.UT_READONLY);
                 }
             }
-            //Create Outputcollections from virtual input. The columns from input are equal to outputs. OK output and error Outputs
-            //for (int i = 0; i < ComponentMetaData.OutputCollection.Count; i++)
-            //{
-            //    //Falla al tratar de borrar las columnas especiales de la coleccion de errores output
-            //   // ComponentMetaData.OutputCollection[i].OutputColumnCollection.RemoveAll();
-            //    IDTSVirtualInput100 input = ComponentMetaData.InputCollection[0].GetVirtualInput();
-            //    IDTSOutput100 output = ComponentMetaData.OutputCollection[i];
-
-            //    foreach (IDTSVirtualInputColumn100 vCol in input.VirtualInputColumnCollection)
-            //    {
-            //        IDTSOutputColumn100 outCol = output.OutputColumnCollection.New();
-            //        outCol.Name = vCol.Name;
-            //        outCol.SetDataTypeProperties(vCol.DataType, vCol.Length, vCol.Precision, vCol.Scale, vCol.CodePage);
-            //    }
-            //}
+          
 
         }
 
@@ -290,6 +281,9 @@ namespace CRMSSIS.CRMDestinationAdapter
             var userResponse = (WhoAmIResponse)service.Execute(userRequest);
 
             currentUserId = userResponse.UserId;
+
+          
+
 
         }
 
@@ -548,7 +542,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                             {  
                             // retError += string.Format("Error  '{0}' -> {1}\r\n", irsp.DataTableRowsIndex[itm.RequestIndex].ToString(), itm.Fault.Message);
                             //errorResult.Add(irsp.InputRow[itm.RequestIndex], itm.Fault.Message);
-                            cahedBuffer[itm.RequestIndex].DirectErrorRow(ComponentMetaData.OutputCollection[1].ID, 0, itm.RequestIndex);
+                            cahedBuffer[itm.RequestIndex].DirectRow(ComponentMetaData.OutputCollection[1].ID);
                           
                             }
                         }
@@ -556,22 +550,22 @@ namespace CRMSSIS.CRMDestinationAdapter
                         OkResp = irsp.Resp.Responses.Where(r => r.Fault == null);
 
                         foreach (ExecuteMultipleResponseItem itm in OkResp)
-                        { 
+                        {
+                            if(operation == 0)
+                            cahedBuffer[itm.RequestIndex].SetString(ComponentMetaData.OutputCollection[0].OutputColumnCollection.Count-1, ((CreateResponse)itm.Response).id.ToString());
+
                             cahedBuffer[itm.RequestIndex].DirectRow(ComponentMetaData.OutputCollection[0].ID);
                              
                         }
-                        //if (operation == 0)
-                        //    retOK += string.Format("{0} \r\n", ((CreateResponse)itm.Response).id.ToString());
-                        //else
-                        //    retOK += string.Format("{0} \r\n", itm.Response.ResponseName);
+                        
 
                     }
                     else if (irsp.ExceptionMessage != "")
                         for (int i = irsp.DataTableRowsIndex[0]; i <= irsp.DataTableRowsIndex[irsp.DataTableRowsIndex.Count - 1]; i++)
                         {
                             //errorResult.Add(irsp.InputRow[i], irsp.ExceptionMessage);
-                            cahedBuffer[i].DirectErrorRow(ComponentMetaData.OutputCollection[1].ID, 1, i);
-                            
+                            cahedBuffer[i].DirectRow(ComponentMetaData.OutputCollection[1].ID);
+
                         }
                         
                    // retError += string.Format("Error at '{0}' integrating '{1}' to '{2}':\r\n", irsp.ExceptionMessage, irsp.DataTableRowsIndex[0].ToString(), irsp.DataTableRowsIndex[irsp.DataTableRowsIndex.Count - 1].ToString());

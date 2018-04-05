@@ -527,8 +527,9 @@ namespace CRMSSIS.CRMDestinationAdapter
                             case AttributeTypeCode.Owner:
                              
                                cell.Items.AddRange(((Microsoft.Xrm.Sdk.Metadata.LookupAttributeMetadata)attribute).Targets);
-                                
-                                break;
+                                if (mappingitem.TargetEntity != string.Empty)
+                                    cell.Value = mappingitem.TargetEntity;
+                             break;
                         }
                     }
                 }

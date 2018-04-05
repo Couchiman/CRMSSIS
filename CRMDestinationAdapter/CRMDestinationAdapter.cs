@@ -35,12 +35,17 @@ namespace CRMSSIS.CRMDestinationAdapter
         public int[] mapInputColsToBufferCols;
         int bchCnt = 0;
         List<int> rowIndexList = new List<int>();
+        List<int> rowInputList = new List<int>();
+        Dictionary<int, string> errorResult = new Dictionary<int, string>();
         int ir = 0;
         int batchSize = 1;
         int operation = 0;
         Guid currentUserId;
         string retError = string.Empty;
         string retOK = string.Empty;
+        private PipelineBuffer[] cahedBuffer;
+       
+       
         #endregion
 
         #region strucutures
@@ -50,6 +55,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             public ExecuteMultipleResponse Resp;
             public string ExceptionMessage;
             public List<int> DataTableRowsIndex;
+            public List<int> InputRow;
 
         }
         #endregion
@@ -107,7 +113,9 @@ namespace CRMSSIS.CRMDestinationAdapter
             base.RemoveAllInputsOutputsAndCustomProperties();
             ComponentMetaData.RuntimeConnectionCollection.RemoveAll();
 
-            ComponentMetaData.Name = "Dynamics CRM Destination Adapter";
+            ComponentMetaData.UsesDispositions = true;
+
+                ComponentMetaData.Name = "Dynamics CRM Destination Adapter";
             ComponentMetaData.ContactInfo = "couchiman@gmail.com";
             ComponentMetaData.Description = "Allows to connect to Dynamics CRM Destination";
 
@@ -136,17 +144,24 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             IDTSInput100 input = ComponentMetaData.InputCollection.New();
             input.Name = "Input";
-
-            IDTSCustomProperty100 CRMErrors = ComponentMetaData.CustomPropertyCollection.New();
-            CRMErrors.Name = "CRMErrors";
-            CRMErrors.Description = "Errors during integration process";
+            input.ErrorRowDisposition = DTSRowDisposition.RD_NotUsed;
+            input.ErrorOrTruncationOperation = "A string describing the possible error or truncation that may occur during execution.";
 
 
-
-            IDTSCustomProperty100 CRMOK = ComponentMetaData.CustomPropertyCollection.New();
+            IDTSOutput100 CRMOK = ComponentMetaData.OutputCollection.New();
             CRMOK.Name = "CRMOK";
-            CRMOK.Description = "Valid GUIDs integrated registers";
-           
+
+            CRMOK.SynchronousInputID = input.ID;
+            CRMOK.ExclusionGroup = 1;
+
+            IDTSOutput100 CRMErrors = ComponentMetaData.OutputCollection.New();
+            CRMErrors.Name = "CRMErrors";
+            CRMErrors.SynchronousInputID = input.ID;
+            CRMErrors.ExclusionGroup = 1;
+            CRMErrors.IsErrorOut = true;
+
+
+
 
             IDTSRuntimeConnection100 connection = ComponentMetaData.RuntimeConnectionCollection.New();
             connection.Name = "CRMSSIS";
@@ -192,16 +207,33 @@ namespace CRMSSIS.CRMDestinationAdapter
         {
             base.OnInputPathAttached(inputID);
 
-
+            ///Create input collection from virtual inputs
             for (int i = 0; i < ComponentMetaData.InputCollection.Count; i++)
             {
                 ComponentMetaData.InputCollection[i].InputColumnCollection.RemoveAll();
                 IDTSVirtualInput100 input = ComponentMetaData.InputCollection[i].GetVirtualInput();
+                
                 foreach (IDTSVirtualInputColumn100 vcol in input.VirtualInputColumnCollection)
                 {
                     input.SetUsageType(vcol.LineageID, DTSUsageType.UT_READONLY);
                 }
             }
+            //Create Outputcollections from virtual input. The columns from input are equal to outputs. OK output and error Outputs
+            //for (int i = 0; i < ComponentMetaData.OutputCollection.Count; i++)
+            //{
+            //    //Falla al tratar de borrar las columnas especiales de la coleccion de errores output
+            //   // ComponentMetaData.OutputCollection[i].OutputColumnCollection.RemoveAll();
+            //    IDTSVirtualInput100 input = ComponentMetaData.InputCollection[0].GetVirtualInput();
+            //    IDTSOutput100 output = ComponentMetaData.OutputCollection[i];
+
+            //    foreach (IDTSVirtualInputColumn100 vCol in input.VirtualInputColumnCollection)
+            //    {
+            //        IDTSOutputColumn100 outCol = output.OutputColumnCollection.New();
+            //        outCol.Name = vCol.Name;
+            //        outCol.SetDataTypeProperties(vCol.DataType, vCol.Length, vCol.Precision, vCol.Scale, vCol.CodePage);
+            //    }
+            //}
+
         }
 
 
@@ -220,12 +252,31 @@ namespace CRMSSIS.CRMDestinationAdapter
             IDTSInput100 input = ComponentMetaData.InputCollection[0];
             mapInputColsToBufferCols = new int[input.InputColumnCollection.Count];
 
+
+
             for (int i = 0; i < ComponentMetaData.InputCollection[0].InputColumnCollection.Count; i++)
             {
 
                 mapInputColsToBufferCols[i] = BufferManager.FindColumnByLineageID(input.Buffer, input.InputColumnCollection[i].LineageID);
             }
-            
+
+            //IDTSOutput100 okOut = ComponentMetaData.OutputCollection[0];
+            //outputOKBufferIndexes = new int[okOut.OutputColumnCollection.Count];
+            //for (int i = 0; i < ComponentMetaData.OutputCollection[0].OutputColumnCollection.Count; i++)
+            //{
+
+            //    outputOKBufferIndexes[i] = BufferManager.FindColumnByLineageID(okOut.Buffer, okOut.OutputColumnCollection[i].LineageID);
+            //}
+
+            //IDTSOutput100 errOut = ComponentMetaData.OutputCollection[1];
+            //outputErrorBufferIndexes = new int[errOut.OutputColumnCollection.Count];
+            //for (int i = 0; i < ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count; i++)
+            //{
+
+            //    outputErrorBufferIndexes[i] = BufferManager.FindColumnByLineageID(errOut.Buffer, errOut.OutputColumnCollection[i].LineageID);
+            //}
+
+
             mapping = CRMCommon.JSONSerialization.Deserialize<Mapping>(ComponentMetaData.CustomPropertyCollection["Mapping"].Value.ToString());
 
           
@@ -233,7 +284,7 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             operation = Convert.ToInt32(ComponentMetaData.CustomPropertyCollection["Operation"].Value.ToString());
 
-          
+            cahedBuffer = new PipelineBuffer[batchSize * 2];
 
             var userRequest = new WhoAmIRequest();
             var userResponse = (WhoAmIResponse)service.Execute(userRequest);
@@ -256,13 +307,20 @@ namespace CRMSSIS.CRMDestinationAdapter
             Mapping.MappingItem mappedColumn;
             IDTSInputColumn100 input;
 
+          
 
             Entity newEntity;
 
-            while ((buffer.NextRow()))
+            while (buffer.NextRow())
             {
                 newEntity = new Entity(EntityName);
+
+                cahedBuffer[bchCnt] = buffer;
                 bchCnt++;
+                //adds the row to output buffer for futher processing.
+                
+             //   cahedBuffer[bchCnt].AddRow();
+               
 
                 foreach (int col in mapInputColsToBufferCols)
                 {
@@ -277,8 +335,14 @@ namespace CRMSSIS.CRMDestinationAdapter
                      else
                              AttributesBuilder(mappedColumn, mappedColumn.DefaultValue, ref newEntity);
                     }
+
+                    
                 }
-                             
+
+               
+
+
+
 
                 switch (operation)
                 {    //Create  
@@ -311,6 +375,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                 }
                 newEntityCollection.Entities.Add(newEntity);
                 rowIndexList.Add(ir);
+                rowInputList.Add(inputID);
                 ir++;
 
                  SendRowsToCRM(newEntityCollection, EntityName, Rqs, buffer.RowCount);
@@ -318,8 +383,16 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             }
 
-          
+             
+
         }
+
+        /// <summary>
+        /// Fill attributes in the entity to be sent to Dynamics CRM
+        /// </summary>
+        /// <param name="mappedColumn"></param>
+        /// <param name="value"></param>
+        /// <param name="newEntity"></param>
         private void AttributesBuilder(Mapping.MappingItem mappedColumn, object value, ref Entity newEntity)
         {
             switch (mappedColumn.InternalColumnType.Value)
@@ -370,7 +443,13 @@ namespace CRMSSIS.CRMDestinationAdapter
             }
         }
       
-
+        /// <summary>
+        /// Send information to IOrganization service in bulk way
+        /// </summary>
+        /// <param name="EntityList"></param>
+        /// <param name="EntityName"></param>
+        /// <param name="Rqs"></param>
+        /// <param name="RowCount"></param>
         private void SendRowsToCRM(EntityCollection EntityList, string EntityName, List<OrganizationRequest> Rqs, int RowCount)
         {
 
@@ -393,7 +472,8 @@ namespace CRMSSIS.CRMDestinationAdapter
                     ExceptionMessage = "",
                     Req = Req,
                     Resp = null,
-                    DataTableRowsIndex = rowIndexList.Take(rowIndexList.Count / 2).ToList<int>()
+                    DataTableRowsIndex = rowIndexList.Take(rowIndexList.Count / 2).ToList<int>(),
+                    InputRow = rowInputList.Take(rowInputList.Count / 2).ToList<int>()
                 };
 
                 Req = new ExecuteMultipleRequest();
@@ -405,7 +485,8 @@ namespace CRMSSIS.CRMDestinationAdapter
                     ExceptionMessage = "",
                     Req = Req,
                     Resp = null,
-                    DataTableRowsIndex = rowIndexList.Skip(rowIndexList.Count / 2).Take(rowIndexList.Count - rowIndexList.Count / 2).ToList<int>()
+                    DataTableRowsIndex = rowIndexList.Skip(rowIndexList.Count / 2).Take(rowIndexList.Count - rowIndexList.Count / 2).ToList<int>(),
+                    InputRow = rowInputList.Skip(rowInputList.Count / 2).Take(rowInputList.Count - rowInputList.Count / 2).ToList<int>()
                 };
 
 
@@ -464,38 +545,86 @@ namespace CRMSSIS.CRMDestinationAdapter
                             FltResp = irsp.Resp.Responses.Where(r => r.Fault != null);
 
                             foreach (ExecuteMultipleResponseItem itm in FltResp)
-                                retError += string.Format("Error  '{0}' -> {1}\r\n", irsp.DataTableRowsIndex[itm.RequestIndex].ToString(), itm.Fault.Message);
-
+                            {  
+                            // retError += string.Format("Error  '{0}' -> {1}\r\n", irsp.DataTableRowsIndex[itm.RequestIndex].ToString(), itm.Fault.Message);
+                            //errorResult.Add(irsp.InputRow[itm.RequestIndex], itm.Fault.Message);
+                            cahedBuffer[itm.RequestIndex].DirectErrorRow(ComponentMetaData.OutputCollection[1].ID, 0, itm.RequestIndex);
+                          
+                            }
                         }
 
                         OkResp = irsp.Resp.Responses.Where(r => r.Fault == null);
 
                         foreach (ExecuteMultipleResponseItem itm in OkResp)
-                            if(operation ==0)
-                            retOK += string.Format("{0} \r\n", ((CreateResponse)itm.Response).id.ToString());
-                        else
-                            retOK += string.Format("{0} \r\n", itm.Response.ResponseName);
+                        { 
+                            cahedBuffer[itm.RequestIndex].DirectRow(ComponentMetaData.OutputCollection[0].ID);
+                             
+                        }
+                        //if (operation == 0)
+                        //    retOK += string.Format("{0} \r\n", ((CreateResponse)itm.Response).id.ToString());
+                        //else
+                        //    retOK += string.Format("{0} \r\n", itm.Response.ResponseName);
 
                     }
                     else if (irsp.ExceptionMessage != "")
-                        retError += string.Format("Error at '{0}' integrating '{1}' to '{2}':\r\n", irsp.ExceptionMessage, irsp.DataTableRowsIndex[0].ToString(), irsp.DataTableRowsIndex[irsp.DataTableRowsIndex.Count - 1].ToString());
+                        for (int i = irsp.DataTableRowsIndex[0]; i <= irsp.DataTableRowsIndex[irsp.DataTableRowsIndex.Count - 1]; i++)
+                        {
+                            //errorResult.Add(irsp.InputRow[i], irsp.ExceptionMessage);
+                            cahedBuffer[i].DirectErrorRow(ComponentMetaData.OutputCollection[1].ID, 1, i);
+                            
+                        }
+                        
+                   // retError += string.Format("Error at '{0}' integrating '{1}' to '{2}':\r\n", irsp.ExceptionMessage, irsp.DataTableRowsIndex[0].ToString(), irsp.DataTableRowsIndex[irsp.DataTableRowsIndex.Count - 1].ToString());
 
                 }
 
                
                 Rqs.Clear();
                 rowIndexList.Clear();
+                cahedBuffer = new PipelineBuffer[batchSize * 2];
             }
 
         }
 
-        public override void PostExecute()
-        {
-            
-            ComponentMetaData.CustomPropertyCollection["CRMErrors"].Value =retError;
-            ComponentMetaData.CustomPropertyCollection["CRMOK"].Value =  retOK;
-            
-        }
+        //public override void PrimeOutput(int outputs, int[] outputIDs, PipelineBuffer[] buffers)
+        //{
+        //    /// Esto no lo entiendo
+        //    /// recordar que en el create no estoy incluyendo la columna del id creado.
+        //    if ((buffers.Length != 0))
+        //    {
+        //        outputBuffer = buffers[0];
+
+        //    }
+
+        //    int i=0;
+
+        //    while (i< outputIDs.Count())
+        //    {
+        //        outputBuffer.NextRow();
+
+
+        //        if (errorResult.ContainsKey(outputIDs[i]))
+        //        {
+        //            errorBuffer.AddRow();
+        //            int col = 0;
+        //            //copy columns
+        //            while ((col < outputOKBufferIndexes.Length))
+        //                errorBuffer[outputErrorBufferIndexes[col]] = outputBuffer[outputOKBufferIndexes[col]];
+        //            errorBuffer.SetErrorInfo(outputIDs[i], 1, 0);
+        //        }
+
+        //        outputBuffer.RemoveRow();
+        //        i++;
+        //    }
+
+        //}
+        //public override void PostExecute()
+        //{
+
+        //    ComponentMetaData.CustomPropertyCollection["CRMErrors"].Value =retError;
+        //    ComponentMetaData.CustomPropertyCollection["CRMOK"].Value =  retOK;
+
+        //}
 
     }
     #endregion

@@ -113,8 +113,8 @@ namespace CRMSSIS.CRMDestinationAdapter
         {
             base.RemoveAllInputsOutputsAndCustomProperties();
             ComponentMetaData.RuntimeConnectionCollection.RemoveAll();
+            ComponentMetaData.UsesDispositions = true;
 
-           
 
             ComponentMetaData.Name = "Dynamics CRM Destination Adapter";
             ComponentMetaData.ContactInfo = "couchiman@gmail.com";
@@ -161,7 +161,16 @@ namespace CRMSSIS.CRMDestinationAdapter
             CRMOK.Name = "CRMOK";
             CRMOK.SynchronousInputID = input.ID;
             CRMOK.ExclusionGroup = 1;
-                   
+
+            //AD CRM GUID Column
+            IDTSOutputColumn100 outputcol = CRMOK.OutputColumnCollection.New();
+            outputcol.Name = "EntityID";
+            outputcol.Description = "Entity Primary ID";
+            outputcol.SetDataTypeProperties(DataType.DT_STR, 60, 0, 0, 1252);
+
+
+            
+
             IDTSRuntimeConnection100 connection = ComponentMetaData.RuntimeConnectionCollection.New();
             connection.Name = "CRMSSIS";
             connection.ConnectionManagerID = "CRMSSIS";
@@ -215,13 +224,10 @@ namespace CRMSSIS.CRMDestinationAdapter
                 foreach (IDTSVirtualInputColumn100 vcol in input.VirtualInputColumnCollection)
                 {
                     input.SetUsageType(vcol.LineageID, DTSUsageType.UT_READONLY);
-                   
-                }
-          
-                
-            }
-                 
 
+                }
+            }
+         
 
         }
 
@@ -404,7 +410,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                         {
 
                             
-                           // buffer.SetString(ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count - 1, ((CreateResponse)itm.Response).id.ToString());
+                           buffer.SetString(ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count - 1, ((CreateResponse)itm.Response).id.ToString());
 
                             buffer.DirectRow(defaultOuputId);
                             if(buffer.CurrentRow < buffer.RowCount)

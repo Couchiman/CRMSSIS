@@ -164,8 +164,8 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             //AD CRM GUID Column
             IDTSOutputColumn100 outputcol = CRMOK.OutputColumnCollection.New();
-            outputcol.Name = "EntityID";
-            outputcol.Description = "Entity Primary ID";
+            outputcol.Name = "Response";
+            outputcol.Description = "Response";
             outputcol.SetDataTypeProperties(DataType.DT_STR, 60, 0, 0, 1252);
 
 
@@ -413,19 +413,30 @@ namespace CRMSSIS.CRMDestinationAdapter
                     {
 
                         //Add the inserted GUID for Create Operation
-                        if (operation == 0)
+                        switch (operation)
                         {
+                            case 0:
+                                buffer.SetString(ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count - 1, ((CreateResponse)itm.Response).id.ToString());                              
+                                break;
+                            case 1:
+                                buffer.SetString(ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count - 1, ((UpdateResponse)itm.Response).ToString());
+                                break;
+                            case 3:
+                                buffer.SetString(ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count - 1, ((DeleteResponse)itm.Response).ToString());
+                                break;
+                            case 4:
+                                buffer.SetString(ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count - 1, ((UpsertResponse)itm.Response).ToString());
+                                break;
 
-                            
-                           buffer.SetString(ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count - 1, ((CreateResponse)itm.Response).id.ToString());
-
-                            buffer.DirectRow(defaultOuputId);
-                            if(buffer.CurrentRow < buffer.RowCount)
-                            buffer.NextRow();
                         }
 
                         
-                      }
+
+                    buffer.DirectRow(defaultOuputId);
+                    if (buffer.CurrentRow < buffer.RowCount)
+                        buffer.NextRow();
+
+                }
                     
 
                 }

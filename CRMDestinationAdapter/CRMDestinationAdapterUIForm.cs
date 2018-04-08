@@ -469,6 +469,14 @@ namespace CRMSSIS.CRMDestinationAdapter
             isPrimary.ReadOnly = true;
             dgAtributeMap.Columns.Add(isPrimary);
 
+
+            DataGridViewComboBoxColumn TargetEntity = new DataGridViewComboBoxColumn();
+            TargetEntity.HeaderText = "TargetEntity";
+            TargetEntity.Name = "TargetEntity";
+            TargetEntity.DisplayMember = "TargetEntity";
+            TargetEntity.ValueMember = "TargetEntity";
+            dgAtributeMap.Columns.Add(TargetEntity);
+
             //Map the External with internal attribute
             DataGridViewCheckBoxColumn checkColumn = new DataGridViewCheckBoxColumn();
             checkColumn.Name = "Map";
@@ -479,6 +487,7 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             dgAtributeMap.Columns.Add(checkColumn);
 
+           
 
             dgAtributeMap.Columns[0].DataPropertyName = "ExternalColumnName";
             dgAtributeMap.Columns[1].DataPropertyName = "ExternalColumnTypeName";
@@ -488,8 +497,8 @@ namespace CRMSSIS.CRMDestinationAdapter
             dgAtributeMap.Columns[4].DataPropertyName = "DefaultValue";
             dgAtributeMap.Columns[5].DataPropertyName = "isRequired";
             dgAtributeMap.Columns[6].DataPropertyName = "isPrimary";
-
-            dgAtributeMap.Columns[7].DataPropertyName = "Map";
+            dgAtributeMap.Columns[7].DataPropertyName = "TargetEntity";
+            dgAtributeMap.Columns[8].DataPropertyName = "Map";
 
             dgAtributeMap.DataBindingComplete += dgAtributeMap_DataBindingComplete;
         }
@@ -498,15 +507,7 @@ namespace CRMSSIS.CRMDestinationAdapter
         {
             string colName = "TargetEntity";
 
-            if (dgAtributeMap.Columns.Contains(colName))
-            {
-                dgAtributeMap.Columns.Remove(colName);
-            }
-
-            DataGridViewComboBoxColumn column = new DataGridViewComboBoxColumn();
-            column.Name = colName;
-            dgAtributeMap.Columns.Add(column);
-
+          
             Item Entity = (Item)CRMSSIS.CRMCommon.JSONSerialization.Deserialize<Item>(this.metaData.CustomPropertyCollection["Entity"].Value.ToString());
 
             foreach (DataGridViewRow row in dgAtributeMap.Rows)
@@ -529,7 +530,12 @@ namespace CRMSSIS.CRMDestinationAdapter
                                cell.Items.AddRange(((Microsoft.Xrm.Sdk.Metadata.LookupAttributeMetadata)attribute).Targets);
                                 if (mappingitem.TargetEntity != string.Empty)
                                     cell.Value = mappingitem.TargetEntity;
-                             break;
+
+                                row.DefaultCellStyle.BackColor = Color.Aquamarine;
+                                break;
+                                case AttributeTypeCode.Uniqueidentifier:
+                                row.DefaultCellStyle.BackColor = Color.YellowGreen;
+                                break;
                         }
                     }
                 }

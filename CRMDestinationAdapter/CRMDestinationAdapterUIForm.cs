@@ -138,14 +138,14 @@ namespace CRMSSIS.CRMDestinationAdapter
 
 
 
-
+           
             loadOperationsCombobox();
             int cboValue = (int)(Operations)this.metaData.CustomPropertyCollection["Operation"].Value;
 
             if (cboValue >= 0)
                 cbOperation.SelectedIndex = cboValue;
 
-            txtBatchSize.Text = (string)this.metaData.CustomPropertyCollection["BatchSize"].Value; 
+            txtBatchSize.Text = Convert.ToString(this.metaData.CustomPropertyCollection["BatchSize"].Value);
 
             if (this.metaData.CustomPropertyCollection["Entity"].Value != null)
             {

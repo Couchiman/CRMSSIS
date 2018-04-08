@@ -14,6 +14,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Crm.Sdk.Messages;
 using System.Globalization;
+using Microsoft.SqlServer.Dts.Runtime;
 
 namespace CRMSSIS.CRMDestinationAdapter
 {
@@ -35,16 +36,17 @@ namespace CRMSSIS.CRMDestinationAdapter
         public int[] mapInputColsToBufferCols;
         int bchCnt = 0;
         List<int> rowIndexList = new List<int>();
-        List<int> rowInputList = new List<int>();
-     
+
         int ir = 0;
         int batchSize = 1;
         int operation = 0;
         Guid currentUserId;
-  
-        private PipelineBuffer[] cahedBuffer;
-       
-       
+        string EntityName = "";
+
+        int errorOutputId = 0;
+        int defaultOuputId = 0;
+
+
         #endregion
 
         #region strucutures
@@ -54,8 +56,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             public ExecuteMultipleResponse Resp;
             public string ExceptionMessage;
             public List<int> DataTableRowsIndex;
-            public List<int> InputRow;
-
+           
         }
         #endregion
 
@@ -112,9 +113,9 @@ namespace CRMSSIS.CRMDestinationAdapter
             base.RemoveAllInputsOutputsAndCustomProperties();
             ComponentMetaData.RuntimeConnectionCollection.RemoveAll();
 
-            ComponentMetaData.UsesDispositions = true;
+           
 
-                ComponentMetaData.Name = "Dynamics CRM Destination Adapter";
+            ComponentMetaData.Name = "Dynamics CRM Destination Adapter";
             ComponentMetaData.ContactInfo = "couchiman@gmail.com";
             ComponentMetaData.Description = "Allows to connect to Dynamics CRM Destination";
 
@@ -143,29 +144,25 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             IDTSInput100 input = ComponentMetaData.InputCollection.New();
             input.Name = "Input";
-            input.ErrorRowDisposition = DTSRowDisposition.RD_NotUsed;
-            input.ErrorOrTruncationOperation = "A string describing the possible error or truncation that may occur during execution.";
+            input.ErrorRowDisposition = DTSRowDisposition.RD_RedirectRow;
 
-
-            IDTSOutput100 CRMOK = ComponentMetaData.OutputCollection.New();
-            CRMOK.Name = "CRMOK";
-
-            CRMOK.SynchronousInputID = input.ID;
-            CRMOK.ExclusionGroup = 1;
-
-
-            IDTSOutputColumn100 outColID = CRMOK.OutputColumnCollection.New();
-            outColID.Name = "EntityID";
-            outColID.SetDataTypeProperties(Microsoft.SqlServer.Dts.Runtime.Wrapper.DataType.DT_WSTR, 1000, 0, 0, 0);
-
+            
 
             IDTSOutput100 CRMErrors = ComponentMetaData.OutputCollection.New();
             CRMErrors.Name = "CRMErrors";
             CRMErrors.SynchronousInputID = input.ID;
             CRMErrors.ExclusionGroup = 1;
-            
+            CRMErrors.IsErrorOut = true;
+           
 
 
+            IDTSOutput100 CRMOK = ComponentMetaData.OutputCollection.New();
+            CRMOK.Name = "CRMOK";
+            CRMOK.SynchronousInputID = input.ID;
+            CRMOK.ExclusionGroup = 1;
+
+
+            ComponentMetaData.UsesDispositions = true;
 
 
             IDTSRuntimeConnection100 connection = ComponentMetaData.RuntimeConnectionCollection.New();
@@ -201,7 +198,7 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             return base.Validate();
         }
- 
+
 
 
         /// <summary>
@@ -217,13 +214,17 @@ namespace CRMSSIS.CRMDestinationAdapter
             {
                 ComponentMetaData.InputCollection[i].InputColumnCollection.RemoveAll();
                 IDTSVirtualInput100 input = ComponentMetaData.InputCollection[i].GetVirtualInput();
-                
+
                 foreach (IDTSVirtualInputColumn100 vcol in input.VirtualInputColumnCollection)
                 {
                     input.SetUsageType(vcol.LineageID, DTSUsageType.UT_READONLY);
+                   
                 }
+
+              
+                
             }
-          
+
 
         }
 
@@ -231,6 +232,8 @@ namespace CRMSSIS.CRMDestinationAdapter
         #endregion
 
         #region runtime methods
+       
+        
         /// <summary>
         /// setups the operation with required values and maps buffer with inputcolumns
         /// </summary>
@@ -251,39 +254,25 @@ namespace CRMSSIS.CRMDestinationAdapter
                 mapInputColsToBufferCols[i] = BufferManager.FindColumnByLineageID(input.Buffer, input.InputColumnCollection[i].LineageID);
             }
 
-            //IDTSOutput100 okOut = ComponentMetaData.OutputCollection[0];
-            //outputOKBufferIndexes = new int[okOut.OutputColumnCollection.Count];
-            //for (int i = 0; i < ComponentMetaData.OutputCollection[0].OutputColumnCollection.Count; i++)
-            //{
-
-            //    outputOKBufferIndexes[i] = BufferManager.FindColumnByLineageID(okOut.Buffer, okOut.OutputColumnCollection[i].LineageID);
-            //}
-
-            //IDTSOutput100 errOut = ComponentMetaData.OutputCollection[1];
-            //outputErrorBufferIndexes = new int[errOut.OutputColumnCollection.Count];
-            //for (int i = 0; i < ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count; i++)
-            //{
-
-            //    outputErrorBufferIndexes[i] = BufferManager.FindColumnByLineageID(errOut.Buffer, errOut.OutputColumnCollection[i].LineageID);
-            //}
-
+          
 
             mapping = CRMCommon.JSONSerialization.Deserialize<Mapping>(ComponentMetaData.CustomPropertyCollection["Mapping"].Value.ToString());
 
-          
+
             batchSize = Convert.ToInt32(ComponentMetaData.CustomPropertyCollection["BatchSize"].Value.ToString());
 
             operation = Convert.ToInt32(ComponentMetaData.CustomPropertyCollection["Operation"].Value.ToString());
 
-            cahedBuffer = new PipelineBuffer[batchSize * 2];
-
+          
             var userRequest = new WhoAmIRequest();
             var userResponse = (WhoAmIResponse)service.Execute(userRequest);
 
             currentUserId = userResponse.UserId;
 
-          
+            EntityName = (CRMCommon.JSONSerialization.Deserialize<Item>(ComponentMetaData.CustomPropertyCollection["Entity"].Value.ToString())).Text;
 
+            errorOutputId = ComponentMetaData.OutputCollection[0].ID;
+            defaultOuputId = ComponentMetaData.OutputCollection[1].ID;
 
         }
 
@@ -297,24 +286,23 @@ namespace CRMSSIS.CRMDestinationAdapter
             EntityCollection newEntityCollection = new EntityCollection();
             List<OrganizationRequest> Rqs = new List<OrganizationRequest>();
 
-            string EntityName = (CRMCommon.JSONSerialization.Deserialize<Item>(ComponentMetaData.CustomPropertyCollection["Entity"].Value.ToString())).Text;
+
             Mapping.MappingItem mappedColumn;
             IDTSInputColumn100 input;
 
-          
+            
 
-            Entity newEntity;
+           Entity newEntity;
 
             while (buffer.NextRow())
             {
                 newEntity = new Entity(EntityName);
+ 
 
-                cahedBuffer[bchCnt] = buffer;
                 bchCnt++;
                 //adds the row to output buffer for futher processing.
-                
-             //   cahedBuffer[bchCnt].AddRow();
-               
+
+
 
                 foreach (int col in mapInputColsToBufferCols)
                 {
@@ -322,20 +310,16 @@ namespace CRMSSIS.CRMDestinationAdapter
 
                     mappedColumn = mapping.ColumnList.Find(x => x.ExternalColumnName == input.Name && x.Map == true);
 
-                    if(mappedColumn != null)
+                    if (mappedColumn != null)
                     {
                         if (buffer.IsNull(col) == false)
-                              AttributesBuilder(mappedColumn, buffer[col], ref newEntity);
-                     else
-                             AttributesBuilder(mappedColumn, mappedColumn.DefaultValue, ref newEntity);
+                            AttributesBuilder(mappedColumn, buffer[col], ref newEntity);
+                        else
+                            AttributesBuilder(mappedColumn, mappedColumn.DefaultValue, ref newEntity);
                     }
 
-                    
+
                 }
-
-               
-
-
 
 
                 switch (operation)
@@ -344,18 +328,19 @@ namespace CRMSSIS.CRMDestinationAdapter
                         Rqs.Add(new CreateRequest { Target = newEntity });
                         newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
                         break;
-                        //Update
+                    //Update
                     case 1:
                         Rqs.Add(new UpdateRequest { Target = newEntity });
                         newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
                         break;
-                        //Delete
+                    //Delete
                     case 2:
                         Rqs.Add(new DeleteRequest { Target = newEntity.ToEntityReference() });
                         break;
-                        //status
+                    //status
                     case 3:
-                        Rqs.Add(new SetStateRequest {
+                        Rqs.Add(new SetStateRequest
+                        {
                             EntityMoniker = newEntity.ToEntityReference(),
                             State = new OptionSetValue((int)newEntity.Attributes["statecode"]),
                             Status = new OptionSetValue((int)newEntity.Attributes["statuscode"])
@@ -369,18 +354,84 @@ namespace CRMSSIS.CRMDestinationAdapter
                 }
                 newEntityCollection.Entities.Add(newEntity);
                 rowIndexList.Add(ir);
-                rowInputList.Add(inputID);
+
+
+
+                if (bchCnt == batchSize * 2 || (ir + 1) == buffer.RowCount)
+                {
+                    int startBuffIndex = buffer.CurrentRow - bchCnt;
+                    CRMIntegrate[] IntegrationRows = SendRowsToCRM(newEntityCollection, EntityName, Rqs);
+                                       
+                    sendOutputResults(IntegrationRows, buffer, startBuffIndex);
+                }
+
                 ir++;
-
-                 SendRowsToCRM(newEntityCollection, EntityName, Rqs, buffer.RowCount);
-               
-
             }
 
-             
+
 
         }
 
+
+        private void sendOutputResults(CRMIntegrate[] Integ, PipelineBuffer buffer, int startBuffIndex)
+        {
+            IEnumerable<ExecuteMultipleResponseItem> FltResp;
+            IEnumerable<ExecuteMultipleResponseItem> OkResp;
+
+            foreach (CRMIntegrate irsp in Integ)
+            {
+                if (irsp.Resp != null)
+                {
+                    if (irsp.Resp.IsFaulted)
+                    {
+                        FltResp = irsp.Resp.Responses.Where(r => r.Fault != null);
+
+                        foreach (ExecuteMultipleResponseItem itm in FltResp)
+                        {
+                            // retError += string.Format("Error  '{0}' -> {1}\r\n", irsp.DataTableRowsIndex[itm.RequestIndex].ToString(), itm.Fault.Message);
+                            //errorResult.Add(irsp.InputRow[itm.RequestIndex], itm.Fault.Message);
+                            buffer.DirectErrorRow(startBuffIndex + irsp.DataTableRowsIndex[itm.RequestIndex], errorOutputId, itm.Fault.ErrorCode, 0);
+
+
+                        }
+                    }
+
+                    OkResp = irsp.Resp.Responses.Where(r => r.Fault == null);
+                    int current = buffer.CurrentRow;
+                     
+                    buffer.CurrentRow = startBuffIndex;
+                    
+                    foreach (ExecuteMultipleResponseItem itm in OkResp)
+                    {
+                        if (operation == 0)
+                        {
+
+                            buffer.NextRow();                            
+                                
+                             buffer.DirectRow(defaultOuputId);
+ 
+                            
+                        }
+                        buffer.CurrentRow = current;
+                        //okResponse.Add(irsp.DataTableRowsIndex[itm.RequestIndex], ((CreateResponse)itm.Response).id.ToString());
+                        // cahedBuffer[irsp.DataTableRowsIndex[itm.RequestIndex]].SetString(ComponentMetaData.OutputCollection[0].OutputColumnCollection.Count-1, ((CreateResponse)itm.Response).id.ToString());
+
+
+
+                    }
+
+
+                }
+                else if (irsp.ExceptionMessage != "")
+                    for (int i = irsp.DataTableRowsIndex[0]; i <= irsp.DataTableRowsIndex[irsp.DataTableRowsIndex.Count - 1]; i++)
+                    {
+                        buffer.DirectErrorRow(startBuffIndex + irsp.DataTableRowsIndex[i], errorOutputId, -1, 0);
+
+                    }
+
+
+            }
+        }
         /// <summary>
         /// Fill attributes in the entity to be sent to Dynamics CRM
         /// </summary>
@@ -394,7 +445,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                 //    break;
                 case AttributeTypeCode.BigInt:
                     newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToInt64(value, CultureInfo.CreateSpecificCulture("en-US"));
-                    
+
                     break;
                 case AttributeTypeCode.Boolean:
                     newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToBoolean(value, CultureInfo.CreateSpecificCulture("en-US"));
@@ -427,16 +478,16 @@ namespace CRMSSIS.CRMDestinationAdapter
                 case AttributeTypeCode.Customer:
                 case AttributeTypeCode.Lookup:
                 case AttributeTypeCode.PartyList:
-                   
+
                     newEntity.Attributes[mappedColumn.InternalColumnName] = new EntityReference(mappedColumn.TargetEntity, new Guid(Convert.ToString(value, CultureInfo.CreateSpecificCulture("en-US"))));
                     break;
 
                 default:
-                        newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToString(value, CultureInfo.CreateSpecificCulture("en-US"));
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToString(value, CultureInfo.CreateSpecificCulture("en-US"));
                     break;
             }
         }
-      
+
         /// <summary>
         /// Send information to IOrganization service in bulk way
         /// </summary>
@@ -444,181 +495,96 @@ namespace CRMSSIS.CRMDestinationAdapter
         /// <param name="EntityName"></param>
         /// <param name="Rqs"></param>
         /// <param name="RowCount"></param>
-        private void SendRowsToCRM(EntityCollection EntityList, string EntityName, List<OrganizationRequest> Rqs, int RowCount)
+        private CRMIntegrate[] SendRowsToCRM(EntityCollection EntityList, string EntityName, List<OrganizationRequest> Rqs)
         {
 
             ExecuteMultipleRequest Req;
             CRMIntegrate[] Integ = new CRMIntegrate[2];
-            IEnumerable<ExecuteMultipleResponseItem> FltResp;
-            IEnumerable<ExecuteMultipleResponseItem> OkResp;
-          
-                       
 
-            if (bchCnt == batchSize * 2 || (ir + 1) == RowCount)
+
+
+
+
+            bchCnt = 0;
+            Req = new ExecuteMultipleRequest();
+            Req.Settings = new ExecuteMultipleSettings { ContinueOnError = true, ReturnResponses = true };
+            Req.Requests = new OrganizationRequestCollection();
+            Req.Requests.AddRange(Rqs.Take(Rqs.Count / 2));
+            Integ[0] = new CRMIntegrate
             {
-                bchCnt = 0;
-                Req = new ExecuteMultipleRequest();
-                Req.Settings = new ExecuteMultipleSettings { ContinueOnError = true, ReturnResponses = true };
-                Req.Requests = new OrganizationRequestCollection();
-                Req.Requests.AddRange(Rqs.Take(Rqs.Count / 2));
-                Integ[0] = new CRMIntegrate
-                {
-                    ExceptionMessage = "",
-                    Req = Req,
-                    Resp = null,
-                    DataTableRowsIndex = rowIndexList.Take(rowIndexList.Count / 2).ToList<int>(),
-                    InputRow = rowInputList.Take(rowInputList.Count / 2).ToList<int>()
-                };
+                ExceptionMessage = "",
+                Req = Req,
+                Resp = null,
+                DataTableRowsIndex = rowIndexList.Take(rowIndexList.Count / 2).ToList<int>(),
 
-                Req = new ExecuteMultipleRequest();
-                Req.Settings = new ExecuteMultipleSettings { ContinueOnError = true, ReturnResponses = true };
-                Req.Requests = new OrganizationRequestCollection();
-                Req.Requests.AddRange(Rqs.Skip(Rqs.Count / 2).Take(Rqs.Count - Rqs.Count / 2));
-                Integ[1] = new CRMIntegrate
-                {
-                    ExceptionMessage = "",
-                    Req = Req,
-                    Resp = null,
-                    DataTableRowsIndex = rowIndexList.Skip(rowIndexList.Count / 2).Take(rowIndexList.Count - rowIndexList.Count / 2).ToList<int>(),
-                    InputRow = rowInputList.Skip(rowInputList.Count / 2).Take(rowInputList.Count - rowInputList.Count / 2).ToList<int>()
-                };
+            };
+
+            Req = new ExecuteMultipleRequest();
+            Req.Settings = new ExecuteMultipleSettings { ContinueOnError = true, ReturnResponses = true };
+            Req.Requests = new OrganizationRequestCollection();
+            Req.Requests.AddRange(Rqs.Skip(Rqs.Count / 2).Take(Rqs.Count - Rqs.Count / 2));
+            Integ[1] = new CRMIntegrate
+            {
+                ExceptionMessage = "",
+                Req = Req,
+                Resp = null,
+                DataTableRowsIndex = rowIndexList.Skip(rowIndexList.Count / 2).Take(rowIndexList.Count - rowIndexList.Count / 2).ToList<int>(),
+
+            };
 
 
-                Parallel.Invoke(
-                                               () =>
+            Parallel.Invoke(
+                                           () =>
+                                           {
+                                               try
                                                {
-                                                   try
+                                                   if (Integ[0].Req.Requests.Count > 0)
                                                    {
-                                                       if (Integ[0].Req.Requests.Count > 0)
-                                                       {
-                                                           Integ[0].Resp = (ExecuteMultipleResponse)service.Execute(Integ[0].Req);
-                                                       }
-                                                       else
-                                                       {
-                                                           Integ[0].Resp = null;
-                                                           Integ[0].ExceptionMessage = "";
-                                                       }
+                                                       Integ[0].Resp = (ExecuteMultipleResponse)service.Execute(Integ[0].Req);
                                                    }
-                                                   catch (Exception ex)
+                                                   else
                                                    {
                                                        Integ[0].Resp = null;
-                                                       Integ[0].ExceptionMessage = ex.Message;
-                                                   }
-                                               },
-                                               () =>
-                                               {
-                                                   try
-                                                   {
-                                                       if (Integ[1].Req.Requests.Count > 0)
-                                                       {
-                                                           Integ[1].Resp = (ExecuteMultipleResponse)service.Execute(Integ[1].Req);
-                                                       }
-                                                       else
-                                                       {
-                                                           Integ[1].Resp = null;
-                                                           Integ[1].ExceptionMessage = "";
-                                                       }
-                                                   }
-                                                   catch (Exception ex)
-                                                   {
-                                                       Integ[1].Resp = null;
-                                                       Integ[1].ExceptionMessage = ex.Message;
+                                                       Integ[0].ExceptionMessage = "";
                                                    }
                                                }
-                               );
+                                               catch (Exception ex)
+                                               {
+                                                   Integ[0].Resp = null;
+                                                   Integ[0].ExceptionMessage = ex.Message;
+                                               }
+                                           },
+                                           () =>
+                                           {
+                                               try
+                                               {
+                                                   if (Integ[1].Req.Requests.Count > 0)
+                                                   {
+                                                       Integ[1].Resp = (ExecuteMultipleResponse)service.Execute(Integ[1].Req);
+                                                   }
+                                                   else
+                                                   {
+                                                       Integ[1].Resp = null;
+                                                       Integ[1].ExceptionMessage = "";
+                                                   }
+                                               }
+                                               catch (Exception ex)
+                                               {
+                                                   Integ[1].Resp = null;
+                                                   Integ[1].ExceptionMessage = ex.Message;
+                                               }
+                                           }
+                           );
 
-               
 
+            Rqs.Clear();
+            rowIndexList.Clear();
 
-                foreach (CRMIntegrate irsp in Integ)
-                {
-                    if (irsp.Resp != null)
-                    {
-                        if (irsp.Resp.IsFaulted)
-                        {
-                            FltResp = irsp.Resp.Responses.Where(r => r.Fault != null);
-
-                            foreach (ExecuteMultipleResponseItem itm in FltResp)
-                            {  
-                            // retError += string.Format("Error  '{0}' -> {1}\r\n", irsp.DataTableRowsIndex[itm.RequestIndex].ToString(), itm.Fault.Message);
-                            //errorResult.Add(irsp.InputRow[itm.RequestIndex], itm.Fault.Message);
-                            cahedBuffer[itm.RequestIndex].DirectRow(ComponentMetaData.OutputCollection[1].ID);
-                          
-                            }
-                        }
-
-                        OkResp = irsp.Resp.Responses.Where(r => r.Fault == null);
-
-                        foreach (ExecuteMultipleResponseItem itm in OkResp)
-                        {
-                            if(operation == 0)
-                            cahedBuffer[itm.RequestIndex].SetString(ComponentMetaData.OutputCollection[0].OutputColumnCollection.Count-1, ((CreateResponse)itm.Response).id.ToString());
-
-                            cahedBuffer[itm.RequestIndex].DirectRow(ComponentMetaData.OutputCollection[0].ID);
-                             
-                        }
-                        
-
-                    }
-                    else if (irsp.ExceptionMessage != "")
-                        for (int i = irsp.DataTableRowsIndex[0]; i <= irsp.DataTableRowsIndex[irsp.DataTableRowsIndex.Count - 1]; i++)
-                        {
-                            //errorResult.Add(irsp.InputRow[i], irsp.ExceptionMessage);
-                            cahedBuffer[i].DirectRow(ComponentMetaData.OutputCollection[1].ID);
-
-                        }
-                        
-                   // retError += string.Format("Error at '{0}' integrating '{1}' to '{2}':\r\n", irsp.ExceptionMessage, irsp.DataTableRowsIndex[0].ToString(), irsp.DataTableRowsIndex[irsp.DataTableRowsIndex.Count - 1].ToString());
-
-                }
-
-               
-                Rqs.Clear();
-                rowIndexList.Clear();
-                cahedBuffer = new PipelineBuffer[batchSize * 2];
-            }
+            return Integ;
 
         }
 
-        //public override void PrimeOutput(int outputs, int[] outputIDs, PipelineBuffer[] buffers)
-        //{
-        //    /// Esto no lo entiendo
-        //    /// recordar que en el create no estoy incluyendo la columna del id creado.
-        //    if ((buffers.Length != 0))
-        //    {
-        //        outputBuffer = buffers[0];
 
-        //    }
-
-        //    int i=0;
-
-        //    while (i< outputIDs.Count())
-        //    {
-        //        outputBuffer.NextRow();
-
-
-        //        if (errorResult.ContainsKey(outputIDs[i]))
-        //        {
-        //            errorBuffer.AddRow();
-        //            int col = 0;
-        //            //copy columns
-        //            while ((col < outputOKBufferIndexes.Length))
-        //                errorBuffer[outputErrorBufferIndexes[col]] = outputBuffer[outputOKBufferIndexes[col]];
-        //            errorBuffer.SetErrorInfo(outputIDs[i], 1, 0);
-        //        }
-
-        //        outputBuffer.RemoveRow();
-        //        i++;
-        //    }
-
-        //}
-        //public override void PostExecute()
-        //{
-
-        //    ComponentMetaData.CustomPropertyCollection["CRMErrors"].Value =retError;
-        //    ComponentMetaData.CustomPropertyCollection["CRMOK"].Value =  retOK;
-
-        //}
 
     }
     #endregion

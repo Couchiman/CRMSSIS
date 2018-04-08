@@ -373,7 +373,12 @@ namespace CRMSSIS.CRMDestinationAdapter
 
         }
 
-
+        /// <summary>
+        /// Sends Outputs to files.
+        /// </summary>
+        /// <param name="Integ"></param>
+        /// <param name="buffer"></param>
+        /// <param name="startBuffIndex"></param>
         private void sendOutputResults(CRMIntegrate[] Integ, PipelineBuffer buffer, int startBuffIndex)
         {
             IEnumerable<ExecuteMultipleResponseItem> FltResp;
@@ -406,6 +411,8 @@ namespace CRMSSIS.CRMDestinationAdapter
                     
                     foreach (ExecuteMultipleResponseItem itm in OkResp)
                     {
+
+                        //Add the inserted GUID for Create Operation
                         if (operation == 0)
                         {
 
@@ -416,10 +423,9 @@ namespace CRMSSIS.CRMDestinationAdapter
                             if(buffer.CurrentRow < buffer.RowCount)
                             buffer.NextRow();
                         }
+
                         
-                        //okResponse.Add(irsp.DataTableRowsIndex[itm.RequestIndex], ((CreateResponse)itm.Response).id.ToString());
-                        // cahedBuffer[irsp.DataTableRowsIndex[itm.RequestIndex]].SetString(ComponentMetaData.OutputCollection[0].OutputColumnCollection.Count-1, ((CreateResponse)itm.Response).id.ToString());
-                    }
+                      }
                     
 
                 }
@@ -446,34 +452,34 @@ namespace CRMSSIS.CRMDestinationAdapter
             {
                 //    break;
                 case AttributeTypeCode.BigInt:
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToInt64(value, CultureInfo.CreateSpecificCulture("en-US"));
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToInt64(value, CultureInfo.InvariantCulture);
 
                     break;
                 case AttributeTypeCode.Boolean:
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToBoolean(value, CultureInfo.CreateSpecificCulture("en-US"));
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToBoolean(value, CultureInfo.InvariantCulture);
                     break;
                 case AttributeTypeCode.DateTime:
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToDateTime(value, CultureInfo.CreateSpecificCulture("en-US"));
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToDateTime(value, CultureInfo.InvariantCulture);
 
                     break;
                 case AttributeTypeCode.Decimal:
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToDecimal(value, CultureInfo.CreateSpecificCulture("en-US"));
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToDecimal(value, CultureInfo.InvariantCulture);
 
                     break;
                 case AttributeTypeCode.Double:
                 case AttributeTypeCode.Money:
 
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToDouble(value, CultureInfo.CreateSpecificCulture("en-US"));
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToDouble(value, CultureInfo.InvariantCulture);
                     break;
                 case AttributeTypeCode.Integer:
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToInt32(value, CultureInfo.CreateSpecificCulture("en-US"));
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToInt32(value, CultureInfo.InvariantCulture);
                     break;
                 case AttributeTypeCode.Picklist:
 
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = new OptionSetValue(Convert.ToInt32(value, CultureInfo.CreateSpecificCulture("en-US")));
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = new OptionSetValue(Convert.ToInt32(value, CultureInfo.InvariantCulture));
                     break;
                 case AttributeTypeCode.Uniqueidentifier:
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = new Guid(Convert.ToString(value, CultureInfo.CreateSpecificCulture("en-US")));
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = new Guid(Convert.ToString(value, CultureInfo.InvariantCulture));
                     break;
                 case AttributeTypeCode.Owner:
                     break;
@@ -481,11 +487,11 @@ namespace CRMSSIS.CRMDestinationAdapter
                 case AttributeTypeCode.Lookup:
                 case AttributeTypeCode.PartyList:
 
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = new EntityReference(mappedColumn.TargetEntity, new Guid(Convert.ToString(value, CultureInfo.CreateSpecificCulture("en-US"))));
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = new EntityReference(mappedColumn.TargetEntity, new Guid(Convert.ToString(value, CultureInfo.InvariantCulture)));
                     break;
 
                 default:
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToString(value, CultureInfo.CreateSpecificCulture("en-US"));
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToString(value, CultureInfo.InvariantCulture);
                     break;
             }
         }

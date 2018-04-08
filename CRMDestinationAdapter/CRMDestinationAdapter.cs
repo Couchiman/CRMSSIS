@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Microsoft.Crm.Sdk.Messages;
 using System.Globalization;
 using Microsoft.SqlServer.Dts.Runtime;
+using Microsoft.SqlServer.Dts.Runtime.Wrapper;
 
 namespace CRMSSIS.CRMDestinationAdapter
 {
@@ -160,11 +161,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             CRMOK.Name = "CRMOK";
             CRMOK.SynchronousInputID = input.ID;
             CRMOK.ExclusionGroup = 1;
-
-
-            ComponentMetaData.UsesDispositions = true;
-
-
+                   
             IDTSRuntimeConnection100 connection = ComponentMetaData.RuntimeConnectionCollection.New();
             connection.Name = "CRMSSIS";
             connection.ConnectionManagerID = "CRMSSIS";
@@ -220,10 +217,10 @@ namespace CRMSSIS.CRMDestinationAdapter
                     input.SetUsageType(vcol.LineageID, DTSUsageType.UT_READONLY);
                    
                 }
-
-              
+          
                 
             }
+                 
 
 
         }
@@ -232,8 +229,8 @@ namespace CRMSSIS.CRMDestinationAdapter
         #endregion
 
         #region runtime methods
-       
-        
+
+
         /// <summary>
         /// setups the operation with required values and maps buffer with inputcolumns
         /// </summary>
@@ -357,9 +354,9 @@ namespace CRMSSIS.CRMDestinationAdapter
 
 
 
-                if (bchCnt == batchSize * 2 || (ir + 1) == buffer.RowCount)
+                if (bchCnt == batchSize * 2 && buffer.CurrentRow< buffer.RowCount)
                 {
-                    int startBuffIndex = buffer.CurrentRow - bchCnt;
+                    int startBuffIndex = buffer.CurrentRow - (bchCnt-1);
                     CRMIntegrate[] IntegrationRows = SendRowsToCRM(newEntityCollection, EntityName, Rqs);
                                        
                     sendOutputResults(IntegrationRows, buffer, startBuffIndex);
@@ -368,8 +365,6 @@ namespace CRMSSIS.CRMDestinationAdapter
                 ir++;
             }
 
-
-
         }
 
 
@@ -377,6 +372,10 @@ namespace CRMSSIS.CRMDestinationAdapter
         {
             IEnumerable<ExecuteMultipleResponseItem> FltResp;
             IEnumerable<ExecuteMultipleResponseItem> OkResp;
+
+            int current = buffer.CurrentRow;
+
+            buffer.CurrentRow = startBuffIndex;
 
             foreach (CRMIntegrate irsp in Integ)
             {
@@ -397,29 +396,25 @@ namespace CRMSSIS.CRMDestinationAdapter
                     }
 
                     OkResp = irsp.Resp.Responses.Where(r => r.Fault == null);
-                    int current = buffer.CurrentRow;
-                     
-                    buffer.CurrentRow = startBuffIndex;
+                   
                     
                     foreach (ExecuteMultipleResponseItem itm in OkResp)
                     {
                         if (operation == 0)
                         {
 
-                            buffer.NextRow();                            
-                                
-                             buffer.DirectRow(defaultOuputId);
- 
                             
+                           // buffer.SetString(ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count - 1, ((CreateResponse)itm.Response).id.ToString());
+
+                            buffer.DirectRow(defaultOuputId);
+                            if(buffer.CurrentRow < buffer.RowCount)
+                            buffer.NextRow();
                         }
-                        buffer.CurrentRow = current;
+                        
                         //okResponse.Add(irsp.DataTableRowsIndex[itm.RequestIndex], ((CreateResponse)itm.Response).id.ToString());
                         // cahedBuffer[irsp.DataTableRowsIndex[itm.RequestIndex]].SetString(ComponentMetaData.OutputCollection[0].OutputColumnCollection.Count-1, ((CreateResponse)itm.Response).id.ToString());
-
-
-
                     }
-
+                    
 
                 }
                 else if (irsp.ExceptionMessage != "")
@@ -428,9 +423,10 @@ namespace CRMSSIS.CRMDestinationAdapter
                         buffer.DirectErrorRow(startBuffIndex + irsp.DataTableRowsIndex[i], errorOutputId, -1, 0);
 
                     }
-
-
+                
             }
+
+            buffer.CurrentRow = current;
         }
         /// <summary>
         /// Fill attributes in the entity to be sent to Dynamics CRM

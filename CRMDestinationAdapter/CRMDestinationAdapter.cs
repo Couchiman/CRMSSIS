@@ -16,6 +16,7 @@ using Microsoft.Crm.Sdk.Messages;
 using System.Globalization;
 using Microsoft.SqlServer.Dts.Runtime;
 using Microsoft.SqlServer.Dts.Runtime.Wrapper;
+using CRMSSIS.CRMCommon.Enumerators;
 
 namespace CRMSSIS.CRMDestinationAdapter
 {
@@ -325,23 +326,23 @@ namespace CRMSSIS.CRMDestinationAdapter
                 }
 
 
-                switch (operation)
+                switch ((Operations)operation)
                 {    //Create  
-                    case 0:
+                    case Operations.Create:
                         Rqs.Add(new CreateRequest { Target = newEntity });
                         newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
                         break;
                     //Update
-                    case 1:
+                    case Operations.Update:
                         Rqs.Add(new UpdateRequest { Target = newEntity });
                         newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
                         break;
                     //Delete
-                    case 2:
+                    case Operations.Delete:
                         Rqs.Add(new DeleteRequest { Target = newEntity.ToEntityReference() });
                         break;
                     //status
-                    case 3:
+                    case Operations.Status:
                         Rqs.Add(new SetStateRequest
                         {
                             EntityMoniker = newEntity.ToEntityReference(),
@@ -349,7 +350,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                             Status = new OptionSetValue((int)newEntity.Attributes["statuscode"])
                         });
                         break;
-                    case 4:
+                    case Operations.Upsert:
                         Rqs.Add(new UpsertRequest { Target = newEntity });
                         newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
                         break;
@@ -413,19 +414,23 @@ namespace CRMSSIS.CRMDestinationAdapter
                     {
 
                         //Add the inserted GUID for Create Operation
-                        switch (operation)
+                        switch ((Operations)operation)
                         {
-                            case 0:
+                            case Operations.Create:
                                 buffer.SetString(ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count - 1, ((CreateResponse)itm.Response).id.ToString());                              
                                 break;
-                            case 1:
+                                                      
+                            case Operations.Update:
                                 buffer.SetString(ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count - 1, ((UpdateResponse)itm.Response).ToString());
                                 break;
-                            case 3:
+                            case Operations.Delete:
                                 buffer.SetString(ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count - 1, ((DeleteResponse)itm.Response).ToString());
                                 break;
-                            case 4:
+                            case Operations.Upsert:
                                 buffer.SetString(ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count - 1, ((UpsertResponse)itm.Response).ToString());
+                                break;
+                            case Operations.Status:
+                                buffer.SetString(ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count - 1, ((SetStateResponse)itm.Response).ToString());
                                 break;
 
                         }

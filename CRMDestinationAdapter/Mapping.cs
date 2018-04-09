@@ -247,7 +247,13 @@ namespace CRMSSIS.CRMDestinationAdapter
                 columnList.Add(mi);
             }
         }
-
+        /// <summary>
+        /// This operation is being called by Refresh Metada button 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="currentMetadata"></param>
+        /// <param name="newMetadata"></param>
+        /// <param name="Operation"></param>
         public void RefreshMapping(IDTSInput100 input, AttributeMetadata[] currentMetadata, AttributeMetadata[] newMetadata, int Operation)
         {
 

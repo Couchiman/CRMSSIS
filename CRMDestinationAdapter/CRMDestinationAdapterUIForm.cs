@@ -179,7 +179,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             }
             dgAtributeMap.DataError += new DataGridViewDataErrorEventHandler(dgAtributeMap_DataError);
             cbConnectionList.SelectedIndexChanged += new System.EventHandler(this.cbConnectionList_SelectedIndexChanged);
-
+            cbOperation.SelectedIndexChanged += new System.EventHandler(this.cbOperation_SelectedIndexChanged);
 
 
 
@@ -361,8 +361,9 @@ namespace CRMSSIS.CRMDestinationAdapter
                 m = new Mapping(entity.Metadata, input, operation);
                 dgAtributeMap.DataSource = null;
                 dgAtributeMap.Rows.Clear();
+                dgAtributeMap.Columns.Clear();
                 dgAtributeMap.Refresh();
-                                
+                                            
             }
             
         
@@ -543,6 +544,11 @@ namespace CRMSSIS.CRMDestinationAdapter
             }
         }
 
+        /// <summary>
+        /// Captures the Entity change event.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void cbEntity_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbEntity.SelectedItem != null)
@@ -554,7 +560,11 @@ namespace CRMSSIS.CRMDestinationAdapter
 
         }
 
-
+        /// <summary>
+        /// Sets the image for loading operation
+        /// </summary>
+        /// <param name="picBox"></param>
+        /// <param name="bmpName"></param>
         private void SetPictureBoxFromResource(PictureBox picBox, string bmpName)
         {
             System.IO.Stream stream = this.GetType().Assembly.GetManifestResourceStream(bmpName);
@@ -573,13 +583,22 @@ namespace CRMSSIS.CRMDestinationAdapter
 
         }
 
+        /// <summary>
+        /// Loads all entities
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             loadEntityCombobox();
 
            
         }
-
+        /// <summary>
+        /// Refresh entities button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             if(cbConnectionList.SelectedItem !=null)
@@ -591,6 +610,11 @@ namespace CRMSSIS.CRMDestinationAdapter
             }
         }
 
+        /// <summary>
+        /// Refresh Metatada button, corrects inputs and outputs
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnRefreshMetadata_Click(object sender, EventArgs e)
         {
             //Forces meadata refresh
@@ -657,6 +681,16 @@ namespace CRMSSIS.CRMDestinationAdapter
                 }
 
             
+        }
+
+        private void cbOperation_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbOperation.SelectedItem != null && cbEntity.SelectedItem !=null)
+            {
+
+                m = null;
+                loadMappingGrid((Item)cbEntity.SelectedItem);
+            }
         }
     }
 }

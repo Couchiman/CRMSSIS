@@ -36,6 +36,7 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnRefreshMetadata = new System.Windows.Forms.Button();
+            this.btnMappings = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.btnRefresh = new System.Windows.Forms.Button();
             this.txtBatchSize = new System.Windows.Forms.TextBox();
@@ -44,12 +45,11 @@
             this.cbEntity = new System.Windows.Forms.ComboBox();
             this.lblOperation = new System.Windows.Forms.Label();
             this.cbOperation = new System.Windows.Forms.ComboBox();
-            this.dgAtributeMap = new System.Windows.Forms.DataGridView();
             this.backgroundWorkerLoadEntities = new System.ComponentModel.BackgroundWorker();
             this.pbLoader = new System.Windows.Forms.PictureBox();
+           
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgAtributeMap)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbLoader)).BeginInit();
             this.SuspendLayout();
             // 
@@ -97,7 +97,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(494, 441);
+            this.btnCancel.Location = new System.Drawing.Point(514, 245);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
             this.btnCancel.TabIndex = 11;
@@ -106,7 +106,7 @@
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(288, 441);
+            this.btnOK.Location = new System.Drawing.Point(404, 245);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
             this.btnOK.TabIndex = 12;
@@ -116,7 +116,7 @@
             // 
             // btnRefreshMetadata
             // 
-            this.btnRefreshMetadata.Location = new System.Drawing.Point(128, 441);
+            this.btnRefreshMetadata.Location = new System.Drawing.Point(148, 245);
             this.btnRefreshMetadata.Name = "btnRefreshMetadata";
             this.btnRefreshMetadata.Size = new System.Drawing.Size(107, 23);
             this.btnRefreshMetadata.TabIndex = 13;
@@ -149,6 +149,17 @@
             this.btnRefresh.Text = "Refresh Entities";
             this.btnRefresh.UseVisualStyleBackColor = true;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
+            // 
+            // btnMappings
+            // 
+            this.btnMappings.Enabled = false;
+            this.btnMappings.Location = new System.Drawing.Point(286, 245);
+            this.btnMappings.Name = "btnMappings";
+            this.btnMappings.Size = new System.Drawing.Size(80, 23);
+            this.btnMappings.TabIndex = 100;
+            this.btnMappings.Text = "Mappings";
+            this.btnMappings.UseVisualStyleBackColor = true;
+            this.btnMappings.Click += new System.EventHandler(this.btnMappings_Click);
             // 
             // txtBatchSize
             // 
@@ -202,14 +213,6 @@
             this.cbOperation.Size = new System.Drawing.Size(187, 21);
             this.cbOperation.TabIndex = 19;
             // 
-            // dgAtributeMap
-            // 
-            this.dgAtributeMap.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgAtributeMap.Location = new System.Drawing.Point(12, 245);
-            this.dgAtributeMap.Name = "dgAtributeMap";
-            this.dgAtributeMap.Size = new System.Drawing.Size(803, 179);
-            this.dgAtributeMap.TabIndex = 22;
-            // 
             // backgroundWorkerLoadEntities
             // 
             this.backgroundWorkerLoadEntities.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
@@ -222,18 +225,19 @@
             this.pbLoader.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pbLoader.TabIndex = 99;
             this.pbLoader.TabStop = false;
+          
             // 
             // CRMDestinationAdapterUIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(827, 476);
+            this.ClientSize = new System.Drawing.Size(827, 283);
             this.Controls.Add(this.pbLoader);
-            this.Controls.Add(this.dgAtributeMap);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnRefreshMetadata);
+            this.Controls.Add(this.btnMappings);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -244,7 +248,6 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgAtributeMap)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbLoader)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -266,10 +269,10 @@
         private System.Windows.Forms.ComboBox cbEntity;
         private System.Windows.Forms.Label lblOperation;
         private System.Windows.Forms.ComboBox cbOperation;
-        private System.Windows.Forms.DataGridView dgAtributeMap;
         private System.ComponentModel.BackgroundWorker backgroundWorkerLoadEntities;
         private System.Windows.Forms.PictureBox pbLoader;
         private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.Button btnRefreshMetadata;
+        private System.Windows.Forms.Button btnMappings;
     }
 }

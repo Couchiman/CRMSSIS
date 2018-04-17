@@ -441,7 +441,28 @@ namespace CRMSSIS.CRMCommon.Fetch {
             System.Exception exception = null;
             return LoadFromFile(fileName, out obj, out exception);
         }
-        
+
+        public static condition LoadFromString(string mstring)
+        {
+           
+            System.IO.StringReader sr = null;
+            try
+            {
+               
+                sr = new System.IO.StringReader(mstring);
+                string xmlString = sr.ReadToEnd();
+                sr.Close();
+                return Deserialize(xmlString);
+            }
+            finally
+            {
+               
+                if ((sr != null))
+                {
+                    sr.Dispose();
+                }
+            }
+        }
         public static condition LoadFromFile(string fileName) {
             System.IO.FileStream file = null;
             System.IO.StreamReader sr = null;

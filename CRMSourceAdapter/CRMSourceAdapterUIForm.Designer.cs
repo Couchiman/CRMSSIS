@@ -115,7 +115,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel1.Location = new System.Drawing.Point(0, 415);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(465, 38);
+            this.panel1.Size = new System.Drawing.Size(646, 38);
             this.panel1.TabIndex = 11;
             // 
             // panel2
@@ -123,7 +123,7 @@
             this.panel2.Controls.Add(this.btnCancel);
             this.panel2.Controls.Add(this.btnOK);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel2.Location = new System.Drawing.Point(295, 0);
+            this.panel2.Location = new System.Drawing.Point(476, 0);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(170, 38);
             this.panel2.TabIndex = 8;
@@ -150,7 +150,7 @@
             this.txtFetchXML.Location = new System.Drawing.Point(34, 131);
             this.txtFetchXML.Multiline = true;
             this.txtFetchXML.Name = "txtFetchXML";
-            this.txtFetchXML.Size = new System.Drawing.Size(391, 261);
+            this.txtFetchXML.Size = new System.Drawing.Size(600, 261);
             this.txtFetchXML.TabIndex = 13;
             this.txtFetchXML.Text = "<entity name=\"account\"><attribute name=\"primarycontactid\" /></entity>";
             this.txtFetchXML.TextChanged += new System.EventHandler(this.txtFetchXML_TextChanged);
@@ -159,7 +159,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(465, 453);
+            this.ClientSize = new System.Drawing.Size(646, 453);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtFetchXML);
             this.Controls.Add(this.panel1);

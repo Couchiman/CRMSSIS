@@ -14,7 +14,8 @@ using Microsoft.Crm.Sdk.Messages;
 using System.Collections.Generic;
 using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
 using CRMSSIS.CRMCommon;
-
+using System.Xml;
+using System.Xml.Linq;
 
 namespace CRMSSIS.CRMSourceAdapter
 
@@ -98,15 +99,7 @@ namespace CRMSSIS.CRMSourceAdapter
                 return DTSValidationStatus.VS_ISBROKEN;
             }
 
-            // TODO : Improve querying. Right now, retrieves all(Max 5000k)
-            if (qFetchxml.IndexOf("fetch") > 0)
-            {
-                ComponentMetaData.FireError(0, ComponentMetaData.Name, "Use FetchXML without fetch tag: ex <entity name='accounts' ><attribute name='accountid' /></entity>", "", 0, out cancel);
-                return DTSValidationStatus.VS_ISBROKEN;
-            }
-
-
-
+            
             if ((ComponentMetaData.OutputCollection[0].OutputColumnCollection.Count == 0))
             {
                 return DTSValidationStatus.VS_NEEDSNEWMETADATA;
@@ -371,19 +364,75 @@ namespace CRMSSIS.CRMSourceAdapter
 
                 AttributeMetadata mdta;
 
+                System.Xml.Linq.XElement xe = XElement.Parse(FetchXML.Trim());
+
+                if (xe.Attribute("version") == null)
+                {
+                    xe.SetAttributeValue("version", "1.0");
+                }
+
+                if (xe.Attribute("mapping") == null)
+                {
+                    xe.SetAttributeValue("mapping", "logical");
+                }
+
                 do
                 {
+                   
 
                     if (top)
                     {
-                        result = service.RetrieveMultiple(new FetchExpression("<fetch version=\"1.0\" count=\"200\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">" + FetchXML + "</fetch>"));
+                      
+                        if (xe.Attribute("distinct") == null)
+                        {
+                            xe.SetAttributeValue("distinct", "false");
+                        }
+
+                        if (xe.Attribute("count") == null)
+                        {
+                            xe.SetAttributeValue("count", "50");
+                        }
+                        else
+                        {
+                            xe.Value = "50";
+                        }
+                                      
+                        result = service.RetrieveMultiple(new FetchExpression(xe.ToString()));
 
                         result.MoreRecords = false;
                     }
                     else
-                        result = service.RetrieveMultiple(new FetchExpression(string.Format("<fetch version=\"1.0\" page=\"{1}\" paging-cookie=\"{0}\" count=\"5000\" output-format=\"xml-platform\" mapping=\"logical\" distinct=\"false\">" + FetchXML + "</fetch>", SecurityElement.Escape(result.PagingCookie), page++)));
+                    {
+                        
+                       
+                        if (xe.Attribute("count") == null)
+                        {
+                            xe.SetAttributeValue("count", "5000");
+                        }
 
+                        
+                        if (xe.Attribute("page") == null)
+                        {
+                            xe.SetAttributeValue("page", System.Convert.ToString(page++));
+                        }
+                        else
+                        {
+                            xe.Value = System.Convert.ToString(page++); 
+                        }
 
+                        if (xe.Attribute("paging-cookie") == null)
+                        {
+                            xe.SetAttributeValue("paging-cookie", SecurityElement.Escape(System.Convert.ToString(result.PagingCookie)));
+                        }
+                        else
+                        {
+                            xe.Value = SecurityElement.Escape(System.Convert.ToString(result.PagingCookie));
+                        }
+
+                        result = service.RetrieveMultiple(new FetchExpression(xe.ToString()));
+                    }
+
+                    
 
                     RetrieveEntityRequest mdRequest = new RetrieveEntityRequest()
                     {

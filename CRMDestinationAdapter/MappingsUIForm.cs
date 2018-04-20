@@ -65,50 +65,14 @@ namespace CRMSSIS.CRMDestinationAdapter
                 loadMappingGrid(entityItem);
 
             dgAtributeMap.DataError += new DataGridViewDataErrorEventHandler(dgAtributeMap_DataError);
-            dgAtributeMap.CellValueChanged += new DataGridViewCellEventHandler(dgAtributeMap_CellValueChanged);
+            
         }
 
         void dgAtributeMap_DataError(object sender, DataGridViewDataErrorEventArgs e)
         {
             // (No need to write anything in here)
         }
-        /// <summary>
-        /// Change external or internal columns type based on selected external or internal column name
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void dgAtributeMap_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            var editedCell = this.dgAtributeMap.Rows[e.RowIndex].Cells[e.ColumnIndex];
-           
-            //
-            if (this.dgAtributeMap.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() == "ExternalColumnName")
-            {
-                
-              
-               foreach (Mapping.MappingItem item in m.ColumnList)
-                {
-                    if (item.ExternalColumnName == editedCell.Value.ToString())
-                    {
-                        this.dgAtributeMap.Rows[e.RowIndex + 1].Cells[e.ColumnIndex + 1].Value = item.ExternalColumnTypeName;
-                    }
-                }
-              }
-
-
-            if (this.dgAtributeMap.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() == "InternalColumnName")
-            {
-
-
-                foreach (Mapping.MappingItem item in m.ColumnList)
-                {
-                    if (item.InternalColumnName == editedCell.Value.ToString())
-                    {
-                        this.dgAtributeMap.Rows[e.RowIndex + 1].Cells[e.ColumnIndex + 1].Value = item.InternalColumnTypeName;
-                    }
-                }
-            }
-        }
+        
 
         private void loadMappingGrid(Item entityItem)
         {

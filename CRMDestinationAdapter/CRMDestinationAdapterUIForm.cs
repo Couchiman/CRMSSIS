@@ -18,6 +18,8 @@ using Microsoft.Xrm.Sdk;
 using CRMSSIS.CRMCommon.Enumerators;
 using CRMSSIS.CRMCommon.Controls;
 using CRMSSIS.CRMCommon;
+using System.Collections;
+using System.Globalization;
 
 namespace CRMSSIS.CRMDestinationAdapter
 {
@@ -86,6 +88,11 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             }
 
+            if (cboLocales.SelectedItem != null)
+            {
+                designTimeInstance.SetComponentProperty("CultureInfo", ((CRMSSIS.CRMCommon.Controls.Item)cboLocales.SelectedItem).Value);
+            }
+
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Close();
         }
@@ -137,12 +144,11 @@ namespace CRMSSIS.CRMDestinationAdapter
 
 
 
-           
-            loadOperationsCombobox();
-            int cboValue = (int)(Operations)this.metaData.CustomPropertyCollection["Operation"].Value;
+            loadCultureInfo();
+                      
 
-            if (cboValue >= 0)
-                cbOperation.SelectedIndex = cboValue;
+            loadOperationsCombobox();
+            
 
             txtBatchSize.Text = Convert.ToString(this.metaData.CustomPropertyCollection["BatchSize"].Value);
 
@@ -176,6 +182,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                 
 
             }
+           
          
             cbConnectionList.SelectedIndexChanged += new System.EventHandler(this.cbConnectionList_SelectedIndexChanged);
             cbOperation.SelectedIndexChanged += new System.EventHandler(this.cbOperation_SelectedIndexChanged);
@@ -202,12 +209,43 @@ namespace CRMSSIS.CRMDestinationAdapter
             cbOperation.DisplayMember = "Description";
             cbOperation.ValueMember = "value";
 
+            int cboValue = (int)(Operations)this.metaData.CustomPropertyCollection["Operation"].Value;
 
+            if (cboValue >= 0)
+                cbOperation.SelectedIndex = cboValue;
 
         }
 
-      
 
+        /// <summary>
+        /// Loads Culture types to enforce integration culture format for data.
+        /// </summary>
+        private void loadCultureInfo()
+        {
+
+            cboLocales.ValueMember = "Value";
+            cboLocales.DisplayMember = "Text";
+            List<Item> item = new List<Item>();
+
+
+            // loop through the cultures 
+            foreach (CultureInfo culture in CultureInfo.GetCultures(CultureTypes.AllCultures))
+            {
+                item.Add(new Item(culture.EnglishName, culture.LCID.ToString()));
+                // add the cultureinfo object to the arraylist 
+               
+            }
+            cboLocales.Items.Clear();
+            cboLocales.DataSource = item;
+
+            string cboCultureInfo = this.metaData.CustomPropertyCollection["CultureInfo"].Value.ToString();
+
+            if (cboCultureInfo != string.Empty)
+            {
+                cboLocales.SelectedValue = cboCultureInfo;
+            }
+
+        }
 
 
         /// <summary>

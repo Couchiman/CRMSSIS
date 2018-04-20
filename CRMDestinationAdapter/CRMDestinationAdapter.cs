@@ -42,8 +42,10 @@ namespace CRMSSIS.CRMDestinationAdapter
         int ir = 0;
         int batchSize = 1;
         int operation = 0;
+        int culture = 127;
         Guid currentUserId;
         string EntityName = "";
+        //int responseColumn = 0;
 
         int errorOutputId = 0;
         int defaultOuputId = 0;
@@ -131,6 +133,11 @@ namespace CRMSSIS.CRMDestinationAdapter
             BatchSize.Name = "BatchSize";
             BatchSize.Value = 1;
 
+            IDTSCustomProperty100 CultureInfo = ComponentMetaData.CustomPropertyCollection.New();
+            CultureInfo.Description = "Forces specific culture info";
+            CultureInfo.Name = "CultureInfo";
+            CultureInfo.Value = "127";
+
             IDTSCustomProperty100 Entity = ComponentMetaData.CustomPropertyCollection.New();
             Entity.Description = "Entity";
             Entity.Name = "Entity";
@@ -165,8 +172,8 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             //AD CRM GUID Column
             IDTSOutputColumn100 outputcol = CRMOK.OutputColumnCollection.New();
-            outputcol.Name = "Response";
-            outputcol.Description = "Response";
+            outputcol.Name = "_Response_";
+            outputcol.Description = "_Response_";
             outputcol.SetDataTypeProperties(DataType.DT_STR, 60, 0, 0, 1252);
 
 
@@ -203,10 +210,92 @@ namespace CRMSSIS.CRMDestinationAdapter
                 return DTSValidationStatus.VS_ISBROKEN;
             }
 
+            IDTSInput100 input = ComponentMetaData.InputCollection[0];
+            IDTSOutput100 outputError = ComponentMetaData.OutputCollection[0];
+            IDTSOutput100 outputOK = ComponentMetaData.OutputCollection[1];
+            ValidateOutputCollumns(input, outputError);
+            ValidateOutputCollumns(input, outputOK);
+
             return base.Validate();
         }
 
+        /// <summary>
+        /// Adds CRMOK and CRMError Columns
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="output"></param>
+        private void ValidateOutputCollumns(IDTSInput100 input, IDTSOutput100 output)
+        {
+            foreach (IDTSInputColumn100 inputColumn in input.InputColumnCollection)
+            {
+                bool IsPresent = false;
+                foreach (IDTSOutputColumn100 outputColumn in output.OutputColumnCollection)
+                {
+                    if (outputColumn.Name == inputColumn.Name)
+                    {
+                        IsPresent = true;
+                    }
+                }
 
+                if (!IsPresent)
+                {
+                    IDTSOutputColumn100 outputcol = output.OutputColumnCollection.New();
+                    outputcol.Name = inputColumn.Name;
+                    outputcol.Description = String.Format("{0} contains valid data", inputColumn.Name);
+                    outputcol.SetDataTypeProperties(inputColumn.DataType, inputColumn.Length, inputColumn.Precision, inputColumn.Scale, inputColumn.CodePage);
+
+                   // AddExternalMetaDataColumn(input, inputColumn);
+                }
+            }
+
+            
+        }
+        /// <summary>
+        /// Allows to edit output columns Datatypes.
+        /// </summary>
+        /// <param name="outputID"></param>
+        /// <param name="outputColumnID"></param>
+        /// <param name="dataType"></param>
+        /// <param name="length"></param>
+        /// <param name="precision"></param>
+        /// <param name="scale"></param>
+        /// <param name="codePage"></param>
+        public override void SetOutputColumnDataTypeProperties(int outputID, int outputColumnID, Microsoft.SqlServer.Dts.Runtime.Wrapper.DataType dataType, int length, int precision, int scale, int codePage)
+
+        {
+
+            IDTSOutputCollection100 outputColl = this.ComponentMetaData.OutputCollection;
+
+            IDTSOutput100 output = outputColl.GetObjectByID(outputID);
+
+            IDTSOutputColumnCollection100 columnColl = output.OutputColumnCollection;
+
+            IDTSOutputColumn100 column = columnColl.GetObjectByID(outputColumnID);
+
+            column.SetDataTypeProperties(dataType, length, precision, scale, codePage);
+
+        }
+
+        public override void ReinitializeMetaData()
+        {
+            ComponentMetaData.RemoveInvalidInputColumns();
+            
+            ReinitializeMetaData();
+        }
+
+        /// <summary>
+        /// Prevents user adding external output columns manually
+        /// </summary>
+        /// <param name="outputID"></param>
+        /// <param name="outputColumnIndex"></param>
+        /// <param name="name"></param>
+        /// <param name="description"></param>
+        /// <returns></returns>
+        public override IDTSOutputColumn100 InsertOutputColumnAt(int outputID, int outputColumnIndex, string name, string description)
+        {
+           
+            throw new Exception(string.Format("Fail to add output column name to {0} ", ComponentMetaData.Name), null);
+        }
 
         /// <summary>
         /// Capture when dataflow component is attached
@@ -220,18 +309,35 @@ namespace CRMSSIS.CRMDestinationAdapter
             for (int i = 0; i < ComponentMetaData.InputCollection.Count; i++)
             {
                 ComponentMetaData.InputCollection[i].InputColumnCollection.RemoveAll();
+                
                 IDTSVirtualInput100 input = ComponentMetaData.InputCollection[i].GetVirtualInput();
 
                 foreach (IDTSVirtualInputColumn100 vcol in input.VirtualInputColumnCollection)
                 {
                     input.SetUsageType(vcol.LineageID, DTSUsageType.UT_READONLY);
 
+                   
                 }
+ 
             }
-         
+
+           
 
         }
 
+        //private void AddExternalMetaDataColumn(IDTSInput100 input, IDTSInputColumn100 inputColumn)
+        //{
+        //    // Set the properties of the external metadata column.  
+        //    IDTSExternalMetadataColumn100 externalColumn = input.ExternalMetadataColumnCollection.New();
+        //    externalColumn.Name = inputColumn.Name;
+        //    externalColumn.Precision = inputColumn.Precision;
+        //    externalColumn.Length = inputColumn.Length;
+        //    externalColumn.DataType = inputColumn.DataType;
+        //    externalColumn.Scale = inputColumn.Scale;
+
+        //    // Map the external column to the input column.  
+        //    inputColumn.ExternalMetadataColumnID = externalColumn.ID;
+        //}
 
         #endregion
 
@@ -266,8 +372,8 @@ namespace CRMSSIS.CRMDestinationAdapter
             batchSize = Convert.ToInt32(ComponentMetaData.CustomPropertyCollection["BatchSize"].Value.ToString());
 
             operation = Convert.ToInt32(ComponentMetaData.CustomPropertyCollection["Operation"].Value.ToString());
+            culture = Convert.ToInt32(ComponentMetaData.CustomPropertyCollection["CultureInfo"].Value.ToString());
 
-          
             var userRequest = new WhoAmIRequest();
             var userResponse = (WhoAmIResponse)service.Execute(userRequest);
 
@@ -278,6 +384,16 @@ namespace CRMSSIS.CRMDestinationAdapter
             errorOutputId = ComponentMetaData.OutputCollection[0].ID;
             defaultOuputId = ComponentMetaData.OutputCollection[1].ID;
 
+           
+
+            //for (int i =0; i <ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count; i++)
+            //{
+            //    if (ComponentMetaData.OutputCollection[1].OutputColumnCollection[i].Name == "_Response_")
+            //    {
+            //        responseColumn = i;
+            //    }
+            //}
+           
         }
 
         /// <summary>
@@ -408,29 +524,32 @@ namespace CRMSSIS.CRMDestinationAdapter
                     }
 
                     OkResp = irsp.Resp.Responses.Where(r => r.Fault == null);
-                   
-                    
+
+                    int ResponseColumn = ComponentMetaData.InputCollection[0].InputColumnCollection.Count + ComponentMetaData.OutputCollection[0].OutputColumnCollection.Count;
+
                     foreach (ExecuteMultipleResponseItem itm in OkResp)
                     {
 
+                        
                         //Add the inserted GUID for Create Operation
                         switch ((Operations)operation)
                         {
                             case Operations.Create:
-                                buffer.SetString(ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count - 1, ((CreateResponse)itm.Response).id.ToString());                              
+                                
+                                buffer.SetString(ResponseColumn, ((CreateResponse)itm.Response).id.ToString());                              
                                 break;
                                                       
                             case Operations.Update:
-                                buffer.SetString(ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count - 1, ((UpdateResponse)itm.Response).ToString());
+                                buffer.SetString(ResponseColumn, ((UpdateResponse)itm.Response).ToString());
                                 break;
                             case Operations.Delete:
-                                buffer.SetString(ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count - 1, ((DeleteResponse)itm.Response).ToString());
+                                buffer.SetString(ResponseColumn, ((DeleteResponse)itm.Response).ToString());
                                 break;
                             case Operations.Upsert:
-                                buffer.SetString(ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count - 1, ((UpsertResponse)itm.Response).ToString());
+                                buffer.SetString(ResponseColumn, ((UpsertResponse)itm.Response).ToString());
                                 break;
                             case Operations.Status:
-                                buffer.SetString(ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count - 1, ((SetStateResponse)itm.Response).ToString());
+                                buffer.SetString(ResponseColumn, ((SetStateResponse)itm.Response).ToString());
                                 break;
 
                         }
@@ -468,34 +587,34 @@ namespace CRMSSIS.CRMDestinationAdapter
             {
                 //    break;
                 case AttributeTypeCode.BigInt:
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToInt64(value, CultureInfo.InvariantCulture);
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToInt64(value, new CultureInfo(culture));
 
                     break;
                 case AttributeTypeCode.Boolean:
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToBoolean(value, CultureInfo.InvariantCulture);
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToBoolean(value, new CultureInfo(culture));
                     break;
                 case AttributeTypeCode.DateTime:
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToDateTime(value, CultureInfo.InvariantCulture);
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToDateTime(value, new CultureInfo(culture));
 
                     break;
                 case AttributeTypeCode.Decimal:
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToDecimal(value, CultureInfo.InvariantCulture);
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToDecimal(value, new CultureInfo(culture));
 
                     break;
                 case AttributeTypeCode.Double:
                 case AttributeTypeCode.Money:
 
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToDouble(value, CultureInfo.InvariantCulture);
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToDouble(value, new CultureInfo(culture));
                     break;
                 case AttributeTypeCode.Integer:
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToInt32(value, CultureInfo.InvariantCulture);
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToInt32(value, new CultureInfo(culture));
                     break;
                 case AttributeTypeCode.Picklist:
 
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = new OptionSetValue(Convert.ToInt32(value, CultureInfo.InvariantCulture));
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = new OptionSetValue(Convert.ToInt32(value, new CultureInfo(culture)));
                     break;
                 case AttributeTypeCode.Uniqueidentifier:
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = new Guid(Convert.ToString(value, CultureInfo.InvariantCulture));
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = new Guid(Convert.ToString(value, new CultureInfo(culture)));
                     break;
                 case AttributeTypeCode.Owner:
                     break;
@@ -503,11 +622,11 @@ namespace CRMSSIS.CRMDestinationAdapter
                 case AttributeTypeCode.Lookup:
                 case AttributeTypeCode.PartyList:
 
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = new EntityReference(mappedColumn.TargetEntity, new Guid(Convert.ToString(value, CultureInfo.InvariantCulture)));
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = new EntityReference(mappedColumn.TargetEntity, new Guid(Convert.ToString(value, new CultureInfo(culture))));
                     break;
 
                 default:
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToString(value, CultureInfo.InvariantCulture);
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = Convert.ToString(value, new CultureInfo(culture));
                     break;
             }
         }

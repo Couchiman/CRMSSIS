@@ -366,11 +366,7 @@ namespace CRMSSIS.CRMSourceAdapter
 
                 System.Xml.Linq.XElement xe = XElement.Parse(FetchXML.Trim());
 
-                if (xe.Attribute("version") == null)
-                {
-                    xe.SetAttributeValue("version", "1.0");
-                }
-
+               
                 if (xe.Attribute("mapping") == null)
                 {
                     xe.SetAttributeValue("mapping", "logical");
@@ -394,7 +390,7 @@ namespace CRMSSIS.CRMSourceAdapter
                         }
                         else
                         {
-                            xe.Value = "50";
+                            xe.Attribute("count").SetValue("50");
                         }
                                       
                         result = service.RetrieveMultiple(new FetchExpression(xe.ToString()));
@@ -404,7 +400,15 @@ namespace CRMSSIS.CRMSourceAdapter
                     else
                     {
                         
-                       
+                        if (xe.Attribute("paging-cookie") == null)
+                        {
+                            xe.SetAttributeValue("paging-cookie", result.PagingCookie);
+                        }
+                        else
+                        {
+                            xe.Attribute("paging-cookie").SetValue(result.PagingCookie);
+                        }
+
                         if (xe.Attribute("count") == null)
                         {
                             xe.SetAttributeValue("count", "5000");
@@ -413,21 +417,16 @@ namespace CRMSSIS.CRMSourceAdapter
                         
                         if (xe.Attribute("page") == null)
                         {
-                            xe.SetAttributeValue("page", System.Convert.ToString(page++));
+                            xe.SetAttributeValue("page", System.Convert.ToString(page));
                         }
                         else
                         {
-                            xe.Value = System.Convert.ToString(page++); 
+                            xe.Attribute("page").SetValue(System.Convert.ToString(page)); 
                         }
 
-                        if (xe.Attribute("paging-cookie") == null)
-                        {
-                            xe.SetAttributeValue("paging-cookie", SecurityElement.Escape(System.Convert.ToString(result.PagingCookie)));
-                        }
-                        else
-                        {
-                            xe.Value = SecurityElement.Escape(System.Convert.ToString(result.PagingCookie));
-                        }
+                        page++;
+
+                        
 
                         result = service.RetrieveMultiple(new FetchExpression(xe.ToString()));
                     }

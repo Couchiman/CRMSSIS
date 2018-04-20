@@ -45,9 +45,10 @@
             this.cbEntity = new System.Windows.Forms.ComboBox();
             this.lblOperation = new System.Windows.Forms.Label();
             this.cbOperation = new System.Windows.Forms.ComboBox();
+            this.cboLocales = new System.Windows.Forms.ComboBox();
+            this.lblCultureInfo = new System.Windows.Forms.Label();
             this.backgroundWorkerLoadEntities = new System.ComponentModel.BackgroundWorker();
             this.pbLoader = new System.Windows.Forms.PictureBox();
-           
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbLoader)).BeginInit();
@@ -124,6 +125,17 @@
             this.btnRefreshMetadata.UseVisualStyleBackColor = true;
             this.btnRefreshMetadata.Click += new System.EventHandler(this.btnRefreshMetadata_Click);
             // 
+            // btnMappings
+            // 
+            this.btnMappings.Enabled = false;
+            this.btnMappings.Location = new System.Drawing.Point(286, 245);
+            this.btnMappings.Name = "btnMappings";
+            this.btnMappings.Size = new System.Drawing.Size(80, 23);
+            this.btnMappings.TabIndex = 100;
+            this.btnMappings.Text = "Mappings";
+            this.btnMappings.UseVisualStyleBackColor = true;
+            this.btnMappings.Click += new System.EventHandler(this.btnMappings_Click);
+            // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.btnRefresh);
@@ -149,17 +161,6 @@
             this.btnRefresh.Text = "Refresh Entities";
             this.btnRefresh.UseVisualStyleBackColor = true;
             this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
-            // 
-            // btnMappings
-            // 
-            this.btnMappings.Enabled = false;
-            this.btnMappings.Location = new System.Drawing.Point(286, 245);
-            this.btnMappings.Name = "btnMappings";
-            this.btnMappings.Size = new System.Drawing.Size(80, 23);
-            this.btnMappings.TabIndex = 100;
-            this.btnMappings.Text = "Mappings";
-            this.btnMappings.UseVisualStyleBackColor = true;
-            this.btnMappings.Click += new System.EventHandler(this.btnMappings_Click);
             // 
             // txtBatchSize
             // 
@@ -213,6 +214,23 @@
             this.cbOperation.Size = new System.Drawing.Size(187, 21);
             this.cbOperation.TabIndex = 19;
             // 
+            // cboLocales
+            // 
+            this.cboLocales.FormattingEnabled = true;
+            this.cboLocales.Location = new System.Drawing.Point(648, 30);
+            this.cboLocales.Name = "cboLocales";
+            this.cboLocales.Size = new System.Drawing.Size(121, 21);
+            this.cboLocales.TabIndex = 101;
+            // 
+            // lblCultureInfo
+            // 
+            this.lblCultureInfo.AutoSize = true;
+            this.lblCultureInfo.Location = new System.Drawing.Point(645, 14);
+            this.lblCultureInfo.Name = "lblCultureInfo";
+            this.lblCultureInfo.Size = new System.Drawing.Size(61, 13);
+            this.lblCultureInfo.TabIndex = 3;
+            this.lblCultureInfo.Text = "Culture Info";
+            // 
             // backgroundWorkerLoadEntities
             // 
             this.backgroundWorkerLoadEntities.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
@@ -232,12 +250,15 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(827, 283);
+
             this.Controls.Add(this.pbLoader);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnRefreshMetadata);
             this.Controls.Add(this.btnMappings);
+            this.Controls.Add(this.lblCultureInfo);
+            this.Controls.Add(this.cboLocales);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -274,5 +295,7 @@
         private System.Windows.Forms.Button btnRefresh;
         private System.Windows.Forms.Button btnRefreshMetadata;
         private System.Windows.Forms.Button btnMappings;
+        private System.Windows.Forms.ComboBox cboLocales;
+        private System.Windows.Forms.Label lblCultureInfo;
     }
 }

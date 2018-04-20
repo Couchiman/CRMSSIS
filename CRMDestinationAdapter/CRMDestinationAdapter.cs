@@ -136,7 +136,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             IDTSCustomProperty100 CultureInfo = ComponentMetaData.CustomPropertyCollection.New();
             CultureInfo.Description = "Forces specific culture info";
             CultureInfo.Name = "CultureInfo";
-            CultureInfo.Value = "127";
+            CultureInfo.Value = 127;
 
             IDTSCustomProperty100 Entity = ComponentMetaData.CustomPropertyCollection.New();
             Entity.Description = "Entity";
@@ -385,14 +385,6 @@ namespace CRMSSIS.CRMDestinationAdapter
             defaultOuputId = ComponentMetaData.OutputCollection[1].ID;
 
            
-
-            //for (int i =0; i <ComponentMetaData.OutputCollection[1].OutputColumnCollection.Count; i++)
-            //{
-            //    if (ComponentMetaData.OutputCollection[1].OutputColumnCollection[i].Name == "_Response_")
-            //    {
-            //        responseColumn = i;
-            //    }
-            //}
            
         }
 
@@ -514,13 +506,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                         FltResp = irsp.Resp.Responses.Where(r => r.Fault != null);
 
                         foreach (ExecuteMultipleResponseItem itm in FltResp)
-                        {
-                            // retError += string.Format("Error  '{0}' -> {1}\r\n", irsp.DataTableRowsIndex[itm.RequestIndex].ToString(), itm.Fault.Message);
-                            //errorResult.Add(irsp.InputRow[itm.RequestIndex], itm.Fault.Message);
-                            buffer.DirectErrorRow(startBuffIndex + irsp.DataTableRowsIndex[itm.RequestIndex], errorOutputId, itm.Fault.ErrorCode, 0);
-
-
-                        }
+                           buffer.DirectErrorRow(startBuffIndex + irsp.DataTableRowsIndex[itm.RequestIndex], errorOutputId, itm.Fault.ErrorCode, 0);
                     }
 
                     OkResp = irsp.Resp.Responses.Where(r => r.Fault == null);
@@ -554,8 +540,7 @@ namespace CRMSSIS.CRMDestinationAdapter
 
                         }
 
-                        
-
+           
                     buffer.DirectRow(defaultOuputId);
                     if (buffer.CurrentRow < buffer.RowCount)
                         buffer.NextRow();
@@ -644,10 +629,6 @@ namespace CRMSSIS.CRMDestinationAdapter
             ExecuteMultipleRequest Req;
             CRMIntegrate[] Integ = new CRMIntegrate[2];
 
-
-
-
-
             bchCnt = 0;
             Req = new ExecuteMultipleRequest();
             Req.Settings = new ExecuteMultipleSettings { ContinueOnError = true, ReturnResponses = true };
@@ -726,8 +707,6 @@ namespace CRMSSIS.CRMDestinationAdapter
             return Integ;
 
         }
-
-
 
     }
     #endregion

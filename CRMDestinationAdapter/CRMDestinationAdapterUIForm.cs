@@ -87,10 +87,10 @@ namespace CRMSSIS.CRMDestinationAdapter
                 designTimeInstance.SetComponentProperty("Mapping", CRMCommon.JSONSerialization.Serialize<Mapping>(m));
 
             }
-
+            
             if (cboLocales.SelectedItem != null)
             {
-                designTimeInstance.SetComponentProperty("CultureInfo", ((CRMSSIS.CRMCommon.Controls.Item)cboLocales.SelectedItem).Value);
+                designTimeInstance.SetComponentProperty("CultureInfo", EnumEx.GetValueFromDescription<SupportedLanguages>(cboLocales.SelectedValue.ToString()));
             }
 
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -223,27 +223,24 @@ namespace CRMSSIS.CRMDestinationAdapter
         private void loadCultureInfo()
         {
 
-            cboLocales.ValueMember = "Value";
-            cboLocales.DisplayMember = "Text";
-            List<Item> item = new List<Item>();
+            cboLocales.DataSource = Enum.GetValues(typeof(SupportedLanguages))
+                .Cast<Enum>()
+                .Select(value => new
+                {
+                    (Attribute.GetCustomAttribute(value.GetType().GetField(value.ToString()), typeof(DescriptionAttribute)) as DescriptionAttribute).Description,
+                    value
+                })
+                .OrderBy(item => item.value)
+                .ToList();
+            cboLocales.DisplayMember = "Description";
+            cboLocales.ValueMember = "value";
+
+            int cboValue = (int)(SupportedLanguages)this.metaData.CustomPropertyCollection["CultureInfo"].Value;
 
 
-            // loop through the cultures 
-            foreach (CultureInfo culture in CultureInfo.GetCultures(CultureTypes.AllCultures))
-            {
-                item.Add(new Item(culture.EnglishName, culture.LCID.ToString()));
-                // add the cultureinfo object to the arraylist 
-               
-            }
-            cboLocales.Items.Clear();
-            cboLocales.DataSource = item;
+            cboLocales.SelectedIndex= cboLocales.FindString(CRMSSIS.CRMCommon.Enumerators.EnumEx.GetDescriptionFromValue<SupportedLanguages>((SupportedLanguages)cboValue));
+          
 
-            string cboCultureInfo = this.metaData.CustomPropertyCollection["CultureInfo"].Value.ToString();
-
-            if (cboCultureInfo != string.Empty)
-            {
-                cboLocales.SelectedValue = cboCultureInfo;
-            }
 
         }
 

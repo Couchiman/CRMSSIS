@@ -23,6 +23,8 @@ namespace CRMSSIS.CRMDestinationAdapter
         private IDtsConnectionService connectionService;
         private Item entityItem;
         private Mapping m;
+        ComboBox cbm;
+        DataGridViewCell currentCell;
 
 
         public Mapping mapping
@@ -99,9 +101,78 @@ namespace CRMSSIS.CRMDestinationAdapter
             dgAtributeMap.DataSource = m.ColumnList;
 
 
+            //dgAtributeMap.CellFormatting += new DataGridViewCellFormattingEventHandler(dgAttributemap_CellFormatting);
+            dgAtributeMap.CellEndEdit += new DataGridViewCellEventHandler(dgAttributemap_CellEndEdit);
+            dgAtributeMap.EditingControlShowing += new DataGridViewEditingControlShowingEventHandler(dgAtributeMap_EditingControlShowing);
+
+
         }
 
+       
+        
+        private void  dgAttributemap_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
 
+            if (cbm != null)
+            {
+                // Here we will remove the subscription for selected index changed
+                cbm.SelectedIndexChanged -= new EventHandler(cbm_SelectedIndexChanged);
+            }
+
+        }
+
+        void dgAtributeMap_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            // Here try to add subscription for selected index changed event
+            if (e.Control is ComboBox)
+            {
+                cbm = (ComboBox)e.Control;
+                if (cbm != null)
+                {
+                    cbm.SelectedIndexChanged += new EventHandler(cbm_SelectedIndexChanged);
+                }
+                currentCell = this.dgAtributeMap.CurrentCell;
+            }
+        }
+
+        void cbm_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Invoke method if the selection changed event occurs
+            BeginInvoke(new MethodInvoker(EndEdit));
+        }
+
+        void EndEdit()
+        {
+            // Change the content of appropriate cell when selected index changes
+            if (cbm != null)
+            {
+                
+
+                if (cbm.SelectedItem != null)
+                {
+                     if(currentCell.ColumnIndex == 0)
+                    {
+                        bool isPresent = false;
+                        foreach (IDTSInputColumn100 column in this.metaData.InputCollection[0].InputColumnCollection)
+                        {
+                            if (column.Name== cbm.SelectedItem.ToString()) { 
+                                this.dgAtributeMap[currentCell.ColumnIndex + 1, currentCell.RowIndex].Value = column.DataType.ToString();
+                                isPresent = true;
+                            }
+                        }
+                        if (!isPresent) this.dgAtributeMap[currentCell.ColumnIndex + 1, currentCell.RowIndex].Value = "";
+
+                    }
+                   
+
+                    if (currentCell.ColumnIndex == 2)
+                        this.dgAtributeMap[currentCell.ColumnIndex + 1, currentCell.RowIndex].Value = m.ColumnList[currentCell.RowIndex + 1].InternalColumnTypeName;
+                                      
+
+                    this.dgAtributeMap.EndEdit();
+                }
+            }
+        }
         private void ConfigureMappingGrid(IDTSInput100 Input)
         {
 
@@ -125,24 +196,12 @@ namespace CRMSSIS.CRMDestinationAdapter
             dgAtributeMap.Columns.Add(cmbExternalColumnName);
 
 
-            DataGridViewComboBoxColumn cmbExternalColumnTypeName = new DataGridViewComboBoxColumn();
+            DataGridViewTextBoxColumn cmbExternalColumnTypeName = new DataGridViewTextBoxColumn();
             cmbExternalColumnTypeName.HeaderText = "Column Type";
-            cmbExternalColumnTypeName.Name = "ExternalColumnTypeName";
-            cmbExternalColumnTypeName.DisplayMember = "ExternalColumnTypeName";
-            cmbExternalColumnTypeName.ValueMember = "ExternalColumnTypeName";
+            cmbExternalColumnTypeName.Name = "ExternalColumnTypeName";          
             cmbExternalColumnTypeName.Width = 75;
-
-
-            List<string> mDataTypes = new List<string>();
-
-            foreach (IDTSInputColumn100 column in this.metaData.InputCollection[0].InputColumnCollection)
-            {
-                if (!mDataTypes.Contains(column.DataType.ToString())) mDataTypes.Add(column.DataType.ToString());
-
-            }
-            mDataTypes.Add("");
-
-            cmbExternalColumnTypeName.Items.AddRange(mDataTypes.ToArray());
+            cmbExternalColumnTypeName.ReadOnly = true;
+            
 
             dgAtributeMap.Columns.Add(cmbExternalColumnTypeName);
 
@@ -161,16 +220,11 @@ namespace CRMSSIS.CRMDestinationAdapter
 
             dgAtributeMap.Columns.Add(cmbInternalColumnName);
 
-            DataGridViewComboBoxColumn cmbInternalColumnTypeName = new DataGridViewComboBoxColumn();
+            DataGridViewTextBoxColumn cmbInternalColumnTypeName = new DataGridViewTextBoxColumn();
             cmbInternalColumnTypeName.HeaderText = "Column Type";
             cmbInternalColumnTypeName.Name = "InternalColumnTypeName";
-            cmbInternalColumnTypeName.DisplayMember = "InternalColumnTypeName";
-            cmbInternalColumnTypeName.ValueMember = "InternalColumnTypeName";
             cmbInternalColumnTypeName.Width = 75;
-            IEnumerable<string> filteredAttributeTypes = m.ColumnList.Select(x => x.InternalColumnTypeName).Distinct();
-
-            foreach (string column in filteredAttributeTypes)
-                cmbInternalColumnTypeName.Items.Add(column.ToString());
+            cmbInternalColumnTypeName.ReadOnly = true;
 
             dgAtributeMap.Columns.Add(cmbInternalColumnTypeName);
 
@@ -277,6 +331,10 @@ namespace CRMSSIS.CRMDestinationAdapter
             this.Close();
         }
 
-
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.Close();
+        }
     }
 }

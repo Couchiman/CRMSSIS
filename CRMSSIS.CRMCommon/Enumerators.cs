@@ -25,7 +25,10 @@ namespace CRMSSIS.CRMCommon.Enumerators
         [Description("Status")]
         Status = 3,
         [Description("Upsert")]
-        Upsert = 4
+        Upsert = 4,
+        //Execute workflow operation
+        [Description("Workflow")]
+        Workflow = 5
 
 
     }

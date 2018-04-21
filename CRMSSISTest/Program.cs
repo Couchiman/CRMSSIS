@@ -31,6 +31,7 @@ using CRMSSIS.CRMSourceAdapter;
 using CRMSSIS.CRMConnectionManager;
 using Microsoft.SqlServer.Dts.Runtime;
 using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
+using CRMSSIS.CRMCommon.Enumerators;
 
 namespace Microsoft.Crm.Sdk.Samples
 {
@@ -276,17 +277,43 @@ namespace Microsoft.Crm.Sdk.Samples
             try
             {
 
-                Prueba();
+                // Prueba();
                 //AuthenticateWithNoHelp app = new AuthenticateWithNoHelp();
                 //app.Run();
-                CRMConnectionManager conn = new CRMConnectionManager();
-                IOrganizationService service  = (IOrganizationService)conn.AcquireConnection(null);
+                string temporaryString = "AuthType=Office365;Url =https://pablopruebas.crm2.dynamics.com;Username=pcosimo@axxonconsulting.com;Password=Axxon2021;";
+
+                IOrganizationService service = CRMSSIS.CRMCommon.CRM.Connect(temporaryString);
+
                  
 
-                CRMSourceAdapter crm = new CRMSourceAdapter();
-                 
-                string str = @"<entity name='account'><attribute name='primarycontactid' /></entity>";
-                crm.GetData(str, false);
+
+                //CRMSourceAdapter crm = new CRMSourceAdapter();
+
+                //string str = @"<entity name='account'><attribute name='primarycontactid' /></entity>";
+                //crm.GetData(str, false);
+
+                var QEworkflow = new QueryExpression("workflow");
+
+                 QEworkflow.ColumnSet.AddColumns("workflowid", "primaryentity", "name", "statecode", "type");
+                //QEworkflow.ColumnSet.AllColumns = true;
+
+                QEworkflow.Criteria.AddCondition("type", ConditionOperator.Equal, 1);
+
+                QEworkflow.Criteria.AddCondition("primaryentity", ConditionOperator.Equal, "ndp_idea");  ///10050 is the entitytypecode of an entity
+
+                EntityCollection result = service.RetrieveMultiple(QEworkflow);
+
+                foreach (Entity en in result.Entities)
+                {
+                    Console.WriteLine("workflowid {0}", en.Attributes["workflowid"].ToString());
+                    Console.WriteLine("primaryentity {0}", en.Attributes["primaryentity"].ToString());
+                   
+                    Console.WriteLine("statecode {0}", ((Microsoft.Xrm.Sdk.OptionSetValue)(en.Attributes["statecode"])).Value);
+                    Console.WriteLine("type {0}", ((Microsoft.Xrm.Sdk.OptionSetValue)(en.Attributes["type"])).Value);
+                    Console.WriteLine("name {0}", en.Attributes["name"].ToString());
+                }
+
+                Console.ReadKey();
 
 
             }
@@ -341,10 +368,10 @@ namespace Microsoft.Crm.Sdk.Samples
             }
         }
         #endregion Main method
-   
 
+         
 
-    public static void Prueba()
+        public static void Prueba()
     {
             // The package is the ExecuteProcess package sample 
             // that is installed with the SSIS samples.

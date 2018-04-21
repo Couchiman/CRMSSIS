@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Messages;
 using Microsoft.Xrm.Sdk.Metadata;
+using Microsoft.Xrm.Sdk.Query;
 using Microsoft.Xrm.Tooling.Connector;
 using System;
 using System.Collections.Generic;
@@ -60,6 +61,22 @@ namespace CRMSSIS.CRMCommon
             };
 
             return  (RetrieveEntityResponse)service.Execute(retrieveEntityRequest);
+
+
+        }
+
+        public static EntityCollection GetWorkflowList(IOrganizationService service, string entityName)
+        {
+
+            var QEworkflow = new QueryExpression("workflow");
+
+            QEworkflow.ColumnSet.AddColumns("workflowid", "primaryentity", "name", "statecode", "type");
+
+            QEworkflow.Criteria.AddCondition("type", ConditionOperator.Equal, 1);
+
+            QEworkflow.Criteria.AddCondition("primaryentity", ConditionOperator.Equal, entityName);   
+
+            return service.RetrieveMultiple(QEworkflow);
 
 
         }

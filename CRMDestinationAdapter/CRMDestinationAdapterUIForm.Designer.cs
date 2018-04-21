@@ -53,10 +53,16 @@
             this.gpError = new System.Windows.Forms.GroupBox();
             this.backgroundWorkerLoadEntities = new System.ComponentModel.BackgroundWorker();
             this.pbLoader = new System.Windows.Forms.PictureBox();
+            this.gpExecuteWF = new System.Windows.Forms.GroupBox();
+            this.lblWorkflow = new System.Windows.Forms.Label();
+            this.cboWorkflows = new System.Windows.Forms.ComboBox();
+            this.backgroundWorkerLoadWorkflows = new System.ComponentModel.BackgroundWorker();
+            this.btnRefreshWorkflows = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.gpError.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbLoader)).BeginInit();
+            this.gpExecuteWF.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -103,7 +109,7 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(514, 245);
+            this.btnCancel.Location = new System.Drawing.Point(528, 329);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(80, 23);
             this.btnCancel.TabIndex = 11;
@@ -112,7 +118,7 @@
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(404, 245);
+            this.btnOK.Location = new System.Drawing.Point(418, 329);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(80, 23);
             this.btnOK.TabIndex = 12;
@@ -122,7 +128,7 @@
             // 
             // btnRefreshMetadata
             // 
-            this.btnRefreshMetadata.Location = new System.Drawing.Point(148, 245);
+            this.btnRefreshMetadata.Location = new System.Drawing.Point(162, 329);
             this.btnRefreshMetadata.Name = "btnRefreshMetadata";
             this.btnRefreshMetadata.Size = new System.Drawing.Size(107, 23);
             this.btnRefreshMetadata.TabIndex = 13;
@@ -133,7 +139,7 @@
             // btnMappings
             // 
             this.btnMappings.Enabled = false;
-            this.btnMappings.Location = new System.Drawing.Point(286, 245);
+            this.btnMappings.Location = new System.Drawing.Point(300, 329);
             this.btnMappings.Name = "btnMappings";
             this.btnMappings.Size = new System.Drawing.Size(80, 23);
             this.btnMappings.TabIndex = 100;
@@ -291,11 +297,54 @@
             this.pbLoader.TabIndex = 99;
             this.pbLoader.TabStop = false;
             // 
+            // gpExecuteWF
+            // 
+            this.gpExecuteWF.Controls.Add(this.btnRefreshWorkflows);
+            this.gpExecuteWF.Controls.Add(this.lblWorkflow);
+            this.gpExecuteWF.Controls.Add(this.cboWorkflows);
+            this.gpExecuteWF.Location = new System.Drawing.Point(13, 246);
+            this.gpExecuteWF.Name = "gpExecuteWF";
+            this.gpExecuteWF.Size = new System.Drawing.Size(802, 66);
+            this.gpExecuteWF.TabIndex = 106;
+            this.gpExecuteWF.TabStop = false;
+            this.gpExecuteWF.Text = "Execute Workflow";
+            // 
+            // lblWorkflow
+            // 
+            this.lblWorkflow.AutoSize = true;
+            this.lblWorkflow.Location = new System.Drawing.Point(10, 27);
+            this.lblWorkflow.Name = "lblWorkflow";
+            this.lblWorkflow.Size = new System.Drawing.Size(52, 13);
+            this.lblWorkflow.TabIndex = 24;
+            this.lblWorkflow.Text = "Workflow";
+            // 
+            // cboWorkflows
+            // 
+            this.cboWorkflows.FormattingEnabled = true;
+            this.cboWorkflows.Location = new System.Drawing.Point(115, 19);
+            this.cboWorkflows.Name = "cboWorkflows";
+            this.cboWorkflows.Size = new System.Drawing.Size(374, 21);
+            this.cboWorkflows.TabIndex = 23;
+            // 
+            // backgroundWorkerLoadWorkflows
+            // 
+            this.backgroundWorkerLoadWorkflows.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerLoadWorkflows_DoWork);
+            // 
+            // btnRefreshWorkflows
+            // 
+            this.btnRefreshWorkflows.Location = new System.Drawing.Point(515, 17);
+            this.btnRefreshWorkflows.Name = "btnRefreshWorkflows";
+            this.btnRefreshWorkflows.Size = new System.Drawing.Size(116, 23);
+            this.btnRefreshWorkflows.TabIndex = 26;
+            this.btnRefreshWorkflows.Text = "Refresh Workflows";
+            this.btnRefreshWorkflows.UseVisualStyleBackColor = true;
+            this.btnRefreshWorkflows.Click += new System.EventHandler(this.btnRefreshWorkflows_Click);
+            // 
             // CRMDestinationAdapterUIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(827, 276);
+            this.ClientSize = new System.Drawing.Size(827, 363);
             this.Controls.Add(this.pbLoader);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnCancel);
@@ -306,6 +355,7 @@
             this.Controls.Add(this.cboLocales);
             this.Controls.Add(this.gpError);
             this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.gpExecuteWF);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CRMDestinationAdapterUIForm";
@@ -318,6 +368,8 @@
             this.gpError.ResumeLayout(false);
             this.gpError.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbLoader)).EndInit();
+            this.gpExecuteWF.ResumeLayout(false);
+            this.gpExecuteWF.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -349,5 +401,10 @@
         private System.Windows.Forms.CheckBox chkRedirect;
         private System.Windows.Forms.CheckBox chkIgnoreError;
         private System.Windows.Forms.GroupBox gpError;
+        private System.Windows.Forms.GroupBox gpExecuteWF;
+        private System.Windows.Forms.Label lblWorkflow;
+        private System.Windows.Forms.ComboBox cboWorkflows;
+        private System.ComponentModel.BackgroundWorker backgroundWorkerLoadWorkflows;
+        private System.Windows.Forms.Button btnRefreshWorkflows;
     }
 }

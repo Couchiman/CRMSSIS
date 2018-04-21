@@ -87,7 +87,14 @@ namespace CRMSSIS.CRMDestinationAdapter
                 designTimeInstance.SetComponentProperty("Mapping", CRMCommon.JSONSerialization.Serialize<Mapping>(m));
 
             }
-            
+
+            if (cboWorkflows.SelectedItem != null)
+            {
+                Item item = (Item)cboWorkflows.SelectedItem;
+                designTimeInstance.SetComponentProperty("Workflow", CRMSSIS.CRMCommon.JSONSerialization.Serialize<Item>(item));
+
+            }
+
             if (cboLocales.SelectedItem != null)
             {
                 designTimeInstance.SetComponentProperty("CultureInfo", EnumEx.GetValueFromDescription<SupportedLanguages>(cboLocales.SelectedValue.ToString()));
@@ -109,7 +116,10 @@ namespace CRMSSIS.CRMDestinationAdapter
 
          
             btnMappings.Enabled = false;
-
+            cboWorkflows.Enabled = false;
+            btnRefresh.Enabled = false;
+            btnRefreshWorkflows.Enabled = false;
+            btnRefreshMetadata.Enabled = false;
 
             cbEntity.Enabled = false;
 
@@ -159,23 +169,49 @@ namespace CRMSSIS.CRMDestinationAdapter
            
 
             txtBatchSize.Text = Convert.ToString(this.metaData.CustomPropertyCollection["BatchSize"].Value);
-
+            // User already selected an Entity 
             if (this.metaData.CustomPropertyCollection["Entity"].Value != null)
             {
-
+                btnRefresh.Enabled = true;
+                btnRefreshMetadata.Enabled = true;
                 Item Entity = (Item)CRMSSIS.CRMCommon.JSONSerialization.Deserialize<Item>(this.metaData.CustomPropertyCollection["Entity"].Value.ToString());
 
                 cbEntity.Items.Add(Entity);
                 cbEntity.SelectedIndex = 0;
+                cbEntity.Enabled = false;
 
-             
+
                 this.cbEntity.SelectedIndexChanged += new System.EventHandler(this.cbEntity_SelectedIndexChanged);
                 if (this.metaData.CustomPropertyCollection["Mapping"].Value !=null)
                 m = CRMCommon.JSONSerialization.Deserialize<Mapping>(this.metaData.CustomPropertyCollection["Mapping"].Value.ToString());
 
-                btnMappings.Enabled = true;
-                
                
+                // Check if the operation is a workflow, if not lets user add mapping
+                if ((Operations)this.metaData.CustomPropertyCollection["Operation"].Value == Operations.Workflow)
+                {
+                    btnMappings.Enabled = false;
+                    btnRefreshWorkflows.Enabled = true;
+
+                    if (this.metaData.CustomPropertyCollection["Workflow"].Value.ToString() == "")
+                    {
+                        backgroundWorkerLoadWorkflows.RunWorkerAsync();
+                        cboWorkflows.Enabled = true;
+                    }
+                    else if (this.metaData.CustomPropertyCollection["Workflow"].Value.ToString() != "")
+                    {
+                        Item Workflow = (Item)CRMSSIS.CRMCommon.JSONSerialization.Deserialize<Item>(this.metaData.CustomPropertyCollection["Workflow"].Value.ToString());
+
+                        cboWorkflows.Items.Add(Workflow);
+                        cboWorkflows.SelectedIndex = 0;
+
+                    }
+                }
+                else
+                {
+                    btnMappings.Enabled = true;
+                }
+
+
             }
             else
             {
@@ -183,7 +219,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                 {
                     SetPictureBoxFromResource(pbLoader, "CRMSSIS.CRMDestinationAdapter.loading.gif");
                     pbLoader.Dock = DockStyle.Fill;
-
+                    btnRefresh.Enabled = true;
                     backgroundWorkerLoadEntities.RunWorkerAsync();
                   
                 }
@@ -202,6 +238,56 @@ namespace CRMSSIS.CRMDestinationAdapter
 
         }
 
+        /// <summary>
+        /// Load workflow list for an entity
+        /// </summary>
+        /// <param name="entityName"></param>
+        private void loadWorkflows(string entityName)
+        {
+
+            try
+            {
+                List<Item> wfList = new List<Item>();
+                pbLoader.Visible = true;
+
+                int connectionId = findConnectionId();
+
+                if (connectionId > -1)
+                {
+                    string _connectionstring = (string)connectionService.GetConnections()[connectionId].AcquireConnection(null);
+
+                    IOrganizationService service = CRMCommon.CRM.Connect(_connectionstring);
+
+                    EntityCollection enWorkflows = CRMCommon.CRM.GetWorkflowList(service, entityName);
+
+                    foreach (Entity workflow in enWorkflows.Entities)
+                    {
+                        wfList.Add(new Item(workflow.Attributes["name"].ToString(), workflow.Attributes["workflowid"].ToString()));
+
+                    }
+
+                    cbOperation.DisplayMember = "Text";
+                    cbOperation.ValueMember = "Value";
+                    cboWorkflows.DataSource = wfList;
+                    cboWorkflows.Enabled = true;
+
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+
+                pbLoader.Visible = false;
+
+            }
+            
+
+        }
         private void loadErrorHandlingCheckboxes()
         {
 
@@ -380,6 +466,9 @@ namespace CRMSSIS.CRMDestinationAdapter
             return -1;
         }
 
+        /// <summary>
+        /// Loads Entities
+        /// </summary>
         private void loadEntityCombobox()
         {
             try
@@ -387,7 +476,8 @@ namespace CRMSSIS.CRMDestinationAdapter
                 pbLoader.Visible = true;
 
                 int connectionId = findConnectionId();
-                
+                List<Item> eList = new List<Item>();
+
                 if (connectionId > -1)
                 {
                     string _connectionstring = (string)connectionService.GetConnections()[connectionId].AcquireConnection(null);
@@ -398,10 +488,12 @@ namespace CRMSSIS.CRMDestinationAdapter
                     
                     foreach (EntityMetadata Entity in allentityResponse.EntityMetadata)
                     {
-                        cbEntity.Items.Add(new Item(Entity.LogicalName, Entity.LogicalName, Entity.Attributes));
+                        eList.Add(new Item(Entity.LogicalName, Entity.PrimaryIdAttribute, Entity.Attributes));
                        
                     }
-
+                    cbEntity.DisplayMember = "Text";
+                    cbEntity.ValueMember = "Value";
+                    cbEntity.DataSource = eList;
 
                     cbEntity.Enabled = true;
                    
@@ -435,7 +527,9 @@ namespace CRMSSIS.CRMDestinationAdapter
             {
             
                 m = null;
-               
+                this.metaData.CustomPropertyCollection["Workflow"].Value = "";
+
+
             }
 
         }
@@ -485,8 +579,26 @@ namespace CRMSSIS.CRMDestinationAdapter
             { 
                 SetPictureBoxFromResource(pbLoader, "CRMSSIS.CRMDestinationAdapter.loading.gif");
                 pbLoader.Dock = DockStyle.Fill;
-
+               
                 backgroundWorkerLoadEntities.RunWorkerAsync();
+            }
+        }
+        /// <summary>
+        /// Refresh workflow list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnRefreshWorkflows_Click(object sender, EventArgs e)
+        {
+            if(cbEntity.SelectedItem !=null)
+            { 
+                if (cbOperation.SelectedItem != null && (Operations)this.metaData.CustomPropertyCollection["Operation"].Value == Operations.Workflow)
+                {
+                    SetPictureBoxFromResource(pbLoader, "CRMSSIS.CRMDestinationAdapter.loading.gif");
+                    pbLoader.Dock = DockStyle.Fill;
+
+                    backgroundWorkerLoadWorkflows.RunWorkerAsync();
+                }
             }
         }
 
@@ -535,13 +647,7 @@ namespace CRMSSIS.CRMDestinationAdapter
 
                             m.RefreshMapping(input, entity.Metadata, retrieveEntityResponse.EntityMetadata.Attributes, operation);
 
-                        ////Refresh Grid
-                        //dgAtributeMap.DataSource = null;
-                        //dgAtributeMap.Rows.Clear();
-                        //dgAtributeMap.Refresh();
-
-                        //ConfigureMappingGrid(input);
-                        //dgAtributeMap.DataSource = m.ColumnList;
+                                              
 
                     }
                         catch (Exception ex)
@@ -584,5 +690,70 @@ namespace CRMSSIS.CRMDestinationAdapter
                 m = Mappings.mapping;
 
         }
+
+        private void backgroundWorkerLoadWorkflows_DoWork(object sender, DoWorkEventArgs e)
+        {
+            loadWorkflows(cbEntity.SelectedItem.ToString());
+        }
+
+       
+        // NOT SUPPORTED
+        //private void btnExpressions_Click(object sender, EventArgs e)
+        //{
+        //    try
+        //    {
+        //        // Create an expression builder popup and make sure the expressions can be evaluated as a string:
+        //        // Or change it if you want boolean to System.Boolean, etc. Last property is the textbox containing
+        //        // the expression that you want to edit.
+        //        using (var expressionBuilder = ExpressionBuilder.Instantiate(_taskHost.Variables,
+        //                       _taskHost.VariableDispenser,
+        //                       Type.GetType("System.String"),
+        //                       txtExpression.Text))
+        //        {
+        //            // Open the window / dialog with expression builder
+        //            if (expressionBuilder.ShowDialog() == DialogResult.OK)
+        //            {
+        //                // If pressed OK then get the created expression
+        //                // and put it in a textbox.
+        //                txtExpression.Text = expressionBuilder.Expression;
+        //                lblExpressionEvaluated.Text = "";
+
+        //                // Create object to evaluate the expression
+        //                Wrapper.ExpressionEvaluator evalutor = new Wrapper.ExpressionEvaluator();
+
+        //                // Add the expression
+        //                evalutor.Expression = txtExpression.Text;
+
+        //                // Object for storing the evaluated expression
+        //                object result = null;
+
+        //                try
+        //                {
+        //                    // Evalute the expression and store it in the result object
+        //                    evalutor.Evaluate(DtsConvert.GetExtendedInterface(_taskHost.VariableDispenser), out result, false);
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    // Store error message in label
+        //                    // Perhaps a little useless in this example because the expression builder window
+        //                    // already validated the expression. But you could also make the textbox readable
+        //                    // and change the expression there (without opening the expression builder window)
+        //                    lblExpressionEvaluated.Text = ex.Message;
+        //                }
+
+        //                // If the Expression contains some error, the "result" will be <null>.
+        //                if (result != null)
+        //                {
+        //                    // Add evaluated expression to label
+        //                    lblExpressionEvaluated.Text = result.ToString();
+        //                }
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(ex.Message);
+        //    }
+        //}
     }
 }

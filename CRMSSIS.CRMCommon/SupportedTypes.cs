@@ -52,6 +52,9 @@ namespace CRMSSIS.CRMCommon
             //Status Operation
             if (Operation.HasValue && Operation == 3 && (attribute.AttributeType.Value == AttributeTypeCode.Uniqueidentifier || attribute.AttributeType.Value == AttributeTypeCode.State || attribute.AttributeType.Value == AttributeTypeCode.Status)) valid = true;
 
+            //Workflow Operation applies to all entity
+            
+
 
             return valid;
         }

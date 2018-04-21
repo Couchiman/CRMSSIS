@@ -45,8 +45,9 @@ namespace CRMSSIS.CRMDestinationAdapter
         int culture = 127;
         Guid currentUserId;
         string EntityName = "";
+        string EntityId = "";
         //int responseColumn = 0;
-
+        string WorkflowId;
         int errorOutputId = 0;
         int defaultOuputId = 0;
 
@@ -144,6 +145,11 @@ namespace CRMSSIS.CRMDestinationAdapter
             Entity.TypeConverter = "NOTBROWSABLE";
 
 
+            IDTSCustomProperty100 Workflow = ComponentMetaData.CustomPropertyCollection.New();
+            Workflow.Description = "Workflow";
+            Workflow.Name = "Workflow";
+            Workflow.Value = "";
+            Workflow.TypeConverter = "NOTBROWSABLE";
 
             IDTSCustomProperty100 Mapping = ComponentMetaData.CustomPropertyCollection.New();
             Mapping.Description = "Mapping";
@@ -380,12 +386,14 @@ namespace CRMSSIS.CRMDestinationAdapter
             currentUserId = userResponse.UserId;
 
             EntityName = (CRMCommon.JSONSerialization.Deserialize<Item>(ComponentMetaData.CustomPropertyCollection["Entity"].Value.ToString())).Text;
-
+             
             errorOutputId = ComponentMetaData.OutputCollection[0].ID;
             defaultOuputId = ComponentMetaData.OutputCollection[1].ID;
 
-           
-           
+            WorkflowId = (CRMCommon.JSONSerialization.Deserialize<Item>(ComponentMetaData.CustomPropertyCollection["WorkFlow"].Value.ToString())).Value;
+            EntityId = (CRMCommon.JSONSerialization.Deserialize<Item>(ComponentMetaData.CustomPropertyCollection["Entity"].Value.ToString())).Value;
+
+
         }
 
         /// <summary>
@@ -417,7 +425,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                     bchCnt++;
                     //adds the row to output buffer for futher processing.
 
-
+                  
 
                     foreach (int col in mapInputColsToBufferCols)
                     {
@@ -465,7 +473,10 @@ namespace CRMSSIS.CRMDestinationAdapter
                             Rqs.Add(new UpsertRequest { Target = newEntity });
                             newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
                             break;
-
+                        case Operations.Workflow:
+                            Rqs.Add(new ExecuteWorkflowRequest { EntityId= Guid.Parse(EntityId), WorkflowId= Guid.Parse(WorkflowId) });
+                            
+                            break;
                     }
                     newEntityCollection.Entities.Add(newEntity);
                     rowIndexList.Add(ir);
@@ -556,6 +567,9 @@ namespace CRMSSIS.CRMDestinationAdapter
                                 break;
                             case Operations.Status:
                                 buffer.SetString(ResponseColumn, ((SetStateResponse)itm.Response).ToString());
+                                break;
+                            case Operations.Workflow:
+                                buffer.SetString(ResponseColumn, ((ExecuteWorkflowResponse)itm.Response).ToString());
                                 break;
 
                         }

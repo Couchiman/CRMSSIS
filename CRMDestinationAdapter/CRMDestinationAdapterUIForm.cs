@@ -31,7 +31,7 @@ namespace CRMSSIS.CRMDestinationAdapter
         private IDtsConnectionService connectionService;
         private CManagedComponentWrapper designTimeInstance;
         private Mapping m;
- 
+        CheckBox lastChecked;
 
         public CRMDestinationAdapterUIForm()
         {
@@ -93,6 +93,11 @@ namespace CRMSSIS.CRMDestinationAdapter
                 designTimeInstance.SetComponentProperty("CultureInfo", EnumEx.GetValueFromDescription<SupportedLanguages>(cboLocales.SelectedValue.ToString()));
             }
 
+            if (chkErrorFail.Checked) this.metaData.InputCollection[0].ErrorRowDisposition = DTSRowDisposition.RD_FailComponent;
+            if (chkIgnoreError.Checked) this.metaData.InputCollection[0].ErrorRowDisposition = DTSRowDisposition.RD_IgnoreFailure;
+            if (chkRedirect.Checked) this.metaData.InputCollection[0].ErrorRowDisposition = DTSRowDisposition.RD_RedirectRow;
+
+
             this.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.Close();
         }
@@ -148,7 +153,10 @@ namespace CRMSSIS.CRMDestinationAdapter
                       
 
             loadOperationsCombobox();
+
             
+
+           
 
             txtBatchSize.Text = Convert.ToString(this.metaData.CustomPropertyCollection["BatchSize"].Value);
 
@@ -186,11 +194,47 @@ namespace CRMSSIS.CRMDestinationAdapter
          
             cbConnectionList.SelectedIndexChanged += new System.EventHandler(this.cbConnectionList_SelectedIndexChanged);
             cbOperation.SelectedIndexChanged += new System.EventHandler(this.cbOperation_SelectedIndexChanged);
+            chkErrorFail.CheckedChanged += new System.EventHandler(this.chk_Click);
+            chkIgnoreError.CheckedChanged += new System.EventHandler(this.chk_Click);
+            chkRedirect.CheckedChanged += new System.EventHandler(this.chk_Click);
 
-
-
+            loadErrorHandlingCheckboxes();
 
         }
+
+        private void loadErrorHandlingCheckboxes()
+        {
+
+             
+            switch (this.metaData.InputCollection[0].ErrorRowDisposition)
+
+             {
+                case DTSRowDisposition.RD_FailComponent:
+                    chkIgnoreError.Checked = false;
+                    chkRedirect.Checked = false;
+                    chkErrorFail.Checked = true;
+                    break;
+                case DTSRowDisposition.RD_RedirectRow:
+                    chkIgnoreError.Checked = false;
+                    chkRedirect.Checked = true;
+                    chkErrorFail.Checked = false;
+                    break;
+                case DTSRowDisposition.RD_IgnoreFailure:
+                    chkIgnoreError.Checked = true;
+                    chkRedirect.Checked = false;
+                    chkErrorFail.Checked = false;
+                    break;
+
+             }
+        }
+
+        private void chk_Click(object sender, EventArgs e)
+        {
+            CheckBox activeCheckBox = sender as CheckBox;
+            if (activeCheckBox != lastChecked && lastChecked != null) lastChecked.Checked = false;
+            lastChecked = activeCheckBox.Checked ? activeCheckBox : null;
+        }
+
         /// <summary>
         /// Basic operations
         /// </summary>

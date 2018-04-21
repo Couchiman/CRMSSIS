@@ -400,84 +400,104 @@ namespace CRMSSIS.CRMDestinationAdapter
 
 
             Mapping.MappingItem mappedColumn;
-            IDTSInputColumn100 input;
+            IDTSInputColumn100 inputcolumn;
 
+            IDTSInput100 input = ComponentMetaData.InputCollection.GetObjectByID(inputID);
             
 
            Entity newEntity;
 
             while (buffer.NextRow())
             {
-                newEntity = new Entity(EntityName);
- 
-
-                bchCnt++;
-                //adds the row to output buffer for futher processing.
-
-
-
-                foreach (int col in mapInputColsToBufferCols)
+                try
                 {
-                    input = ComponentMetaData.InputCollection[0].InputColumnCollection[col];
+                    newEntity = new Entity(EntityName);
 
-                    mappedColumn = mapping.ColumnList.Find(x => x.ExternalColumnName == input.Name && x.Map == true);
 
-                    if (mappedColumn != null)
+                    bchCnt++;
+                    //adds the row to output buffer for futher processing.
+
+
+
+                    foreach (int col in mapInputColsToBufferCols)
                     {
-                        if (buffer.IsNull(col) == false)
-                            AttributesBuilder(mappedColumn, buffer[col], ref newEntity);
-                        else
-                            AttributesBuilder(mappedColumn, mappedColumn.DefaultValue, ref newEntity);
+                        inputcolumn = ComponentMetaData.InputCollection[0].InputColumnCollection[col];
+
+                        mappedColumn = mapping.ColumnList.Find(x => x.ExternalColumnName == inputcolumn.Name && x.Map == true);
+
+                        if (mappedColumn != null)
+                        {
+                            if (buffer.IsNull(col) == false)
+                                AttributesBuilder(mappedColumn, buffer[col], ref newEntity);
+                            else
+                                AttributesBuilder(mappedColumn, mappedColumn.DefaultValue, ref newEntity);
+                        }
+
+
                     }
 
 
+                    switch ((Operations)operation)
+                    {    //Create  
+                        case Operations.Create:
+                            Rqs.Add(new CreateRequest { Target = newEntity });
+                            newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
+                            break;
+                        //Update
+                        case Operations.Update:
+                            Rqs.Add(new UpdateRequest { Target = newEntity });
+                            newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
+                            break;
+                        //Delete
+                        case Operations.Delete:
+                            Rqs.Add(new DeleteRequest { Target = newEntity.ToEntityReference() });
+                            break;
+                        //status
+                        case Operations.Status:
+                            Rqs.Add(new SetStateRequest
+                            {
+                                EntityMoniker = newEntity.ToEntityReference(),
+                                State = new OptionSetValue((int)newEntity.Attributes["statecode"]),
+                                Status = new OptionSetValue((int)newEntity.Attributes["statuscode"])
+                            });
+                            break;
+                        case Operations.Upsert:
+                            Rqs.Add(new UpsertRequest { Target = newEntity });
+                            newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
+                            break;
+
+                    }
+                    newEntityCollection.Entities.Add(newEntity);
+                    rowIndexList.Add(ir);
+
+
+
+                    if (bchCnt == batchSize * 2 && buffer.CurrentRow < buffer.RowCount)
+                    {
+                        int startBuffIndex = buffer.CurrentRow - (bchCnt - 1);
+                        CRMIntegrate[] IntegrationRows = SendRowsToCRM(newEntityCollection, EntityName, Rqs);
+
+                        sendOutputResults(IntegrationRows, buffer, startBuffIndex);
+                    }
+
+                    ir++;
+
                 }
-
-
-                switch ((Operations)operation)
-                {    //Create  
-                    case Operations.Create:
-                        Rqs.Add(new CreateRequest { Target = newEntity });
-                        newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
-                        break;
-                    //Update
-                    case Operations.Update:
-                        Rqs.Add(new UpdateRequest { Target = newEntity });
-                        newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
-                        break;
-                    //Delete
-                    case Operations.Delete:
-                        Rqs.Add(new DeleteRequest { Target = newEntity.ToEntityReference() });
-                        break;
-                    //status
-                    case Operations.Status:
-                        Rqs.Add(new SetStateRequest
-                        {
-                            EntityMoniker = newEntity.ToEntityReference(),
-                            State = new OptionSetValue((int)newEntity.Attributes["statecode"]),
-                            Status = new OptionSetValue((int)newEntity.Attributes["statuscode"])
-                        });
-                        break;
-                    case Operations.Upsert:
-                        Rqs.Add(new UpsertRequest { Target = newEntity });
-                        newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
-                        break;
-
-                }
-                newEntityCollection.Entities.Add(newEntity);
-                rowIndexList.Add(ir);
-
-
-
-                if (bchCnt == batchSize * 2 && buffer.CurrentRow< buffer.RowCount)
+                catch (Exception ex)
                 {
-                    int startBuffIndex = buffer.CurrentRow - (bchCnt-1);
-                    CRMIntegrate[] IntegrationRows = SendRowsToCRM(newEntityCollection, EntityName, Rqs);
-                                       
-                    sendOutputResults(IntegrationRows, buffer, startBuffIndex);
+                    switch(input.ErrorRowDisposition)
+                    {
+                                                
+                        case DTSRowDisposition.RD_RedirectRow:
+                            buffer.DirectErrorRow(errorOutputId, 0,buffer.CurrentRow);
+                            break;
+                        case DTSRowDisposition.RD_IgnoreFailure:
+                            buffer.DirectRow(defaultOuputId);
+                            break;
+                        case DTSRowDisposition.RD_FailComponent:
+                            throw new Exception("There was and error processing rows. " + ex.Message);
+                    }
                 }
-
-                ir++;
             }
 
         }

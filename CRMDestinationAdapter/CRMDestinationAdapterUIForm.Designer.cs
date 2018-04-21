@@ -47,10 +47,15 @@
             this.cbOperation = new System.Windows.Forms.ComboBox();
             this.cboLocales = new System.Windows.Forms.ComboBox();
             this.lblCultureInfo = new System.Windows.Forms.Label();
+            this.chkErrorFail = new System.Windows.Forms.CheckBox();
+            this.chkRedirect = new System.Windows.Forms.CheckBox();
+            this.chkIgnoreError = new System.Windows.Forms.CheckBox();
+            this.gpError = new System.Windows.Forms.GroupBox();
             this.backgroundWorkerLoadEntities = new System.ComponentModel.BackgroundWorker();
             this.pbLoader = new System.Windows.Forms.PictureBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.gpError.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbLoader)).BeginInit();
             this.SuspendLayout();
             // 
@@ -231,6 +236,48 @@
             this.lblCultureInfo.TabIndex = 3;
             this.lblCultureInfo.Text = "Culture Info";
             // 
+            // chkErrorFail
+            // 
+            this.chkErrorFail.AutoSize = true;
+            this.chkErrorFail.Location = new System.Drawing.Point(16, 38);
+            this.chkErrorFail.Name = "chkErrorFail";
+            this.chkErrorFail.Size = new System.Drawing.Size(82, 17);
+            this.chkErrorFail.TabIndex = 102;
+            this.chkErrorFail.Text = "Fail on Error";
+            this.chkErrorFail.UseVisualStyleBackColor = true;
+            // 
+            // chkRedirect
+            // 
+            this.chkRedirect.AutoSize = true;
+            this.chkRedirect.Location = new System.Drawing.Point(16, 19);
+            this.chkRedirect.Name = "chkRedirect";
+            this.chkRedirect.Size = new System.Drawing.Size(66, 17);
+            this.chkRedirect.TabIndex = 103;
+            this.chkRedirect.Text = "Redirect";
+            this.chkRedirect.UseVisualStyleBackColor = true;
+            // 
+            // chkIgnoreError
+            // 
+            this.chkIgnoreError.AutoSize = true;
+            this.chkIgnoreError.Location = new System.Drawing.Point(16, 58);
+            this.chkIgnoreError.Name = "chkIgnoreError";
+            this.chkIgnoreError.Size = new System.Drawing.Size(56, 17);
+            this.chkIgnoreError.TabIndex = 104;
+            this.chkIgnoreError.Text = "Ignore";
+            this.chkIgnoreError.UseVisualStyleBackColor = true;
+            // 
+            // gpError
+            // 
+            this.gpError.Controls.Add(this.chkRedirect);
+            this.gpError.Controls.Add(this.chkErrorFail);
+            this.gpError.Controls.Add(this.chkIgnoreError);
+            this.gpError.Location = new System.Drawing.Point(526, 14);
+            this.gpError.Name = "gpError";
+            this.gpError.Size = new System.Drawing.Size(116, 82);
+            this.gpError.TabIndex = 105;
+            this.gpError.TabStop = false;
+            this.gpError.Text = "Input Error Handling";
+            // 
             // backgroundWorkerLoadEntities
             // 
             this.backgroundWorkerLoadEntities.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
@@ -239,18 +286,16 @@
             // 
             this.pbLoader.Location = new System.Drawing.Point(464, 14);
             this.pbLoader.Name = "pbLoader";
-            this.pbLoader.Size = new System.Drawing.Size(161, 82);
+            this.pbLoader.Size = new System.Drawing.Size(54, 50);
             this.pbLoader.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.pbLoader.TabIndex = 99;
             this.pbLoader.TabStop = false;
-          
             // 
             // CRMDestinationAdapterUIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(827, 283);
-
+            this.ClientSize = new System.Drawing.Size(827, 276);
             this.Controls.Add(this.pbLoader);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnCancel);
@@ -259,6 +304,7 @@
             this.Controls.Add(this.btnMappings);
             this.Controls.Add(this.lblCultureInfo);
             this.Controls.Add(this.cboLocales);
+            this.Controls.Add(this.gpError);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -269,6 +315,8 @@
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.gpError.ResumeLayout(false);
+            this.gpError.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbLoader)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -297,5 +345,9 @@
         private System.Windows.Forms.Button btnMappings;
         private System.Windows.Forms.ComboBox cboLocales;
         private System.Windows.Forms.Label lblCultureInfo;
+        private System.Windows.Forms.CheckBox chkErrorFail;
+        private System.Windows.Forms.CheckBox chkRedirect;
+        private System.Windows.Forms.CheckBox chkIgnoreError;
+        private System.Windows.Forms.GroupBox gpError;
     }
 }

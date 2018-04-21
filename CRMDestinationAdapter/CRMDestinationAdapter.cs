@@ -575,19 +575,19 @@ namespace CRMSSIS.CRMDestinationAdapter
                                 break;
                                                       
                             case Operations.Update:
-                                buffer.SetString(ResponseColumn, ((UpdateResponse)itm.Response).ToString());
+                                buffer.SetString(ResponseColumn, ((UpdateResponse)itm.Response).Results.FirstOrDefault().Value.ToString());
                                 break;
                             case Operations.Delete:
-                                buffer.SetString(ResponseColumn, ((DeleteResponse)itm.Response).ToString());
+                                buffer.SetString(ResponseColumn, ((DeleteResponse)itm.Response).Results.FirstOrDefault().Value.ToString());
                                 break;
                             case Operations.Upsert:
-                                buffer.SetString(ResponseColumn, ((UpsertResponse)itm.Response).ToString());
+                                buffer.SetString(ResponseColumn, ((UpsertResponse)itm.Response).Results.FirstOrDefault().Value.ToString());
                                 break;
                             case Operations.Status:
-                                buffer.SetString(ResponseColumn, ((SetStateResponse)itm.Response).ToString());
+                                buffer.SetString(ResponseColumn, ((SetStateResponse)itm.Response).Results.FirstOrDefault().Value.ToString());
                                 break;
                             case Operations.Workflow:
-                                buffer.SetString(ResponseColumn, ((ExecuteWorkflowResponse)itm.Response).ToString());
+                                buffer.SetString(ResponseColumn, ((ExecuteWorkflowResponse)itm.Response).Results.FirstOrDefault().Value.ToString());
                                 break;
 
                         }
@@ -601,8 +601,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                     
 
                 }
-                else if (irsp.ExceptionMessage != "")
-                    for (int i = irsp.DataTableRowsIndex[0]; i <= irsp.DataTableRowsIndex[irsp.DataTableRowsIndex.Count - 1]; i++)
+                else if (irsp.ExceptionMessage != "")                  
                     {
                        
                         buffer.DirectErrorRow(errorOutputId, -1, buffer.CurrentRow);

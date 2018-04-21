@@ -681,6 +681,9 @@ namespace CRMSSIS.CRMDestinationAdapter
                 }
                 else
                 {
+                   
+                    cboWorkflows.Items.Clear();
+                    cboWorkflows.ResetText();
                     btnRefresh.Enabled = true;
 
                 }

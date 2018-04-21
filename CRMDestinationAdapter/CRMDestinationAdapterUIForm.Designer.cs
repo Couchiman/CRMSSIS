@@ -54,10 +54,10 @@
             this.backgroundWorkerLoadEntities = new System.ComponentModel.BackgroundWorker();
             this.pbLoader = new System.Windows.Forms.PictureBox();
             this.gpExecuteWF = new System.Windows.Forms.GroupBox();
+            this.btnRefreshWorkflows = new System.Windows.Forms.Button();
             this.lblWorkflow = new System.Windows.Forms.Label();
             this.cboWorkflows = new System.Windows.Forms.ComboBox();
             this.backgroundWorkerLoadWorkflows = new System.ComponentModel.BackgroundWorker();
-            this.btnRefreshWorkflows = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.gpError.SuspendLayout();
@@ -309,10 +309,20 @@
             this.gpExecuteWF.TabStop = false;
             this.gpExecuteWF.Text = "Execute Workflow";
             // 
+            // btnRefreshWorkflows
+            // 
+            this.btnRefreshWorkflows.Location = new System.Drawing.Point(515, 24);
+            this.btnRefreshWorkflows.Name = "btnRefreshWorkflows";
+            this.btnRefreshWorkflows.Size = new System.Drawing.Size(116, 23);
+            this.btnRefreshWorkflows.TabIndex = 26;
+            this.btnRefreshWorkflows.Text = "Refresh Workflows";
+            this.btnRefreshWorkflows.UseVisualStyleBackColor = true;
+            this.btnRefreshWorkflows.Click += new System.EventHandler(this.btnRefreshWorkflows_Click);
+            // 
             // lblWorkflow
             // 
             this.lblWorkflow.AutoSize = true;
-            this.lblWorkflow.Location = new System.Drawing.Point(10, 27);
+            this.lblWorkflow.Location = new System.Drawing.Point(10, 34);
             this.lblWorkflow.Name = "lblWorkflow";
             this.lblWorkflow.Size = new System.Drawing.Size(52, 13);
             this.lblWorkflow.TabIndex = 24;
@@ -321,7 +331,7 @@
             // cboWorkflows
             // 
             this.cboWorkflows.FormattingEnabled = true;
-            this.cboWorkflows.Location = new System.Drawing.Point(115, 19);
+            this.cboWorkflows.Location = new System.Drawing.Point(115, 26);
             this.cboWorkflows.Name = "cboWorkflows";
             this.cboWorkflows.Size = new System.Drawing.Size(374, 21);
             this.cboWorkflows.TabIndex = 23;
@@ -329,16 +339,6 @@
             // backgroundWorkerLoadWorkflows
             // 
             this.backgroundWorkerLoadWorkflows.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerLoadWorkflows_DoWork);
-            // 
-            // btnRefreshWorkflows
-            // 
-            this.btnRefreshWorkflows.Location = new System.Drawing.Point(515, 17);
-            this.btnRefreshWorkflows.Name = "btnRefreshWorkflows";
-            this.btnRefreshWorkflows.Size = new System.Drawing.Size(116, 23);
-            this.btnRefreshWorkflows.TabIndex = 26;
-            this.btnRefreshWorkflows.Text = "Refresh Workflows";
-            this.btnRefreshWorkflows.UseVisualStyleBackColor = true;
-            this.btnRefreshWorkflows.Click += new System.EventHandler(this.btnRefreshWorkflows_Click);
             // 
             // CRMDestinationAdapterUIForm
             // 

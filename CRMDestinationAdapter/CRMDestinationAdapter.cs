@@ -390,7 +390,8 @@ namespace CRMSSIS.CRMDestinationAdapter
             errorOutputId = ComponentMetaData.OutputCollection[0].ID;
             defaultOuputId = ComponentMetaData.OutputCollection[1].ID;
 
-            WorkflowId = (CRMCommon.JSONSerialization.Deserialize<Item>(ComponentMetaData.CustomPropertyCollection["WorkFlow"].Value.ToString())).Value;
+            if (!string.IsNullOrEmpty(ComponentMetaData.CustomPropertyCollection["Workflow"].Value.ToString()))
+                WorkflowId = (CRMCommon.JSONSerialization.Deserialize<Item>(ComponentMetaData.CustomPropertyCollection["Workflow"].Value.ToString())).Value;
             EntityId = (CRMCommon.JSONSerialization.Deserialize<Item>(ComponentMetaData.CustomPropertyCollection["Entity"].Value.ToString())).Value;
 
 
@@ -411,7 +412,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             IDTSInputColumn100 inputcolumn;
 
             IDTSInput100 input = ComponentMetaData.InputCollection.GetObjectByID(inputID);
-            
+             
 
            Entity newEntity;
 
@@ -474,26 +475,28 @@ namespace CRMSSIS.CRMDestinationAdapter
                             newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
                             break;
                         case Operations.Workflow:
-                            Rqs.Add(new ExecuteWorkflowRequest { EntityId= Guid.Parse(EntityId), WorkflowId= Guid.Parse(WorkflowId) });
+                            newEntity.Attributes["ownerid"] = new EntityReference("systemuser", currentUserId);
+                            Rqs.Add(new ExecuteWorkflowRequest { EntityId= newEntity.Id, WorkflowId= Guid.Parse(WorkflowId) });
                             
                             break;
                     }
                     newEntityCollection.Entities.Add(newEntity);
                     rowIndexList.Add(ir);
 
+                     
 
-
-                    if (bchCnt == batchSize * 2 && buffer.CurrentRow < buffer.RowCount)
+                    if (bchCnt == batchSize * 2 || (buffer.CurrentRow == buffer.RowCount || (buffer.RowCount % 2 !=0 && buffer.CurrentRow == buffer.RowCount-1)))
                     {
-                        int startBuffIndex = buffer.CurrentRow - (bchCnt - 1);
+                        int startBuffIndex = buffer.CurrentRow - (bchCnt-1);
                         CRMIntegrate[] IntegrationRows = SendRowsToCRM(newEntityCollection, EntityName, Rqs);
 
                         sendOutputResults(IntegrationRows, buffer, startBuffIndex);
                     }
 
                     ir++;
-
+                   
                 }
+               
                 catch (Exception ex)
                 {
                     switch(input.ErrorRowDisposition)
@@ -510,6 +513,15 @@ namespace CRMSSIS.CRMDestinationAdapter
                     }
                 }
             }
+
+            //if (buffer.EndOfRowset)
+            //{
+            //    int startBuffIndex = rowCount - bchCnt;
+
+            //    CRMIntegrate[] IntegrationRows = SendRowsToCRM(newEntityCollection, EntityName, Rqs);
+
+            //    sendOutputResults(IntegrationRows, buffer, startBuffIndex);
+            //}
 
         }
 
@@ -537,7 +549,13 @@ namespace CRMSSIS.CRMDestinationAdapter
                         FltResp = irsp.Resp.Responses.Where(r => r.Fault != null);
 
                         foreach (ExecuteMultipleResponseItem itm in FltResp)
-                           buffer.DirectErrorRow(startBuffIndex + irsp.DataTableRowsIndex[itm.RequestIndex], errorOutputId, itm.Fault.ErrorCode, 0);
+                        {  
+                            buffer.DirectErrorRow(errorOutputId, itm.Fault.ErrorCode, buffer.CurrentRow);
+
+                           
+                            if (buffer.CurrentRow < buffer.RowCount)
+                                buffer.NextRow();
+                        }
                     }
 
                     OkResp = irsp.Resp.Responses.Where(r => r.Fault == null);
@@ -586,7 +604,10 @@ namespace CRMSSIS.CRMDestinationAdapter
                 else if (irsp.ExceptionMessage != "")
                     for (int i = irsp.DataTableRowsIndex[0]; i <= irsp.DataTableRowsIndex[irsp.DataTableRowsIndex.Count - 1]; i++)
                     {
-                        buffer.DirectErrorRow(startBuffIndex + irsp.DataTableRowsIndex[i], errorOutputId, -1, 0);
+                       
+                        buffer.DirectErrorRow(errorOutputId, -1, buffer.CurrentRow);
+                        if (buffer.CurrentRow < buffer.RowCount)
+                            buffer.NextRow();
 
                     }
                 
@@ -633,7 +654,8 @@ namespace CRMSSIS.CRMDestinationAdapter
                     newEntity.Attributes[mappedColumn.InternalColumnName] = new OptionSetValue(Convert.ToInt32(value, new CultureInfo(culture)));
                     break;
                 case AttributeTypeCode.Uniqueidentifier:
-                    newEntity.Attributes[mappedColumn.InternalColumnName] = new Guid(Convert.ToString(value, new CultureInfo(culture)));
+                    newEntity.Attributes[mappedColumn.InternalColumnName] = new Guid(Convert.ToString(value));
+                    newEntity.Id = new Guid(Convert.ToString(value));
                     break;
                 case AttributeTypeCode.Owner:
                     break;

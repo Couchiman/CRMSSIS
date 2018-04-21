@@ -174,13 +174,14 @@ namespace CRMSSIS.CRMDestinationAdapter
             {
                 btnRefresh.Enabled = true;
                 btnRefreshMetadata.Enabled = true;
+                btnMappings.Enabled = true;
+
                 Item Entity = (Item)CRMSSIS.CRMCommon.JSONSerialization.Deserialize<Item>(this.metaData.CustomPropertyCollection["Entity"].Value.ToString());
 
                 cbEntity.Items.Add(Entity);
                 cbEntity.SelectedIndex = 0;
                 cbEntity.Enabled = false;
-
-
+                
                 this.cbEntity.SelectedIndexChanged += new System.EventHandler(this.cbEntity_SelectedIndexChanged);
                 if (this.metaData.CustomPropertyCollection["Mapping"].Value !=null)
                 m = CRMCommon.JSONSerialization.Deserialize<Mapping>(this.metaData.CustomPropertyCollection["Mapping"].Value.ToString());
@@ -189,7 +190,7 @@ namespace CRMSSIS.CRMDestinationAdapter
                 // Check if the operation is a workflow, if not lets user add mapping
                 if ((Operations)this.metaData.CustomPropertyCollection["Operation"].Value == Operations.Workflow)
                 {
-                    btnMappings.Enabled = false;
+                    
                     btnRefreshWorkflows.Enabled = true;
 
                     if (this.metaData.CustomPropertyCollection["Workflow"].Value.ToString() == "")
@@ -206,10 +207,7 @@ namespace CRMSSIS.CRMDestinationAdapter
 
                     }
                 }
-                else
-                {
-                    btnMappings.Enabled = true;
-                }
+                
 
 
             }
@@ -592,7 +590,7 @@ namespace CRMSSIS.CRMDestinationAdapter
         {
             if(cbEntity.SelectedItem !=null)
             { 
-                if (cbOperation.SelectedItem != null && (Operations)this.metaData.CustomPropertyCollection["Operation"].Value == Operations.Workflow)
+                if (cbOperation.SelectedItem != null && (Operations)cbOperation.SelectedValue == Operations.Workflow)
                 {
                     SetPictureBoxFromResource(pbLoader, "CRMSSIS.CRMDestinationAdapter.loading.gif");
                     pbLoader.Dock = DockStyle.Fill;
@@ -675,7 +673,17 @@ namespace CRMSSIS.CRMDestinationAdapter
             {
 
                 m = null;
-                //loadMappingGrid((Item)cbEntity.SelectedItem);
+
+                if ((Operations)cbOperation.SelectedValue == Operations.Workflow)
+                {
+                    btnRefreshWorkflows.Enabled = true;
+                    btnRefresh.Enabled = true;
+                }
+                else
+                {
+                    btnRefresh.Enabled = true;
+
+                }
             }
         }
 

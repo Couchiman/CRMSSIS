@@ -46,15 +46,15 @@ namespace CRMSSIS.CRMCommon
             //Create Operation. Removes uniqueidentifier.        
            if (Operation.HasValue && Operation == 0 && attribute.AttributeType.Value == AttributeTypeCode.Uniqueidentifier) valid = false;
 
-            //Delete Operation
-            if (Operation.HasValue && Operation == 2 && attribute.AttributeType.Value == AttributeTypeCode.Uniqueidentifier) valid = true;
+            //Delete Operation or Workflow Operation  
+            if (Operation.HasValue && (Operation == 2 || Operation ==5) && attribute.AttributeType.Value == AttributeTypeCode.Uniqueidentifier) valid = true;
 
             //Status Operation
             if (Operation.HasValue && Operation == 3 && (attribute.AttributeType.Value == AttributeTypeCode.Uniqueidentifier || attribute.AttributeType.Value == AttributeTypeCode.State || attribute.AttributeType.Value == AttributeTypeCode.Status)) valid = true;
 
             //Workflow Operation applies to all entity
-            
 
+           
 
             return valid;
         }

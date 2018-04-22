@@ -2,8 +2,8 @@
 CRM SSIS Integration Components for Dynamics CRM
 
 - Connection Manager 
-- Source Adapter (more testing & bugfixing needed)
-- Destination Adapter (in progress)
+- Source Adapter
+- Destination Adapter
 
 Connection Manager
 

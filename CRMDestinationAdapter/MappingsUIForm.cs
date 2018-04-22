@@ -63,10 +63,12 @@ namespace CRMSSIS.CRMDestinationAdapter
 
         private void MappingsUIForm_Load(object sender, EventArgs e)
         {
-            if(entityItem !=null)
-                loadMappingGrid(entityItem);
 
             dgAtributeMap.DataError += new DataGridViewDataErrorEventHandler(dgAtributeMap_DataError);
+
+            if (entityItem !=null)
+                loadMappingGrid(entityItem);
+                      
             
         }
 

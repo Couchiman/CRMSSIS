@@ -514,19 +514,12 @@ namespace CRMSSIS.CRMDestinationAdapter
                 }
             }
 
-            //if (buffer.EndOfRowset)
-            //{
-            //    int startBuffIndex = rowCount - bchCnt;
-
-            //    CRMIntegrate[] IntegrationRows = SendRowsToCRM(newEntityCollection, EntityName, Rqs);
-
-            //    sendOutputResults(IntegrationRows, buffer, startBuffIndex);
-            //}
+           
 
         }
 
         /// <summary>
-        /// Sends Outputs to files.
+        /// Sends Outputs to files. //TODO: Rewrite this method
         /// </summary>
         /// <param name="Integ"></param>
         /// <param name="buffer"></param>

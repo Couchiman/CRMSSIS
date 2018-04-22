@@ -340,8 +340,8 @@ namespace CRMSSIS.CRMSourceAdapter
         /// <summary>
         /// Gets information from Dynamics entity based on FetchXML query
         /// </summary>
-        /// <param name="FetchXML"></param>
-        /// <param name="top"></param>
+        /// <param name="FetchXML">Quer</param>
+        /// <param name="top">True for top 50 or all rows</param>
         /// <returns></returns>
         public DataTable GetData(String FetchXML, Boolean top)
         {

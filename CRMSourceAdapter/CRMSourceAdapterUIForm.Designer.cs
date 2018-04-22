@@ -39,7 +39,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
-            this.txtFetchXML = new System.Windows.Forms.TextBox();
+            this.txtFetchXML = new CRMSSIS.CRMCommon.Controls.XMLEditor();
             this.groupBox1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -139,7 +139,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(31, 115);
+            this.label2.Location = new System.Drawing.Point(25, 116);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(87, 13);
             this.label2.TabIndex = 14;
@@ -147,21 +147,20 @@
             // 
             // txtFetchXML
             // 
-            this.txtFetchXML.Location = new System.Drawing.Point(34, 131);
-            this.txtFetchXML.Multiline = true;
+            this.txtFetchXML.AllowXmlFormatting = true;
+            this.txtFetchXML.Location = new System.Drawing.Point(23, 132);
             this.txtFetchXML.Name = "txtFetchXML";
-            this.txtFetchXML.Size = new System.Drawing.Size(600, 261);
-            this.txtFetchXML.TabIndex = 13;
-            this.txtFetchXML.Text = "<entity name=\"account\"><attribute name=\"primarycontactid\" /></entity>";
-            this.txtFetchXML.TextChanged += new System.EventHandler(this.txtFetchXML_TextChanged);
+            this.txtFetchXML.ReadOnly = false;
+            this.txtFetchXML.Size = new System.Drawing.Size(595, 268);
+            this.txtFetchXML.TabIndex = 15;
             // 
             // CRMSourceAdapterUIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(646, 453);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.txtFetchXML);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel3);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -191,6 +190,6 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox txtFetchXML;
+        private CRMCommon.Controls.XMLEditor txtFetchXML;
     }
 }

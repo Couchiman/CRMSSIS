@@ -71,6 +71,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.IdentityModel" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
@@ -78,6 +79,7 @@
     <Reference Include="System.ServiceModel.Web" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Services" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Workflow.Activities" />
     <Reference Include="System.Workflow.ComponentModel" />
     <Reference Include="System.Workflow.Runtime" />
@@ -89,16 +91,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CRM.cs" />
     <Compile Include="Controls.cs" />
+    <Compile Include="Controls\XMLEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\XMLEditor.Designer.cs">
+      <DependentUpon>XMLEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CRM.cs" />
     <Compile Include="Enumerators.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serialize.cs" />
     <Compile Include="SupportedTypes.cs" />
+    <Compile Include="Controls\XmlToken.cs" />
+    <Compile Include="Controls\XmlTokenizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ConnectionManager.snk" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Controls\XMLEditor.resx">
+      <DependentUpon>XMLEditor.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

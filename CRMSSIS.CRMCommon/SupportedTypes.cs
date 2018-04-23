@@ -17,6 +17,8 @@ namespace CRMSSIS.CRMCommon
         {
             bool valid = false;
 
+            if (attribute != null) { 
+
             //Create/Update Operation or default types
             if (!Operation.HasValue || Operation == 0 || Operation == 1 || Operation ==4)
             {
@@ -52,9 +54,9 @@ namespace CRMSSIS.CRMCommon
             //Status Operation
             if (Operation.HasValue && Operation == 3 && (attribute.AttributeType.Value == AttributeTypeCode.Uniqueidentifier || attribute.AttributeType.Value == AttributeTypeCode.State || attribute.AttributeType.Value == AttributeTypeCode.Status)) valid = true;
 
-            //Workflow Operation applies to all entity
+                //Workflow Operation applies to all entity
 
-           
+            }
 
             return valid;
         }

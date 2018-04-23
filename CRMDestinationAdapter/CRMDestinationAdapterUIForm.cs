@@ -337,7 +337,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             cbOperation.DisplayMember = "Description";
             cbOperation.ValueMember = "value";
 
-            int cboValue = (int)(Operations)this.metaData.CustomPropertyCollection["Operation"].Value;
+            int cboValue = Convert.ToInt32(this.metaData.CustomPropertyCollection["Operation"].Value.ToString());
 
             if (cboValue >= 0)
                 cbOperation.SelectedIndex = cboValue;
@@ -363,7 +363,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             cboLocales.DisplayMember = "Description";
             cboLocales.ValueMember = "value";
 
-            int cboValue = (int)(SupportedLanguages)this.metaData.CustomPropertyCollection["CultureInfo"].Value;
+            int cboValue = Convert.ToInt32(this.metaData.CustomPropertyCollection["CultureInfo"].Value.ToString()); 
 
 
             cboLocales.SelectedIndex= cboLocales.FindString(CRMSSIS.CRMCommon.Enumerators.EnumEx.GetDescriptionFromValue<SupportedLanguages>((SupportedLanguages)cboValue));

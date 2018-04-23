@@ -16,8 +16,8 @@ namespace CRMSSIS.CRMSourceAdapter
        
         private IDtsConnectionService connectionService;
         private CManagedComponentWrapper designTimeInstance;
+        private string oldFetchXML;
 
-               
         private class ConnectionManagerItem
         {
             public string ID;
@@ -58,8 +58,10 @@ namespace CRMSSIS.CRMSourceAdapter
                
             }
 
-
-            
+            if (txtFetchXML.Text.Trim() != oldFetchXML)
+            {
+                this.metaData.OutputCollection[0].OutputColumnCollection.RemoveAll(); //Force update Outputs Columns    
+            }
 
             if (!string.IsNullOrWhiteSpace(txtFetchXML.Text))
             {
@@ -85,6 +87,7 @@ namespace CRMSSIS.CRMSourceAdapter
             var connections = connectionService.GetConnections();
 
             var FetchXML = metaData.CustomPropertyCollection[0];
+            oldFetchXML = (string)FetchXML.Value;
             txtFetchXML.Text = (string)FetchXML.Value;
 
             string connectionManagerId = string.Empty;
@@ -145,9 +148,10 @@ namespace CRMSSIS.CRMSourceAdapter
 
         }
 
-        private void txtFetchXML_TextChanged(object sender, EventArgs e)
-        {
-            this.metaData.OutputCollection[0].OutputColumnCollection.RemoveAll(); //Force update Outputs Columns    
-        }
+        //private void XMLEditor_TextChanged()
+        //{
+        //    this.metaData.OutputCollection[0].OutputColumnCollection.RemoveAll(); //Force update Outputs Columns    
+
+        //}
     }
 }

@@ -93,6 +93,8 @@ namespace CRMSSIS.CRMCommon.Controls
             if (allowXmlFormatting)
             {
                 FormatXml(this.xmlTextBox);
+
+            
             }
         }
 

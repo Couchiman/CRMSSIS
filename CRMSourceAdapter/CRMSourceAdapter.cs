@@ -486,6 +486,8 @@ namespace CRMSSIS.CRMSourceAdapter
                                                 break;
                                             case AttributeTypeCode.Integer:
                                             case AttributeTypeCode.Picklist:
+                                            case AttributeTypeCode.State:
+                                            case AttributeTypeCode.Status:
                                                 dTable.Columns.Add(columnName, typeof(Int32));
                                                 break;
                                             case AttributeTypeCode.Uniqueidentifier:
@@ -525,55 +527,60 @@ namespace CRMSSIS.CRMSourceAdapter
 
 
                             mdta = entMetadata.Attributes.FirstOrDefault(m => m.LogicalName == colName);
-
-                            switch (mdta.AttributeType.Value)
-                            {
-
-
-                                //case AttributeTypeCode.Boolean:
-                                //    dRow[colName] = entity.Attributes.Values.ElementAt(i).ToString() == "1" || entity.Attributes.Values.ElementAt(i).ToString().Trim().ToLower() == "true";
-                                //    break;
-                                case AttributeTypeCode.Picklist:
-                                    dRow[colName] = ((Microsoft.Xrm.Sdk.OptionSetValue)entity.Attributes.Values.ElementAt(i)).Value;
-                                    break;
-
-                                case AttributeTypeCode.Customer:
-                                case AttributeTypeCode.Lookup:
-                                case AttributeTypeCode.PartyList:
-                                case AttributeTypeCode.Owner:
+                            if (mdta !=null)
+                            { 
+                                switch (mdta.AttributeType.Value)
+                                {
 
 
-                                    dRow[colName] = (Guid)((Microsoft.Xrm.Sdk.EntityReference)entity.Attributes.Values.ElementAt(i)).Id;
-                                    break;
-                                case AttributeTypeCode.BigInt:
-                                    dRow[colName] = (Int64?)entity.Attributes.Values.ElementAt(i);
-                                    break;
-                                case AttributeTypeCode.Decimal:
+                                    //case AttributeTypeCode.Boolean:
+                                    //    dRow[colName] = entity.Attributes.Values.ElementAt(i).ToString() == "1" || entity.Attributes.Values.ElementAt(i).ToString().Trim().ToLower() == "true";
+                                    //    break;
+                                
+                                    case AttributeTypeCode.Picklist:
+                                    case AttributeTypeCode.State:
+                                    case AttributeTypeCode.Status:
+                                        dRow[colName] = ((Microsoft.Xrm.Sdk.OptionSetValue)entity.Attributes.Values.ElementAt(i)).Value;
+                                        break;
+                                
+                                    case AttributeTypeCode.Customer:
+                                    case AttributeTypeCode.Lookup:
+                                    case AttributeTypeCode.PartyList:
+                                    case AttributeTypeCode.Owner:
 
-                                    dRow[colName] = (decimal?)entity.Attributes.Values.ElementAt(i);
-                                    break;
-                                case AttributeTypeCode.Double:
-                                    dRow[colName] = (double?)entity.Attributes.Values.ElementAt(i);
-                                    break;
-                                case AttributeTypeCode.Integer:
-                                    dRow[colName] = (int?)entity.Attributes.Values.ElementAt(i);
-                                    break;
-                                case AttributeTypeCode.Money:
-                                    dRow[colName] = (float?)entity.Attributes.Values.ElementAt(i);
-                                    break;
-                                case AttributeTypeCode.DateTime:
-                                    dRow[colName] = (DateTime?)entity.Attributes.Values.ElementAt(i);
-                                    break;
-                                case AttributeTypeCode.Uniqueidentifier:
-                                    dRow[colName] = (Guid?)entity.Attributes.Values.ElementAt(i);
-                                    break;
-                                case AttributeTypeCode.Boolean:
-                                    dRow[colName] = (bool?)entity.Attributes.Values.ElementAt(i);
-                                    break;
-                                default:
-                                    dRow[colName] = (string)entity.Attributes.Values.ElementAt(i);
 
-                                    break;
+                                        dRow[colName] = (Guid)((Microsoft.Xrm.Sdk.EntityReference)entity.Attributes.Values.ElementAt(i)).Id;
+                                        break;
+                                    case AttributeTypeCode.BigInt:
+                                        dRow[colName] = (Int64?)entity.Attributes.Values.ElementAt(i);
+                                        break;
+                                    case AttributeTypeCode.Decimal:
+
+                                        dRow[colName] = (decimal?)entity.Attributes.Values.ElementAt(i);
+                                        break;
+                                    case AttributeTypeCode.Double:
+                                        dRow[colName] = (double?)entity.Attributes.Values.ElementAt(i);
+                                        break;
+                                    case AttributeTypeCode.Integer:
+                                        dRow[colName] = (int?)entity.Attributes.Values.ElementAt(i);
+                                        break;
+                                    case AttributeTypeCode.Money:
+                                        dRow[colName] = ((Microsoft.Xrm.Sdk.Money)entity.Attributes.Values.ElementAt(i)).Value;
+                                        break;
+                                    case AttributeTypeCode.DateTime:
+                                        dRow[colName] = (DateTime?)entity.Attributes.Values.ElementAt(i);
+                                        break;
+                                    case AttributeTypeCode.Uniqueidentifier:
+                                        dRow[colName] = (Guid?)entity.Attributes.Values.ElementAt(i);
+                                        break;
+                                    case AttributeTypeCode.Boolean:
+                                        dRow[colName] = (bool?)entity.Attributes.Values.ElementAt(i);
+                                        break;
+                                    default:
+                                        dRow[colName] = (string)entity.Attributes.Values.ElementAt(i);
+
+                                        break;
+                                }
                             }
                         }
                         dTable.Rows.Add(dRow);

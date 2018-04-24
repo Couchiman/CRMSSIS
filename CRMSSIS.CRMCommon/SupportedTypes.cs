@@ -17,8 +17,9 @@ namespace CRMSSIS.CRMCommon
         {
             bool valid = false;
 
-            if (attribute != null) { 
+            if (attribute != null) {
 
+            
             //Create/Update Operation or default types
             if (!Operation.HasValue || Operation == 0 || Operation == 1 || Operation ==4)
             {
@@ -45,14 +46,19 @@ namespace CRMSSIS.CRMCommon
                 }
             }
 
-            //Create Operation. Removes uniqueidentifier.        
-           if (Operation.HasValue && Operation == 0 && attribute.AttributeType.Value == AttributeTypeCode.Uniqueidentifier) valid = false;
 
-            //Delete Operation or Workflow Operation  
-            if (Operation.HasValue && (Operation == 2 || Operation ==5) && attribute.AttributeType.Value == AttributeTypeCode.Uniqueidentifier) valid = true;
+                //CRM Source     
+                if (!Operation.HasValue && (attribute.AttributeType.Value == AttributeTypeCode.State || attribute.AttributeType.Value == AttributeTypeCode.Status)) valid = true;
 
-            //Status Operation
-            if (Operation.HasValue && Operation == 3 && (attribute.AttributeType.Value == AttributeTypeCode.Uniqueidentifier || attribute.AttributeType.Value == AttributeTypeCode.State || attribute.AttributeType.Value == AttributeTypeCode.Status)) valid = true;
+
+                //Create Operation. Removes uniqueidentifier.        
+                if (Operation.HasValue && Operation == 0 && attribute.AttributeType.Value == AttributeTypeCode.Uniqueidentifier) valid = false;
+
+              //Delete Operation or Workflow Operation  
+              if (Operation.HasValue && (Operation == 2 || Operation ==5) && attribute.AttributeType.Value == AttributeTypeCode.Uniqueidentifier) valid = true;
+
+              //Status Operation
+              if (Operation.HasValue && Operation == 3 && (attribute.AttributeType.Value == AttributeTypeCode.Uniqueidentifier || attribute.AttributeType.Value == AttributeTypeCode.State || attribute.AttributeType.Value == AttributeTypeCode.Status)) valid = true;
 
                 //Workflow Operation applies to all entity
 

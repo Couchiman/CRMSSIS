@@ -180,7 +180,7 @@ namespace CRMSSIS.CRMDestinationAdapter
             IDTSOutputColumn100 outputcol = CRMOK.OutputColumnCollection.New();
             outputcol.Name = "_Response_";
             outputcol.Description = "_Response_";
-            outputcol.SetDataTypeProperties(DataType.DT_STR, 0, 0, 0, 65001);
+            outputcol.SetDataTypeProperties(DataType.DT_STR, 0, 0, 0, 1252);
 
 
 

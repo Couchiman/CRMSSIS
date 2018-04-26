@@ -1,0 +1,1 @@
+(No modificar) SSIS,(No modificar) Suma de comprobación de fila,(No modificar) Fecha de modificación,Nombre,Fecha de creación,Autor,Autor (delegado),Estado,Fecha de creación del registro,Fecha de modificación,Modificado por,Modificado por (delegado),Propietario,Razón para el estado,ErrorCode,ErrorColumn

@@ -176,14 +176,14 @@ namespace CRMSSIS.CRMDestinationAdapter
             CRMOK.SynchronousInputID = input.ID;
             CRMOK.ExclusionGroup = 1;
 
-            //AD CRM GUID Column
+            ////AD CRM GUID Column
             IDTSOutputColumn100 outputcol = CRMOK.OutputColumnCollection.New();
             outputcol.Name = "_Response_";
             outputcol.Description = "_Response_";
-            outputcol.SetDataTypeProperties(DataType.DT_STR, 60, 0, 0, 1252);
+            outputcol.SetDataTypeProperties(DataType.DT_STR, 0, 0, 0, 65001);
 
 
-            
+
 
             IDTSRuntimeConnection100 connection = ComponentMetaData.RuntimeConnectionCollection.New();
             connection.Name = "CRMSSIS";
@@ -216,46 +216,14 @@ namespace CRMSSIS.CRMDestinationAdapter
                 return DTSValidationStatus.VS_ISBROKEN;
             }
 
-            IDTSInput100 input = ComponentMetaData.InputCollection[0];
-            IDTSOutput100 outputError = ComponentMetaData.OutputCollection[0];
-            IDTSOutput100 outputOK = ComponentMetaData.OutputCollection[1];
-            ValidateOutputCollumns(input, outputError);
-            ValidateOutputCollumns(input, outputOK);
+       
+
+           
 
             return base.Validate();
         }
 
-        /// <summary>
-        /// Adds CRMOK and CRMError Columns
-        /// </summary>
-        /// <param name="input"></param>
-        /// <param name="output"></param>
-        private void ValidateOutputCollumns(IDTSInput100 input, IDTSOutput100 output)
-        {
-            foreach (IDTSInputColumn100 inputColumn in input.InputColumnCollection)
-            {
-                bool IsPresent = false;
-                foreach (IDTSOutputColumn100 outputColumn in output.OutputColumnCollection)
-                {
-                    if (outputColumn.Name == inputColumn.Name)
-                    {
-                        IsPresent = true;
-                    }
-                }
-
-                if (!IsPresent)
-                {
-                    IDTSOutputColumn100 outputcol = output.OutputColumnCollection.New();
-                    outputcol.Name = inputColumn.Name;
-                    outputcol.Description = String.Format("{0} contains valid data", inputColumn.Name);
-                    outputcol.SetDataTypeProperties(inputColumn.DataType, inputColumn.Length, inputColumn.Precision, inputColumn.Scale, inputColumn.CodePage);
-
-                   // AddExternalMetaDataColumn(input, inputColumn);
-                }
-            }
-
-            
-        }
+ 
         /// <summary>
         /// Allows to edit output columns Datatypes.
         /// </summary>
@@ -285,7 +253,7 @@ namespace CRMSSIS.CRMDestinationAdapter
         public override void ReinitializeMetaData()
         {
             ComponentMetaData.RemoveInvalidInputColumns();
-            
+            BuildInputAndCleanOutputColumns();
             ReinitializeMetaData();
         }
 
@@ -310,41 +278,64 @@ namespace CRMSSIS.CRMDestinationAdapter
         public override void OnInputPathAttached(int inputID)
         {
             base.OnInputPathAttached(inputID);
+            BuildInputAndCleanOutputColumns();
+            
+        }
 
-            ///Create input collection from virtual inputs
+        private void BuildInputAndCleanOutputColumns()
+        {
+            // Remove the existing columns from the output in order to prevent us from adding duplicate columns
+            foreach (IDTSOutput100 output in ComponentMetaData.OutputCollection)
+            {
+                // We can't simply call RemoveAll on the error output column collection, as there
+                //  are two columns (ErrorColumn and ErrorCode) that we cannot remove as it throws an exception if we try
+                if (output.IsErrorOut)
+                {
+                    List<IDTSOutputColumn100> columns = new List<IDTSOutputColumn100>();
+                    for (int i = 0; i < output.OutputColumnCollection.Count; i++)
+                        columns.Add(output.OutputColumnCollection[i]);
+
+                    string[] errorColumns = new string[] { "ErrorColumn", "ErrorCode" };
+                    IEnumerable<int> columnIdsToRemove = columns.Where(column => !errorColumns.Contains(column.Name)).Select(column => column.ID);
+                    foreach (int columnIdToRemove in columnIdsToRemove)
+                        output.OutputColumnCollection.RemoveObjectByID(columnIdToRemove);
+                }
+                else
+                {
+                    List<IDTSOutputColumn100> columns = new List<IDTSOutputColumn100>();
+                    for (int i = 0; i < output.OutputColumnCollection.Count; i++)
+                        columns.Add(output.OutputColumnCollection[i]);
+
+                    string[] errorColumns = new string[] { "_Response_" };
+                    IEnumerable<int> columnIdsToRemove = columns.Where(column => !errorColumns.Contains(column.Name)).Select(column => column.ID);
+                    foreach (int columnIdToRemove in columnIdsToRemove)
+                        output.OutputColumnCollection.RemoveObjectByID(columnIdToRemove);
+
+
+                }
+            }
+
+
+
+            // Create input collection from virtual inputs
             for (int i = 0; i < ComponentMetaData.InputCollection.Count; i++)
             {
                 ComponentMetaData.InputCollection[i].InputColumnCollection.RemoveAll();
-                
+
                 IDTSVirtualInput100 input = ComponentMetaData.InputCollection[i].GetVirtualInput();
 
                 foreach (IDTSVirtualInputColumn100 vcol in input.VirtualInputColumnCollection)
                 {
                     input.SetUsageType(vcol.LineageID, DTSUsageType.UT_READONLY);
 
-                   
+
                 }
- 
+
             }
-
-           
-
         }
+             
 
-        //private void AddExternalMetaDataColumn(IDTSInput100 input, IDTSInputColumn100 inputColumn)
-        //{
-        //    // Set the properties of the external metadata column.  
-        //    IDTSExternalMetadataColumn100 externalColumn = input.ExternalMetadataColumnCollection.New();
-        //    externalColumn.Name = inputColumn.Name;
-        //    externalColumn.Precision = inputColumn.Precision;
-        //    externalColumn.Length = inputColumn.Length;
-        //    externalColumn.DataType = inputColumn.DataType;
-        //    externalColumn.Scale = inputColumn.Scale;
-
-        //    // Map the external column to the input column.  
-        //    inputColumn.ExternalMetadataColumnID = externalColumn.ID;
-        //}
-
+ 
         #endregion
 
         #region runtime methods
@@ -553,20 +544,22 @@ namespace CRMSSIS.CRMDestinationAdapter
 
                     OkResp = irsp.Resp.Responses.Where(r => r.Fault == null);
 
-                    int ResponseColumn = ComponentMetaData.InputCollection[0].InputColumnCollection.Count + ComponentMetaData.OutputCollection[0].OutputColumnCollection.Count;
+                    //int ResponseColumn = ComponentMetaData.InputCollection[0].InputColumnCollection.Count + ComponentMetaData.OutputCollection[0].OutputColumnCollection.Count;
+                    int ResponseColumn = ComponentMetaData.OutputCollection[0].OutputColumnCollection.Count -1;
 
                     foreach (ExecuteMultipleResponseItem itm in OkResp)
                     {
 
-                        
+
                         //Add the inserted GUID for Create Operation
+
                         switch ((Operations)operation)
                         {
                             case Operations.Create:
-                                
-                                buffer.SetString(ResponseColumn, ((CreateResponse)itm.Response).id.ToString());                              
+
+                                buffer.SetString(ResponseColumn, ((CreateResponse)itm.Response).id.ToString());
                                 break;
-                                                      
+
                             case Operations.Update:
                                 buffer.SetString(ResponseColumn, ((UpdateResponse)itm.Response).Results.FirstOrDefault().Value.ToString());
                                 break;
@@ -585,8 +578,8 @@ namespace CRMSSIS.CRMDestinationAdapter
 
                         }
 
-           
-                    buffer.DirectRow(defaultOuputId);
+
+                        buffer.DirectRow(defaultOuputId);
                     if (buffer.CurrentRow < buffer.RowCount)
                         buffer.NextRow();
 

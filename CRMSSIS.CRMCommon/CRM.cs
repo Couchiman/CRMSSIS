@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,23 +16,42 @@ namespace CRMSSIS.CRMCommon
 {
     public static class CRM
     {
+        public static int retryCount { get; set; }
+        const int maxRetryCount = 3; 
+
         public static IOrganizationService Connect(string connectionString)
         {
-            try {  
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            try
+            {
+               
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            CrmServiceClient conn = new CrmServiceClient(connectionString);
+                CrmServiceClient conn = new CrmServiceClient(connectionString);
 
-            // Cast the proxy client to the IOrganizationService interface.
-            IOrganizationService service = (IOrganizationService)conn.OrganizationWebProxyClient != null ? (IOrganizationService)conn.OrganizationWebProxyClient : (IOrganizationService)conn.OrganizationServiceProxy;
+                // Cast the proxy client to the IOrganizationService interface.
+                IOrganizationService service = (IOrganizationService)conn.OrganizationWebProxyClient != null ? (IOrganizationService)conn.OrganizationWebProxyClient : (IOrganizationService)conn.OrganizationServiceProxy;
 
-           
+
                 if (!conn.IsReady)
                     throw new Exception("Cannot connect to Dynamics Instance");
 
+                retryCount = 0;
                 return service;
-            }
-            catch (Exception ex)
+            }            
+           
+            catch (System.TimeoutException exTimeOut)
+            {
+                //Let's Retry here
+                if (retryCount < maxRetryCount)
+                {
+                    retryCount++;
+                    System.Threading.Thread.Sleep(2000);
+                    Connect(connectionString);
+                }
+
+                throw exTimeOut;
+            }       
+            catch (System.Exception ex)
             {
                 throw ex;
             }
@@ -50,7 +70,7 @@ namespace CRMSSIS.CRMCommon
 
             return (RetrieveAllEntitiesResponse)service.Execute(mdRequest);
 
-                    }
+         }
 
         public static RetrieveEntityResponse RetrieveEntityRequestMetadata(IOrganizationService service, string entityName)
         {

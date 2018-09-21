@@ -140,6 +140,11 @@ namespace CRMSSIS.CRMConnectionManager
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
- 
+
+        private void btnAbout_Click(object sender, EventArgs e)
+        {
+            CRMCommon.AboutBox box = new CRMCommon.AboutBox();
+                box.Show();
+        }
     }
 }

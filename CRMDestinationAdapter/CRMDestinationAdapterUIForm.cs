@@ -707,7 +707,13 @@ namespace CRMSSIS.CRMDestinationAdapter
             loadWorkflows(cbEntity.SelectedItem.ToString());
         }
 
-       
+        private void btnAbout_Click(object sender, EventArgs e)
+        {
+            CRMCommon.AboutBox box = new CRMCommon.AboutBox();
+            box.Show();
+        }
+
+
         // NOT SUPPORTED
         //private void btnExpressions_Click(object sender, EventArgs e)
         //{

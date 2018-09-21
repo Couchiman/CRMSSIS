@@ -58,6 +58,7 @@
             this.lblWorkflow = new System.Windows.Forms.Label();
             this.cboWorkflows = new System.Windows.Forms.ComboBox();
             this.backgroundWorkerLoadWorkflows = new System.ComponentModel.BackgroundWorker();
+            this.btnAbout = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.gpError.SuspendLayout();
@@ -340,11 +341,24 @@
             // 
             this.backgroundWorkerLoadWorkflows.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerLoadWorkflows_DoWork);
             // 
+            // btnAbout
+            // 
+            this.btnAbout.BackColor = System.Drawing.SystemColors.Info;
+            this.btnAbout.ForeColor = System.Drawing.SystemColors.Info;
+            this.btnAbout.Image = ((System.Drawing.Image)(resources.GetObject("btnAbout.Image")));
+            this.btnAbout.Location = new System.Drawing.Point(791, 12);
+            this.btnAbout.Name = "btnAbout";
+            this.btnAbout.Size = new System.Drawing.Size(24, 23);
+            this.btnAbout.TabIndex = 107;
+            this.btnAbout.UseVisualStyleBackColor = false;
+            this.btnAbout.Click += new System.EventHandler(this.btnAbout_Click);
+            // 
             // CRMDestinationAdapterUIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(827, 363);
+            this.Controls.Add(this.btnAbout);
             this.Controls.Add(this.pbLoader);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnCancel);
@@ -406,5 +420,6 @@
         private System.Windows.Forms.ComboBox cboWorkflows;
         private System.ComponentModel.BackgroundWorker backgroundWorkerLoadWorkflows;
         private System.Windows.Forms.Button btnRefreshWorkflows;
+        private System.Windows.Forms.Button btnAbout;
     }
 }

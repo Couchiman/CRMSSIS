@@ -21,8 +21,32 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_0B697CD171CB02041F94E9E1DBBDD667"
+        "OwnerKey" = "8:_773F762F869948989ECDC48F2A2B44B3"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0B697CD171CB02041F94E9E1DBBDD667"
+        "OwnerKey" = "8:_F8120E5F1E3B4348BD94955B6250DC2C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0B697CD171CB02041F94E9E1DBBDD667"
+        "OwnerKey" = "8:_8041F9CBACCF46A2ADB878112BDAD287"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_15A6437C25B9D32A9AB8EFF44B1649D7"
         "OwnerKey" = "8:_9854406494FE4C42A815BC7BCF35E6EC"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_15A6437C25B9D32A9AB8EFF44B1649D7"
+        "OwnerKey" = "8:_0B697CD171CB02041F94E9E1DBBDD667"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -65,12 +89,6 @@
         {
         "MsmKey" = "8:_15A6437C25B9D32A9AB8EFF44B1649D7"
         "OwnerKey" = "8:_F8120E5F1E3B4348BD94955B6250DC2C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_15A6437C25B9D32A9AB8EFF44B1649D7"
-        "OwnerKey" = "8:_F3010191E18E0BB61A9495693BBE7945"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -160,13 +178,13 @@
         "Entry"
         {
         "MsmKey" = "8:_3FC2B8995E86EDF699E5EA16B5C59721"
-        "OwnerKey" = "8:_E8D82FD7A3224323A2BC73A45CB4ECA2"
+        "OwnerKey" = "8:_0B697CD171CB02041F94E9E1DBBDD667"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_3FC2B8995E86EDF699E5EA16B5C59721"
-        "OwnerKey" = "8:_F3010191E18E0BB61A9495693BBE7945"
+        "OwnerKey" = "8:_E8D82FD7A3224323A2BC73A45CB4ECA2"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -423,6 +441,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_ABE8FB5CC1C44939BDC2837926EBB00B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_B533DBB3CA314F818615D7992FADCA5F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -519,24 +543,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_F3010191E18E0BB61A9495693BBE7945"
-        "OwnerKey" = "8:_773F762F869948989ECDC48F2A2B44B3"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F3010191E18E0BB61A9495693BBE7945"
-        "OwnerKey" = "8:_8041F9CBACCF46A2ADB878112BDAD287"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F3010191E18E0BB61A9495693BBE7945"
-        "OwnerKey" = "8:_F8120E5F1E3B4348BD94955B6250DC2C"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_F8120E5F1E3B4348BD94955B6250DC2C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -550,13 +556,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_F8120E5F1E3B4348BD94955B6250DC2C"
+        "OwnerKey" = "8:_0B697CD171CB02041F94E9E1DBBDD667"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_F3010191E18E0BB61A9495693BBE7945"
+        "OwnerKey" = "8:_F8120E5F1E3B4348BD94955B6250DC2C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -780,7 +786,7 @@
             "Enabled" = "11:TRUE"
             "PromptEnabled" = "11:TRUE"
             "PrerequisitesLocation" = "2:1"
-            "Url" = "8:"
+            "Url" = "8:https://github.com/Couchiman/CRMSSIS/wiki"
             "ComponentsUrl" = "8:"
                 "Items"
                 {
@@ -788,6 +794,11 @@
                     {
                     "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 y x64)"
                     "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.3.5.SP1"
+                    {
+                    "Name" = "8:.NET Framework 3.5 SP1"
+                    "ProductCode" = "8:Microsoft.Net.Framework.3.5.SP1"
                     }
                     "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.SqlServer.SQLSysClrTypes.12.0.x64"
                     {
@@ -886,6 +897,37 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_0B697CD171CB02041F94E9E1DBBDD667"
+            {
+            "AssemblyRegister" = "3:2"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:CRMSSIS.CRMCommon, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1445bdffd791cede, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_0B697CD171CB02041F94E9E1DBBDD667"
+                    {
+                    "Name" = "8:CRMSSIS.CRMCommon.DLL"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:CRMSSIS.CRMCommon.DLL"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_F3C609DBE89D46E3ACE9792A4A6FBFE0"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_15A6437C25B9D32A9AB8EFF44B1649D7"
@@ -1725,6 +1767,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_ABE8FB5CC1C44939BDC2837926EBB00B"
+            {
+            "SourcePath" = "8:..\\ProductImages\\4220292.jpg"
+            "TargetName" = "8:4220292.jpg"
+            "Tag" = "8:"
+            "Folder" = "8:_696630ECEA26462D8C3BB659E9E149E4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_B533DBB3CA314F818615D7992FADCA5F"
             {
             "AssemblyRegister" = "3:1"
@@ -1911,37 +1973,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_F3010191E18E0BB61A9495693BBE7945"
-            {
-            "AssemblyRegister" = "3:2"
-            "AssemblyIsInGAC" = "11:TRUE"
-            "AssemblyAsmDisplayName" = "8:CRMSSIS.CRMCommon, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1445bdffd791cede, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_F3010191E18E0BB61A9495693BBE7945"
-                    {
-                    "Name" = "8:CRMSSIS.CRMCommon.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:CRMSSIS.CRMCommon.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_F3C609DBE89D46E3ACE9792A4A6FBFE0"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_F8120E5F1E3B4348BD94955B6250DC2C"
             {
             "AssemblyRegister" = "3:2"
@@ -2105,9 +2136,9 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:SQL2016x64b"
+        "ProductName" = "8:CRM SSIS v1.0b"
         "ProductCode" = "8:{6C932D1D-E8DC-42A4-BCB1-F457F9EEE01A}"
-        "PackageCode" = "8:{85A9BA87-5C50-465E-BE38-702279022BF4}"
+        "PackageCode" = "8:{6DF8C157-1CDB-49A6-953F-18F7A9B55D4D}"
         "UpgradeCode" = "8:{35400305-959B-4B57-A044-F5A76473ED3F}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -2115,15 +2146,15 @@
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:FALSE"
         "ProductVersion" = "8:1.0.0"
-        "Manufacturer" = "8:Default Company Name"
-        "ARPHELPTELEPHONE" = "8:"
+        "Manufacturer" = "8:Couchiman"
+        "ARPHELPTELEPHONE" = "8:couchiman@gmail.com"
         "ARPHELPLINK" = "8:"
         "Title" = "8:SQL2016x64b"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:Default Company Name"
+        "ARPCONTACT" = "8:Pablo J. Cósimo"
         "Keywords" = "8:"
-        "ARPCOMMENTS" = "8:"
-        "ARPURLINFOABOUT" = "8:"
+        "ARPCOMMENTS" = "8:CRM SSIS for SQL Server 2016 x54"
+        "ARPURLINFOABOUT" = "8:https://github.com/Couchiman"
         "ARPPRODUCTICON" = "8:"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
@@ -2260,7 +2291,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_ABE8FB5CC1C44939BDC2837926EBB00B"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "CopyrightWarning"
@@ -2284,8 +2316,8 @@
                             "Type" = "3:3"
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
-                            "Setting" = "3:1"
-                            "Value" = "8:#1203"
+                            "Setting" = "3:2"
+                            "Value" = "8:The installer will guide you through the steps required to install CRMSSIS for SQL Server 2016 x64 on your computer."
                             "DefaultValue" = "8:#1203"
                             "UsePlugInResources" = "11:TRUE"
                             }
@@ -2543,7 +2575,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_ABE8FB5CC1C44939BDC2837926EBB00B"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "CopyrightWarning"
@@ -2567,8 +2600,8 @@
                             "Type" = "3:3"
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
-                            "Setting" = "3:1"
-                            "Value" = "8:#1203"
+                            "Setting" = "3:2"
+                            "Value" = "8:The installer will guide you through the steps required to install CRMSSIS for SQL Server 2016 x64 on your computer."
                             "DefaultValue" = "8:#1203"
                             "UsePlugInResources" = "11:TRUE"
                             }

@@ -2837,9 +2837,9 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:CRM SSIS v1.0b"
+        "ProductName" = "8:Dynamics CRM SSIS for SQL Server 2016 x64 v1.0b"
         "ProductCode" = "8:{6C932D1D-E8DC-42A4-BCB1-F457F9EEE01A}"
-        "PackageCode" = "8:{CDA68E51-065E-4C72-AF2B-8EAE7DD54661}"
+        "PackageCode" = "8:{9E8961C8-B5A1-43D4-B5E2-A869B514B52A}"
         "UpgradeCode" = "8:{35400305-959B-4B57-A044-F5A76473ED3F}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"

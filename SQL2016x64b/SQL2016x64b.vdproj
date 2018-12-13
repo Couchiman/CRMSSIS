@@ -4,15 +4,21 @@
 "ProjectType" = "8:{978C614F-708E-4E1A-B201-565925725DBA}"
 "IsWebType" = "8:FALSE"
 "ProjectName" = "8:SQL2016x64b"
-"LanguageId" = "3:3082"
+"LanguageId" = "3:1033"
 "CodePage" = "3:1252"
-"UILanguageId" = "3:3082"
+"UILanguageId" = "3:1033"
 "SccProjectName" = "8:"
 "SccLocalPath" = "8:"
 "SccAuxPath" = "8:"
 "SccProvider" = "8:"
     "Hierarchy"
     {
+        "Entry"
+        {
+        "MsmKey" = "8:_00EE7D07AAE64C1093E5608BF7B1814F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
         "Entry"
         {
         "MsmKey" = "8:_08FF511E653043029193C8E5884DDBDB"
@@ -23,6 +29,24 @@
         {
         "MsmKey" = "8:_0B697CD171CB02041F94E9E1DBBDD667"
         "OwnerKey" = "8:_773F762F869948989ECDC48F2A2B44B3"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0B697CD171CB02041F94E9E1DBBDD667"
+        "OwnerKey" = "8:_672B61E294E34CD99558A988F8FBB69C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0B697CD171CB02041F94E9E1DBBDD667"
+        "OwnerKey" = "8:_97A30EDACA1A4E4AB8BF847CD0E0D690"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_0B697CD171CB02041F94E9E1DBBDD667"
+        "OwnerKey" = "8:_4E83847541AC44F7B4DB26E194EEBE29"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -41,6 +65,48 @@
         {
         "MsmKey" = "8:_15A6437C25B9D32A9AB8EFF44B1649D7"
         "OwnerKey" = "8:_9854406494FE4C42A815BC7BCF35E6EC"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_15A6437C25B9D32A9AB8EFF44B1649D7"
+        "OwnerKey" = "8:_97A30EDACA1A4E4AB8BF847CD0E0D690"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_15A6437C25B9D32A9AB8EFF44B1649D7"
+        "OwnerKey" = "8:_4E83847541AC44F7B4DB26E194EEBE29"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_15A6437C25B9D32A9AB8EFF44B1649D7"
+        "OwnerKey" = "8:_3319C72BCDAD438089F51822BFB626DC"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_15A6437C25B9D32A9AB8EFF44B1649D7"
+        "OwnerKey" = "8:_958D01D1ABB344D387B2C1AEE9B30DE0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_15A6437C25B9D32A9AB8EFF44B1649D7"
+        "OwnerKey" = "8:_1BC11CEBBE3B44509E6B72979CF00629"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_15A6437C25B9D32A9AB8EFF44B1649D7"
+        "OwnerKey" = "8:_E9E6BB12EC6841259361FAA4A082FDDD"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_15A6437C25B9D32A9AB8EFF44B1649D7"
+        "OwnerKey" = "8:_9B70E9E95F124CFA87FFE815640716C3"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -135,6 +201,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_1BC11CEBBE3B44509E6B72979CF00629"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_2B5BA70B5A2C4C10AB3B8A73B71CF12F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -153,7 +225,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_3319C72BCDAD438089F51822BFB626DC"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_33AA5E705D964783A5FC0A65EE0DD3D1"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_353AC50B5BDB42FB90AA8D31459D914D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -178,6 +262,12 @@
         "Entry"
         {
         "MsmKey" = "8:_3FC2B8995E86EDF699E5EA16B5C59721"
+        "OwnerKey" = "8:_E9E6BB12EC6841259361FAA4A082FDDD"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3FC2B8995E86EDF699E5EA16B5C59721"
         "OwnerKey" = "8:_0B697CD171CB02041F94E9E1DBBDD667"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -185,6 +275,12 @@
         {
         "MsmKey" = "8:_3FC2B8995E86EDF699E5EA16B5C59721"
         "OwnerKey" = "8:_E8D82FD7A3224323A2BC73A45CB4ECA2"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4E83847541AC44F7B4DB26E194EEBE29"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -203,6 +299,18 @@
         {
         "MsmKey" = "8:_58895AD3F4F633E000A630B9C1FEFA9A"
         "OwnerKey" = "8:_70BB3FCCD7FCBE2DB9276D57E62E39E7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_58895AD3F4F633E000A630B9C1FEFA9A"
+        "OwnerKey" = "8:_97A30EDACA1A4E4AB8BF847CD0E0D690"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_58895AD3F4F633E000A630B9C1FEFA9A"
+        "OwnerKey" = "8:_4E83847541AC44F7B4DB26E194EEBE29"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -232,6 +340,12 @@
         "Entry"
         {
         "MsmKey" = "8:_5E6D54E25B96E61B89CF5FC5121CE942"
+        "OwnerKey" = "8:_3319C72BCDAD438089F51822BFB626DC"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_5E6D54E25B96E61B89CF5FC5121CE942"
         "OwnerKey" = "8:_7749DD7803B1454DBED8F1E9A3B00AA8"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -249,8 +363,26 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_672B61E294E34CD99558A988F8FBB69C"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6A405CB0D71E46DB9FD2C0B8B67031A8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_6BB40DD6A4D25463CC605B17EA33D0C6"
         "OwnerKey" = "8:_3FC2B8995E86EDF699E5EA16B5C59721"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6BB40DD6A4D25463CC605B17EA33D0C6"
+        "OwnerKey" = "8:_3319C72BCDAD438089F51822BFB626DC"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -274,6 +406,24 @@
         "Entry"
         {
         "MsmKey" = "8:_707919A33C9D72FC280DC8D197C32AD8"
+        "OwnerKey" = "8:_672B61E294E34CD99558A988F8FBB69C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_707919A33C9D72FC280DC8D197C32AD8"
+        "OwnerKey" = "8:_97A30EDACA1A4E4AB8BF847CD0E0D690"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_707919A33C9D72FC280DC8D197C32AD8"
+        "OwnerKey" = "8:_4E83847541AC44F7B4DB26E194EEBE29"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_707919A33C9D72FC280DC8D197C32AD8"
         "OwnerKey" = "8:_8041F9CBACCF46A2ADB878112BDAD287"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -287,6 +437,24 @@
         {
         "MsmKey" = "8:_70BB3FCCD7FCBE2DB9276D57E62E39E7"
         "OwnerKey" = "8:_707919A33C9D72FC280DC8D197C32AD8"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_70BB3FCCD7FCBE2DB9276D57E62E39E7"
+        "OwnerKey" = "8:_672B61E294E34CD99558A988F8FBB69C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_70BB3FCCD7FCBE2DB9276D57E62E39E7"
+        "OwnerKey" = "8:_97A30EDACA1A4E4AB8BF847CD0E0D690"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_70BB3FCCD7FCBE2DB9276D57E62E39E7"
+        "OwnerKey" = "8:_4E83847541AC44F7B4DB26E194EEBE29"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -358,6 +526,18 @@
         "Entry"
         {
         "MsmKey" = "8:_7CEEF49589627A49692791D0893E96DB"
+        "OwnerKey" = "8:_3319C72BCDAD438089F51822BFB626DC"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7CEEF49589627A49692791D0893E96DB"
+        "OwnerKey" = "8:_00EE7D07AAE64C1093E5608BF7B1814F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7CEEF49589627A49692791D0893E96DB"
         "OwnerKey" = "8:_2E9F0540F3CA44D09347F1995C54474C"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -389,6 +569,18 @@
         {
         "MsmKey" = "8:_7D2F23AE21F8194E4E289C3C0ADC6DB2"
         "OwnerKey" = "8:_3FC2B8995E86EDF699E5EA16B5C59721"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7D2F23AE21F8194E4E289C3C0ADC6DB2"
+        "OwnerKey" = "8:_4E83847541AC44F7B4DB26E194EEBE29"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7D2F23AE21F8194E4E289C3C0ADC6DB2"
+        "OwnerKey" = "8:_3319C72BCDAD438089F51822BFB626DC"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -429,7 +621,25 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_958D01D1ABB344D387B2C1AEE9B30DE0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_97A30EDACA1A4E4AB8BF847CD0E0D690"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_9854406494FE4C42A815BC7BCF35E6EC"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9B70E9E95F124CFA87FFE815640716C3"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -461,6 +671,18 @@
         {
         "MsmKey" = "8:_C3B2C2EB19919C590D5D0F7D7BC9003B"
         "OwnerKey" = "8:_707919A33C9D72FC280DC8D197C32AD8"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C3B2C2EB19919C590D5D0F7D7BC9003B"
+        "OwnerKey" = "8:_97A30EDACA1A4E4AB8BF847CD0E0D690"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C3B2C2EB19919C590D5D0F7D7BC9003B"
+        "OwnerKey" = "8:_4E83847541AC44F7B4DB26E194EEBE29"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -501,7 +723,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_DD4CB7E4680B4A1D8605E613E2195C4F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_E8D82FD7A3224323A2BC73A45CB4ECA2"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E9E6BB12EC6841259361FAA4A082FDDD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -509,6 +743,18 @@
         {
         "MsmKey" = "8:_EFBF77F2FFF638A2F479D821A340525F"
         "OwnerKey" = "8:_C3B2C2EB19919C590D5D0F7D7BC9003B"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_EFBF77F2FFF638A2F479D821A340525F"
+        "OwnerKey" = "8:_97A30EDACA1A4E4AB8BF847CD0E0D690"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_EFBF77F2FFF638A2F479D821A340525F"
+        "OwnerKey" = "8:_4E83847541AC44F7B4DB26E194EEBE29"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -551,6 +797,78 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_15A6437C25B9D32A9AB8EFF44B1649D7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_672B61E294E34CD99558A988F8FBB69C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_97A30EDACA1A4E4AB8BF847CD0E0D690"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_4E83847541AC44F7B4DB26E194EEBE29"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_353AC50B5BDB42FB90AA8D31459D914D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_3319C72BCDAD438089F51822BFB626DC"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_6A405CB0D71E46DB9FD2C0B8B67031A8"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_00EE7D07AAE64C1093E5608BF7B1814F"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_958D01D1ABB344D387B2C1AEE9B30DE0"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_1BC11CEBBE3B44509E6B72979CF00629"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_E9E6BB12EC6841259361FAA4A082FDDD"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_9B70E9E95F124CFA87FFE815640716C3"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_DD4CB7E4680B4A1D8605E613E2195C4F"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -868,9 +1186,40 @@
         }
         "File"
         {
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_00EE7D07AAE64C1093E5608BF7B1814F"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Microsoft.IdentityModel.Clients.ActiveDirectory.WindowsForms, Version=2.22.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_00EE7D07AAE64C1093E5608BF7B1814F"
+                    {
+                    "Name" = "8:Microsoft.IdentityModel.Clients.ActiveDirectory.WindowsForms.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\CRMDestinationAdapter\\bin\\Debug\\Microsoft.IdentityModel.Clients.ActiveDirectory.WindowsForms.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_499CDC08EA954D578BBED38A78FF52D4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_08FF511E653043029193C8E5884DDBDB"
             {
-            "AssemblyRegister" = "3:2"
+            "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Microsoft.SqlServer.Dts.Design, Version=13.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL"
                 "ScatterAssemblies"
@@ -901,7 +1250,7 @@
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_0B697CD171CB02041F94E9E1DBBDD667"
             {
-            "AssemblyRegister" = "3:2"
+            "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:CRMSSIS.CRMCommon, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1445bdffd791cede, processorArchitecture=MSIL"
                 "ScatterAssemblies"
@@ -961,9 +1310,40 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_1BC11CEBBE3B44509E6B72979CF00629"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Microsoft.Crm.Sdk.Proxy, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_1BC11CEBBE3B44509E6B72979CF00629"
+                    {
+                    "Name" = "8:Microsoft.Crm.Sdk.Proxy.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\CRMDestinationAdapter\\bin\\Debug\\Microsoft.Crm.Sdk.Proxy.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_499CDC08EA954D578BBED38A78FF52D4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_2B5BA70B5A2C4C10AB3B8A73B71CF12F"
             {
-            "AssemblyRegister" = "3:2"
+            "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Microsoft.Crm.Sdk.Proxy, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
@@ -994,7 +1374,7 @@
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_2B9F3D5CCD7D4896A6EF19B1DBDCF6F3"
             {
-            "AssemblyRegister" = "3:2"
+            "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Microsoft.Xrm.Sdk.Workflow, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
@@ -1025,7 +1405,7 @@
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_2E9F0540F3CA44D09347F1995C54474C"
             {
-            "AssemblyRegister" = "3:2"
+            "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Microsoft.IdentityModel.Clients.ActiveDirectory.WindowsForms, Version=2.22.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
@@ -1054,9 +1434,40 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_3319C72BCDAD438089F51822BFB626DC"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Microsoft.Xrm.Tooling.Connector, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_3319C72BCDAD438089F51822BFB626DC"
+                    {
+                    "Name" = "8:Microsoft.Xrm.Tooling.Connector.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\CRMDestinationAdapter\\bin\\Debug\\Microsoft.Xrm.Tooling.Connector.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_499CDC08EA954D578BBED38A78FF52D4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_33AA5E705D964783A5FC0A65EE0DD3D1"
             {
-            "AssemblyRegister" = "3:2"
+            "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
@@ -1071,6 +1482,37 @@
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_ECCE6D0FF0DA4FC08DFCDD914A1A9452"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_353AC50B5BDB42FB90AA8D31459D914D"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Microsoft.Xrm.Sdk, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_353AC50B5BDB42FB90AA8D31459D914D"
+                    {
+                    "Name" = "8:Microsoft.Xrm.Sdk.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\CRMDestinationAdapter\\bin\\Debug\\Microsoft.Xrm.Sdk.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_499CDC08EA954D578BBED38A78FF52D4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1145,6 +1587,37 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_4E83847541AC44F7B4DB26E194EEBE29"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:CRMSSIS.CRMDestinationAdapter, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5d9126043847bebf, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_4E83847541AC44F7B4DB26E194EEBE29"
+                    {
+                    "Name" = "8:CRMSSIS.CRMDestinationAdapter.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\CRMDestinationAdapter\\bin\\Debug\\CRMSSIS.CRMDestinationAdapter.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_499CDC08EA954D578BBED38A78FF52D4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_53BB0A86F04243229F66BD4E80699A54"
@@ -1304,7 +1777,7 @@
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_64611DFFF7E843EF8C745FBE7341A053"
             {
-            "AssemblyRegister" = "3:2"
+            "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Microsoft.IdentityModel, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
@@ -1319,6 +1792,68 @@
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_ECCE6D0FF0DA4FC08DFCDD914A1A9452"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_672B61E294E34CD99558A988F8FBB69C"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:CRMSSIS.CRMConnectionManager, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1445bdffd791cede, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_672B61E294E34CD99558A988F8FBB69C"
+                    {
+                    "Name" = "8:CRMSSIS.CRMConnectionManager.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\CRMConnectionManager\\bin\\Debug\\CRMSSIS.CRMConnectionManager.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_499CDC08EA954D578BBED38A78FF52D4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6A405CB0D71E46DB9FD2C0B8B67031A8"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Microsoft.IdentityModel.Clients.ActiveDirectory, Version=2.22.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_6A405CB0D71E46DB9FD2C0B8B67031A8"
+                    {
+                    "Name" = "8:Microsoft.IdentityModel.Clients.ActiveDirectory.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\CRMDestinationAdapter\\bin\\Debug\\Microsoft.IdentityModel.Clients.ActiveDirectory.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_499CDC08EA954D578BBED38A78FF52D4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1490,7 +2025,7 @@
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_773F762F869948989ECDC48F2A2B44B3"
             {
-            "AssemblyRegister" = "3:2"
+            "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:CRMSSIS.CRMConnectionManager, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1445bdffd791cede, processorArchitecture=MSIL"
                 "ScatterAssemblies"
@@ -1521,7 +2056,7 @@
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_7749DD7803B1454DBED8F1E9A3B00AA8"
             {
-            "AssemblyRegister" = "3:2"
+            "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Microsoft.Xrm.Tooling.Connector, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
@@ -1614,7 +2149,7 @@
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_8041F9CBACCF46A2ADB878112BDAD287"
             {
-            "AssemblyRegister" = "3:2"
+            "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:CRMSSIS.CRMDestinationAdapter, Version=1.0.0.0, Culture=neutral, PublicKeyToken=5d9126043847bebf, processorArchitecture=MSIL"
                 "ScatterAssemblies"
@@ -1676,7 +2211,7 @@
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_9571AB81E3904858BC493F97125DD188"
             {
-            "AssemblyRegister" = "3:2"
+            "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Microsoft.IdentityModel.Clients.ActiveDirectory, Version=2.22.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
@@ -1691,6 +2226,68 @@
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_ECCE6D0FF0DA4FC08DFCDD914A1A9452"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_958D01D1ABB344D387B2C1AEE9B30DE0"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Microsoft.Xrm.Sdk.Workflow, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_958D01D1ABB344D387B2C1AEE9B30DE0"
+                    {
+                    "Name" = "8:Microsoft.Xrm.Sdk.Workflow.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\CRMDestinationAdapter\\bin\\Debug\\Microsoft.Xrm.Sdk.Workflow.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_499CDC08EA954D578BBED38A78FF52D4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_97A30EDACA1A4E4AB8BF847CD0E0D690"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:CRMSSIS.CRMSourceAdapter, Version=1.0.0.0, Culture=neutral, PublicKeyToken=342aeb18c30e3bab, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_97A30EDACA1A4E4AB8BF847CD0E0D690"
+                    {
+                    "Name" = "8:CRMSSIS.CRMSourceAdapter.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\CRMSourceAdapter\\bin\\Debug\\CRMSSIS.CRMSourceAdapter.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_499CDC08EA954D578BBED38A78FF52D4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1722,6 +2319,37 @@
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_EFE3B6F080634AC4AC0BE152E0FF7E04"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_9B70E9E95F124CFA87FFE815640716C3"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Microsoft.Xrm.Sdk.Deployment, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_9B70E9E95F124CFA87FFE815640716C3"
+                    {
+                    "Name" = "8:Microsoft.Xrm.Sdk.Deployment.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\CRMDestinationAdapter\\bin\\Debug\\Microsoft.Xrm.Sdk.Deployment.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_499CDC08EA954D578BBED38A78FF52D4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1882,7 +2510,7 @@
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_C74BEF8B33C746D690679CB14D906543"
             {
-            "AssemblyRegister" = "3:2"
+            "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Microsoft.Xrm.Sdk.Deployment, Version=9.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
                 "ScatterAssemblies"
@@ -1911,9 +2539,40 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_DD4CB7E4680B4A1D8605E613E2195C4F"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Microsoft.IdentityModel, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_DD4CB7E4680B4A1D8605E613E2195C4F"
+                    {
+                    "Name" = "8:Microsoft.IdentityModel.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\CRMDestinationAdapter\\bin\\Debug\\Microsoft.IdentityModel.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_499CDC08EA954D578BBED38A78FF52D4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E8D82FD7A3224323A2BC73A45CB4ECA2"
             {
-            "AssemblyRegister" = "3:2"
+            "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:CRMSSIS.CRMCommon, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1445bdffd791cede, processorArchitecture=MSIL"
                 "ScatterAssemblies"
@@ -1928,6 +2587,37 @@
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_ECCE6D0FF0DA4FC08DFCDD914A1A9452"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E9E6BB12EC6841259361FAA4A082FDDD"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:CRMSSIS.CRMCommon, Version=1.0.0.0, Culture=neutral, PublicKeyToken=1445bdffd791cede, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_E9E6BB12EC6841259361FAA4A082FDDD"
+                    {
+                    "Name" = "8:CRMSSIS.CRMCommon.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\CRMDestinationAdapter\\bin\\Debug\\CRMSSIS.CRMCommon.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_499CDC08EA954D578BBED38A78FF52D4"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1975,7 +2665,7 @@
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_F8120E5F1E3B4348BD94955B6250DC2C"
             {
-            "AssemblyRegister" = "3:2"
+            "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:CRMSSIS.CRMSourceAdapter, Version=1.0.0.0, Culture=neutral, PublicKeyToken=342aeb18c30e3bab, processorArchitecture=MSIL"
                 "ScatterAssemblies"
@@ -2076,6 +2766,17 @@
                     }
                 }
             }
+            "{C7E34266-2C30-44B9-A9A3-4E394ABD6E18}:_499CDC08EA954D578BBED38A78FF52D4"
+            {
+            "Name" = "8:#1927"
+            "AlwaysCreate" = "11:FALSE"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Property" = "8:GAC"
+                "Folders"
+                {
+                }
+            }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_696630ECEA26462D8C3BB659E9E149E4"
             {
             "DefaultLocation" = "8:[ProgramFilesFolder][Manufacturer]\\[ProductName]"
@@ -2130,7 +2831,7 @@
         }
         "MsiBootstrapper"
         {
-        "LangId" = "3:3082"
+        "LangId" = "3:1033"
         "RequiresElevation" = "11:FALSE"
         }
         "Product"
@@ -2138,7 +2839,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:CRM SSIS v1.0b"
         "ProductCode" = "8:{6C932D1D-E8DC-42A4-BCB1-F457F9EEE01A}"
-        "PackageCode" = "8:{6DF8C157-1CDB-49A6-953F-18F7A9B55D4D}"
+        "PackageCode" = "8:{CDA68E51-065E-4C72-AF2B-8EAE7DD54661}"
         "UpgradeCode" = "8:{35400305-959B-4B57-A044-F5A76473ED3F}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -2149,11 +2850,11 @@
         "Manufacturer" = "8:Couchiman"
         "ARPHELPTELEPHONE" = "8:couchiman@gmail.com"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:SQL2016x64b"
+        "Title" = "8:Dynamics CRM SSIS for SQL Server 2016 x64"
         "Subject" = "8:"
         "ARPCONTACT" = "8:Pablo J. Cósimo"
         "Keywords" = "8:"
-        "ARPCOMMENTS" = "8:CRM SSIS for SQL Server 2016 x54"
+        "ARPCOMMENTS" = "8:Dynamics CRM SSIS for SQL Server 2016 x64"
         "ARPURLINFOABOUT" = "8:https://github.com/Couchiman"
         "ARPPRODUCTICON" = "8:"
         "ARPIconIndex" = "3:0"

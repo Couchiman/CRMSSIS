@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2050
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CRMSSIS.CRMConnectionManager", "CRMConnectionManager\CRMSSIS.CRMConnectionManager.csproj", "{D577BEBA-C789-41F3-B5CF-40F5D23B71F3}"
 EndProject
@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		..\Users\pjc33\Desktop\Registraciones.txt = ..\Users\pjc33\Desktop\Registraciones.txt
 	EndProjectSection
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SQL2016x64b", "SQL2016x64b\SQL2016x64b.vdproj", "{A994B6A9-E9E9-4DE6-B410-1C47CB128C24}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -74,6 +76,12 @@ Global
 		{1F3E62E7-739D-45C6-B2AB-78E8CA7EFF32}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1F3E62E7-739D-45C6-B2AB-78E8CA7EFF32}.SingleImage|Any CPU.ActiveCfg = Release|Any CPU
 		{1F3E62E7-739D-45C6-B2AB-78E8CA7EFF32}.SingleImage|Any CPU.Build.0 = Release|Any CPU
+		{A994B6A9-E9E9-4DE6-B410-1C47CB128C24}.CD_ROM|Any CPU.ActiveCfg = Release
+		{A994B6A9-E9E9-4DE6-B410-1C47CB128C24}.Debug|Any CPU.ActiveCfg = Debug
+		{A994B6A9-E9E9-4DE6-B410-1C47CB128C24}.Development|Any CPU.ActiveCfg = Debug
+		{A994B6A9-E9E9-4DE6-B410-1C47CB128C24}.DVD-5|Any CPU.ActiveCfg = Debug
+		{A994B6A9-E9E9-4DE6-B410-1C47CB128C24}.Release|Any CPU.ActiveCfg = Release
+		{A994B6A9-E9E9-4DE6-B410-1C47CB128C24}.SingleImage|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
